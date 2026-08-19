@@ -88,6 +88,16 @@ html.no-js .progress{display:none;}
 
 /* ---------- Scene 01 ---------- */
 #scene-01-title{justify-content:center;}
+.cognition-rings{
+  position:absolute;top:calc(var(--u)*4.6);right:calc(var(--u)*5.5);
+  width:calc(var(--u)*27);height:calc(var(--u)*27);
+  fill:none;pointer-events:none;
+}
+.cognition-rings .r-core{fill:var(--ink);stroke:none;}
+.cognition-rings .r-in{stroke:var(--line-light);stroke-width:1;}
+.cognition-rings .r-mid{stroke:var(--line);stroke-width:1;opacity:.75;}
+.cognition-rings .r-edge{stroke:var(--line);stroke-width:1;stroke-dasharray:5 7;opacity:.8;}
+.cognition-rings .r-mark{stroke:var(--brick);stroke-width:2;}
 .title-main{font-size:calc(var(--u)*6.4);line-height:1.16;letter-spacing:.02em;}
 .title-sub{font-size:calc(var(--u)*1.75);color:var(--ink-soft);margin-top:calc(var(--u)*1.6);font-weight:400;font-family:var(--sans);letter-spacing:.04em;}
 .takeaway-head{
@@ -118,6 +128,10 @@ html.no-js .progress{display:none;}
 }
 
 /* ---------- Scene 02 ---------- */
+.mouse-photo{
+  position:absolute;top:calc(var(--u)*1.1);right:calc(var(--u)*5.5);
+  height:calc(var(--u)*11);width:auto;pointer-events:none;
+}
 .two-col{
   display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:calc(var(--u)*3.4);
   flex:1;min-height:0;margin-top:calc(var(--u)*1.8);
@@ -605,6 +619,15 @@ html.js .bub.in{opacity:1;transform:none;}
 
 <!-- ===================== Scene 01 ===================== -->
 <section class="scene" id="scene-01-title" data-steps="0">
+  <svg class="cognition-rings" viewBox="0 0 240 240" aria-hidden="true" focusable="false">
+    <circle cx="120" cy="120" r="3" class="r-core" />
+    <circle cx="119" cy="121" r="20" class="r-in" />
+    <circle cx="121" cy="119" r="42" class="r-in" />
+    <circle cx="119" cy="120" r="64" class="r-mid" />
+    <circle cx="121" cy="121" r="87" class="r-mid" />
+    <circle cx="120" cy="120" r="111" class="r-edge" />
+    <circle cx="198" cy="42" r="6" class="r-mark" />
+  </svg>
   <p class="eyebrow">AI 超充站　技術分享</p>
   <h1 class="title-main">拓展認知邊界<br />解除 AI 焦慮</h1>
   <p class="title-sub">從 AI Agent、吸收 AI 知識的方法論，到開始自己的專案</p>
@@ -622,6 +645,9 @@ html.js .bub.in{opacity:1;transform:none;}
 <section class="scene" id="scene-02-intro" data-steps="0">
   <p class="eyebrow">Scene 02</p>
   <h2 class="scene-title">從抓老鼠到抓滑鼠⋯</h2>
+  <img class="mouse-photo" src="assets/images/scene-02-intro/scene-02-mouse.png"
+       alt="手心裡捧著一隻實驗小鼠" loading="lazy"
+       onerror="this.style.display='none'" />
 
   <div class="two-col">
     <article class="proj">
