@@ -78,6 +78,7 @@ h1,h2,h3{font-family:var(--serif);font-weight:600;margin:0;line-height:1.24;}
   pointer-events:none;
 }
 html.no-js .stage-foot{display:none;}
+.scene-embed.is-active ~ .stage-foot{display:none;}
 .progress{
   position:absolute;left:0;right:0;bottom:0;height:calc(var(--u)*0.28);
   background:var(--line-faint);
@@ -250,10 +251,12 @@ html.js .flower-close.is-on{opacity:1;}
   display:flex;gap:.8vh;
 }
 .helpbar button{
-  all:unset;cursor:pointer;background:rgba(25,23,21,.72);color:#F3EFE6;
-  padding:.7vh 1.4vh;font-size:1.4vh;letter-spacing:.12em;border-radius:2px;
+  all:unset;cursor:pointer;background:rgba(25,23,21,.5);
+  width:3.4vh;height:3.4vh;display:flex;align-items:center;justify-content:center;border-radius:2px;
+  opacity:.5;transition:opacity .2s ease,background .2s ease;
 }
-.helpbar button:hover,.helpbar button:focus-visible{background:var(--brick);outline:none;}
+.helpbar button svg{width:1.8vh;height:1.8vh;fill:none;stroke:#F3EFE6;stroke-width:1.6;}
+.helpbar button:hover,.helpbar button:focus-visible{background:var(--brick);opacity:1;outline:none;}
 html.no-js .helpbar{display:none;}
 
 /* ================= 共用元件 ================= */
@@ -418,7 +421,15 @@ html.js .bub.in{opacity:1;transform:none;}
   font-size:calc(var(--u)*1.05);color:var(--muted);text-align:center;flex:none;
 }
 
-/* ================= S10 地圖 ================= */
+/* ================= S10 內嵌互動版 ================= */
+.scene-embed{padding:0;}
+.scene-embed iframe{
+  width:calc(100% / 0.9);height:calc(100% / 0.9);
+  transform:scale(0.9);transform-origin:top left;
+  border:0;display:block;background:var(--paper);
+}
+
+/* ---- 舊版 S10 靜態地圖樣式（保留備用） ---- */
 .map-wrap{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) calc(var(--u)*27);gap:calc(var(--u)*2);grid-template-rows:minmax(0,1fr);}
 .map-box{position:relative;border-left:1px solid var(--ink);border-bottom:1px solid var(--ink);margin:calc(var(--u)*2.4) 0 calc(var(--u)*3) calc(var(--u)*3.2);}
 .map-grid{position:absolute;inset:0;}
@@ -676,7 +687,7 @@ html.js .bub.in{opacity:1;transform:none;}
 <section class="scene" id="scene-03-flower" data-steps="7">
   <div class="flower-wrap">
     <div class="flower-img">
-      <img src="assets/images/scene-03-flower/scene-03-flower-hero.png"
+      <img src="assets/images/scene-03-flower/scene-03-flower-hero.jpg"
            alt="花店櫃檯上的仙人掌封閉生態瓶展示，旁邊有黃底黑字標價牌與成堆的東北田園黑土包裝。" />
       <p class="flower-ask">你第一個注意到什麼？</p>
       <span class="hot" data-hot="0" style="left:17%;top:36%"></span>
@@ -1010,7 +1021,7 @@ html.js .bub.in{opacity:1;transform:none;}
 </section>
 
 <!-- ===================== Scene 08 ===================== -->
-<section class="scene" id="scene-08-agent-ready-world" data-steps="6">
+<section class="scene" id="scene-08-agent-ready-world" data-steps="0">
   <div class="scene-head">
     <p class="eyebrow">Scene 08</p>
     <h2 class="scene-title">世界正在替 Agent 開門，也同時加上門禁</h2>
@@ -1052,7 +1063,7 @@ html.js .bub.in{opacity:1;transform:none;}
 </section>
 
 <!-- ===================== Scene 09 ===================== -->
-<section class="scene" id="scene-09-agent-or-not" data-steps="5">
+<section class="scene" id="scene-09-agent-or-not" data-steps="0">
   <div class="scene-head">
     <p class="eyebrow">Scene 09</p>
     <h2 class="scene-title">AI Agent 很強，但你的工作到底需要多少 AI？</h2>
@@ -1089,50 +1100,13 @@ html.js .bub.in{opacity:1;transform:none;}
 </section>
 
 <!-- ===================== Scene 10 ===================== -->
-<section class="scene" id="scene-10-ai-cognition-map" data-steps="4">
-  <div class="scene-head">
-    <p class="eyebrow">Scene 10　語言就是認知的邊界，就是世界的邊界</p>
-    <h2 class="scene-title">建立一張自己的 AI 認知地圖</h2>
-  </div>
-
-  <div class="body-area map-wrap">
-    <div class="map-box" id="map-box">
-      <div class="map-grid">
-        <i class="v" style="left:25%"></i><i class="v" style="left:50%"></i><i class="v" style="left:75%"></i>
-        <i class="h" style="top:33.3%"></i><i class="h" style="top:66.6%"></i>
-      </div>
-      <div class="ax-x rv" data-q="0">
-        <span>固定規則</span><span>搜尋／最佳化</span><span>模型</span><span>Agentic 迴圈</span>
-      </div>
-      <div class="ax-y rv" data-q="1">
-        <span>封閉輸入輸出</span><span>讀取外部資料</span><span>寫入／執行／改變狀態</span>
-      </div>
-      <span class="ax-name rv" data-q="0" style="right:0;bottom:calc(var(--u)*-4)">X：它運行時靠什麼做決定？</span>
-      <span class="ax-name rv" data-q="1" style="left:0;top:calc(var(--u)*-2.2)">Y：它能碰到外部世界的哪一層？</span>
-    </div>
-
-    <div class="q3">
-      <div class="qq rv" data-q="0">
-        <p class="n">1　它運行時靠什麼做決定？</p>
-        <p class="s">固定規則 → 搜尋／最佳化／演算法 → 模型 → Agentic 迴圈</p>
-      </div>
-      <div class="qq rv" data-q="1">
-        <p class="n">2　它能碰到外部世界的哪一層？</p>
-        <p class="s">封閉輸入輸出 → 讀取外部資料 → 寫入、執行、改變外部狀態</p>
-      </div>
-      <div class="qq rv" data-q="2">
-        <p class="n">3　AI 出現在開發階段，還是產品運行階段？</p>
-        <p class="s">開發時使用 AI，不代表成品運行時包含模型或 Agent；<br />運行時使用模型，也不代表它具備規劃、工具與觀察迴圈。</p>
-      </div>
-      <p class="map-slogan rv" data-q="3">遇到新產品，<br />先定位，再決定要不要追。</p>
-      <p class="tiny rv" data-q="3">這張圖不是越右上越厲害，而是幫我們選擇最小但足夠的機制。</p>
-      <button class="map-open rv" data-q="3" type="button" id="open-map">開啟完整互動版座標圖</button>
-    </div>
-  </div>
+<section class="scene scene-embed" id="scene-10-ai-cognition-map" data-steps="0">
+  <iframe id="map-frame" src="map.html" title="AI 專案座標分類器：完整互動版"
+          loading="eager"></iframe>
 </section>
 
 <!-- ===================== Scene 11 ===================== -->
-<section class="scene" id="scene-11-colony-counter" data-steps="4">
+<section class="scene" id="scene-11-colony-counter" data-steps="0">
   <div class="scene-head">
     <p class="eyebrow">Scene 11　案例一</p>
     <h2 class="scene-title">個人用專案＋演算法：Colony Counter</h2>
@@ -1177,7 +1151,7 @@ html.js .bub.in{opacity:1;transform:none;}
 </section>
 
 <!-- ===================== Scene 12 ===================== -->
-<section class="scene" id="scene-12-meeting-records" data-steps="4">
+<section class="scene" id="scene-12-meeting-records" data-steps="0">
   <div class="scene-head">
     <p class="eyebrow">Scene 12　案例二</p>
     <h2 class="scene-title">同一個「AI 會議紀錄」，可以是三種完全不同的東西</h2>
@@ -1222,7 +1196,7 @@ html.js .bub.in{opacity:1;transform:none;}
 </section>
 
 <!-- ===================== Scene 13 ===================== -->
-<section class="scene" id="scene-13-satellite-remote-sensing" data-steps="4">
+<section class="scene" id="scene-13-satellite-remote-sensing" data-steps="0">
   <div class="scene-head">
     <p class="eyebrow">Scene 13　案例三</p>
     <h2 class="scene-title">衛星遙測農業監測：它已經能讀取真實世界</h2>
@@ -1313,7 +1287,7 @@ html.js .bub.in{opacity:1;transform:none;}
 </section>
 
 <!-- ===================== Scene 15 ===================== -->
-<section class="scene" id="scene-15-boundaries" data-steps="6">
+<section class="scene" id="scene-15-boundaries" data-steps="0">
   <div class="scene-head">
     <p class="eyebrow">Scene 15</p>
     <h2 class="scene-title">AI 能做得越多，我們越需要守住邊界</h2>
@@ -1445,9 +1419,14 @@ html.js .bub.in{opacity:1;transform:none;}
 </div><!-- /deck -->
 
 <div class="helpbar">
-  <button type="button" data-cmd="overview">總覽 O</button>
-  <button type="button" data-cmd="notes">備忘 N</button>
-  <button type="button" data-cmd="reset">重設 R</button>
+  <button type="button" data-cmd="overview" aria-label="Scene 總覽" title="Scene 總覽（O）">
+    <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false">
+      <rect x="1"  y="1"  width="7.5" height="7.5"/>
+      <rect x="11.5" y="1"  width="7.5" height="7.5"/>
+      <rect x="1"  y="11.5" width="7.5" height="7.5"/>
+      <rect x="11.5" y="11.5" width="7.5" height="7.5"/>
+    </svg>
+  </button>
 </div>
 
 <div class="overlay" id="overview" hidden>
@@ -1549,23 +1528,6 @@ var LAYER_DATA = [
   }
 ];
 
-/* ============ Scene 10 座標點 ============ */
-var MAP_POINTS = [
-  {t:"Colony Counter", x:.38, y:.10, key:1},
-  {t:"會議紀錄 Workflow", x:.58, y:.45, key:1},
-  {t:"衛星遙測農業監測", x:.66, y:.52, key:1},
-  {t:"AI 電梯", x:.10, y:.88},
-  {t:"宮本佳林診斷網站", x:.14, y:.12},
-  {t:"HAI 年報流程", x:.22, y:.55},
-  {t:"TDX 雪隧車道工具", x:.30, y:.45},
-  {t:"CP-SAT 排班", x:.43, y:.30},
-  {t:"語音轉文字", x:.64, y:.12},
-  {t:"Name the Demon", x:.88, y:.45, flip:1},
-  {t:"會議 Agent", x:.85, y:.80, flip:1},
-  {t:"Odysseus", x:.92, y:.90, flip:1},
-  {t:"支付 Agent", x:.96, y:.68, flip:1}
-];
-
 var stage = document.getElementById("stage");
 
 /* 為尚未製作的頁建立佔位 */
@@ -1578,21 +1540,6 @@ SCENES.forEach(function(s){
   el.innerHTML = '<p class="eyebrow">Scene ' + s.n + '</p><p class="t">' + s.t + '</p><p class="m">尚未製作</p>';
   stage.insertBefore(el, document.querySelector(".stage-foot"));
 });
-
-/* 建立 Scene 10 的座標點 */
-(function(){
-  var box = document.getElementById("map-box");
-  if(!box) return;
-  MAP_POINTS.forEach(function(p,i){
-    var el = document.createElement("span");
-    el.className = "pt rv" + (p.key ? " key" : " mid") + (p.flip ? " flip" : "");
-    el.setAttribute("data-q", p.key ? "2" : "3");
-    el.style.left = (p.x * 100) + "%";
-    el.style.bottom = (p.y * 100) + "%";
-    el.innerHTML = '<i class="dot"></i><span class="pl">' + p.t + '</span>';
-    box.appendChild(el);
-  });
-})();
 
 var idx = 0, step = 0;
 
@@ -1613,7 +1560,7 @@ function render(){
 }
 
 function applySteps(){
-  var sc = scene(), n = step;
+  var sc = scene(), n = maxStep() === 0 ? 9999 : step;
 
   sc.querySelectorAll(".rv[data-q]").forEach(function(el){
     var i = parseInt(el.getAttribute("data-q"), 10);
@@ -1742,9 +1689,19 @@ if(copyBtn){
   });
 }
 
-/* Scene 10 開啟完整互動版 */
-var openMap = document.getElementById("open-map");
-if(openMap) openMap.addEventListener("click", function(){ window.open("map.html", "_blank", "noopener"); });
+/* Scene 10 內嵌互動版：把方向鍵轉回簡報，避免焦點落在 iframe 後無法翻頁 */
+var mapFrame = document.getElementById("map-frame");
+if(mapFrame){
+  mapFrame.addEventListener("load", function(){
+    try{
+      mapFrame.contentDocument.addEventListener("keydown", function(e){
+        if(e.key === "ArrowRight" || e.key === "PageDown"){ e.preventDefault(); next(); }
+        else if(e.key === "ArrowLeft" || e.key === "PageUp"){ e.preventDefault(); prev(); }
+        else if(e.key === "o" || e.key === "O"){ toggleOverview(); }
+      });
+    }catch(err){ /* 跨來源時略過 */ }
+  });
+}
 
 /* Scene 15 Prompt Injection 選擇 */
 var VERDICT = [
