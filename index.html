@@ -108,8 +108,13 @@ html.no-js .progress{display:none;}
 }
 .takeaways .txt{font-size:calc(var(--u)*1.65);line-height:1.62;color:var(--ink-soft);}
 .byline{
-  position:absolute;right:calc(var(--u)*6.5);bottom:calc(var(--u)*5.6);
-  text-align:right;font-size:calc(var(--u)*1.15);color:var(--muted);line-height:1.9;letter-spacing:.05em;
+  margin-top:calc(var(--u)*1.1);display:flex;align-items:center;flex-wrap:wrap;
+  gap:calc(var(--u)*1.1);font-size:calc(var(--u)*1.05);color:var(--muted);letter-spacing:.08em;
+}
+.byline > span + span{position:relative;padding-left:calc(var(--u)*1.1);}
+.byline > span + span::before{
+  content:"";position:absolute;left:0;top:50%;transform:translateY(-50%);
+  width:1px;height:calc(var(--u)*0.95);background:var(--line-light);
 }
 
 /* ---------- Scene 02 ---------- */
@@ -123,8 +128,11 @@ grid-template-rows:minmax(0,1fr);}
   padding:calc(var(--u)*1.2) calc(var(--u)*1.5);
   display:flex;flex-direction:column;
 }
-.proj-kicker{font-size:calc(var(--u)*0.95);letter-spacing:.24em;color:var(--muted);}
-.proj-name{font-family:var(--serif);font-size:calc(var(--u)*1.6);margin:calc(var(--u)*0.4) 0 calc(var(--u)*0.4);line-height:1.3;}
+.proj-name{font-family:var(--serif);font-size:calc(var(--u)*1.6);margin:0 0 calc(var(--u)*0.4);line-height:1.3;}
+.proj-org{
+  display:block;font-family:var(--sans);font-size:calc(var(--u)*0.9);
+  color:var(--muted);letter-spacing:.16em;margin-top:calc(var(--u)*0.3);
+}
 .proj-lede{font-size:calc(var(--u)*0.92);color:var(--muted);line-height:1.6;}
 .proj-block{margin-top:calc(var(--u)*0.9);}
 .proj-label{
@@ -135,6 +143,16 @@ grid-template-rows:minmax(0,1fr);}
 .pain{list-style:none;margin:0;padding:0;display:grid;gap:calc(var(--u)*0.55);}
 .pain li{font-size:calc(var(--u)*0.9);color:var(--ink-soft);line-height:1.55;padding-left:calc(var(--u)*1.5);position:relative;}
 .pain li::before{content:"";position:absolute;left:0;top:calc(var(--u)*0.55);width:calc(var(--u)*0.55);height:calc(var(--u)*0.55);border:1px solid var(--line);border-radius:50%;}
+.pain-row{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:calc(var(--u)*1.4);}
+.feat{list-style:none;margin:0;padding:0;display:grid;gap:calc(var(--u)*0.5);align-content:start;}
+.feat li{
+  font-size:calc(var(--u)*0.86);color:var(--ink-soft);line-height:1.4;
+  padding-left:calc(var(--u)*1.1);position:relative;
+}
+.feat li::before{
+  content:"";position:absolute;left:0;top:calc(var(--u)*0.55);
+  width:calc(var(--u)*0.5);height:1px;background:var(--brick);
+}
 .flow{display:flex;align-items:stretch;gap:calc(var(--u)*0.5);}
 .flow .step{
   flex:1;border:1px solid var(--line-light);background:var(--paper);
@@ -143,7 +161,9 @@ grid-template-rows:minmax(0,1fr);}
 }
 .flow .arrow{align-self:center;color:var(--line);font-size:calc(var(--u)*1.1);}
 .metrics{display:flex;align-items:flex-end;gap:calc(var(--u)*1.5);margin-top:auto;padding-top:calc(var(--u)*0.9);border-top:1px solid var(--line-light);}
-.metric .v{font-family:var(--serif);font-size:calc(var(--u)*1.95);color:var(--brick);line-height:1;}
+.metric .v{font-family:var(--serif);font-size:calc(var(--u)*1.7);color:var(--brick);line-height:1;white-space:nowrap;}
+.metric-pct .v{font-size:calc(var(--u)*2.1);}
+.metric-pct .v .pct{font-size:calc(var(--u)*1.1);margin-left:calc(var(--u)*0.15);}
 .metric .k{font-size:calc(var(--u)*0.82);color:var(--muted);margin-top:calc(var(--u)*0.45);letter-spacing:.06em;}
 .metric .d{font-size:calc(var(--u)*0.88);color:var(--ink-soft);line-height:1.5;}
 .scene-foot-note{
@@ -588,33 +608,44 @@ html.js .bub.in{opacity:1;transform:none;}
   <p class="eyebrow">AI 超充站　技術分享</p>
   <h1 class="title-main">拓展認知邊界<br />解除 AI 焦慮</h1>
   <p class="title-sub">從 AI Agent、吸收 AI 知識的方法論，到開始自己的專案</p>
+  <p class="byline"><span>AI 推動辦公室</span><span>王睿君</span><span>研發替代役</span><span>2026.08.21</span></p>
 
   <p class="takeaway-head">TAKEAWAY</p>
   <ol class="takeaways">
-    <li><span class="num">01</span><span class="txt">一套用來吸收 AI 知識的方法論＋Prompt</span></li>
-    <li><span class="num">02</span><span class="txt">AI Agent 到底有什麼特別的</span></li>
-    <li><span class="num">03</span><span class="txt">一個開始你自己的專案的環境和勇氣</span></li>
+    <li><span class="num">01</span><span class="txt">一段用來吸收 AI 相關新知識的 Prompt</span></li>
+    <li><span class="num">02</span><span class="txt">AI Agent 和網頁裡的 AI 到底差在哪？</span></li>
+    <li><span class="num">03</span><span class="txt">用 Gemini 搭配 Canvas 開始第一個專案</span></li>
   </ol>
 </section>
 
 <!-- ===================== Scene 02 ===================== -->
 <section class="scene" id="scene-02-intro" data-steps="0">
   <p class="eyebrow">Scene 02</p>
-  <h2 class="scene-title">我原本也不是學 AI 的</h2>
+  <h2 class="scene-title">從抓老鼠到抓滑鼠⋯</h2>
 
   <div class="two-col">
     <article class="proj">
-      <p class="proj-kicker">RULE-AWARE SCHEDULING</p>
-      <h3 class="proj-name">CDC 排班引擎服務</h3>
+      <h3 class="proj-name">機場人員排班系統<span class="proj-org">中區機場檢疫站</span></h3>
       <p class="proj-lede">把零散的排班規則轉成明確判斷條件，再由 CP-SAT 自動排班並輸出班表、報表與差勤 CSV。</p>
 
-      <div class="proj-block">
-        <p class="proj-label">痛點</p>
-        <ul class="pain">
-          <li>多人共編試算表，格式錯誤或誤動他人內容</li>
-          <li>彙整、核對與調整，每個月要花三個工作天</li>
-          <li>零散口訣與例外難以轉成一致的判斷條件</li>
-        </ul>
+      <div class="proj-block pain-row">
+        <div>
+          <p class="proj-label">痛點</p>
+          <ul class="pain">
+            <li>多人共編試算表，格式錯誤或誤動他人內容</li>
+            <li>彙整、核對與調整，每個月要花三個工作天</li>
+            <li>零散口訣與例外難以轉成一致的判斷條件</li>
+          </ul>
+        </div>
+        <div>
+          <p class="proj-label">Featuring⋯</p>
+          <ul class="feat">
+            <li>Cloudflare 前端</li>
+            <li>GCP 後端容器</li>
+            <li>資料庫</li>
+            <li>Google 排班演算法</li>
+          </ul>
+        </div>
       </div>
 
       <div class="proj-block">
@@ -632,8 +663,12 @@ html.js .bub.in{opacity:1;transform:none;}
 
       <div class="metrics">
         <div class="metric">
-          <div class="v">3 天 → 5 分</div>
+          <div class="v">3 個工作天 → 5 分鐘</div>
           <div class="k">第一版班表產出時間</div>
+        </div>
+        <div class="metric metric-pct">
+          <div class="v">99.7<span class="pct">%</span></div>
+          <div class="k">省下的時間</div>
         </div>
         <div class="metric">
           <div class="d">運行時是<span class="brick">最佳化求解器</span>，<br />不是模型，也不是 Agent。</div>
@@ -642,17 +677,26 @@ html.js .bub.in{opacity:1;transform:none;}
     </article>
 
     <article class="proj">
-      <p class="proj-kicker">CLINICAL SEQUENCING PIPELINE</p>
-      <h3 class="proj-name">TPMGD 定序上傳自動化工具</h3>
+      <h3 class="proj-name">定序資料比對／上傳自動化工具<span class="proj-org">研檢中心</span></h3>
       <p class="proj-lede">把序列整理、資料核對、BLAST 比對與標準檔案產出，整合成一個受控的一站式流程。</p>
 
-      <div class="proj-block">
-        <p class="proj-label">痛點</p>
-        <ul class="pain">
-          <li>逐筆修正序列格式、合併檔案</li>
-          <li>轉換編號、搬移欄位，人工核對</li>
-          <li>逐頁查看比對結果再人工回填</li>
-        </ul>
+      <div class="proj-block pain-row">
+        <div>
+          <p class="proj-label">痛點</p>
+          <ul class="pain">
+            <li>逐筆修正序列格式、合併檔案</li>
+            <li>轉換編號、搬移欄位，人工核對</li>
+            <li>逐頁查看比對結果再人工回填</li>
+          </ul>
+        </div>
+        <div>
+          <p class="proj-label">Featuring⋯</p>
+          <ul class="feat">
+            <li>GAS 前端</li>
+            <li>串接 NCBI API</li>
+            <li>資料存於 browser local storage</li>
+          </ul>
+        </div>
       </div>
 
       <div class="proj-block">
@@ -670,8 +714,12 @@ html.js .bub.in{opacity:1;transform:none;}
 
       <div class="metrics">
         <div class="metric">
-          <div class="v">90 → 15 分</div>
+          <div class="v">90 分鐘 → 15 分鐘</div>
           <div class="k">單次作業時間</div>
+        </div>
+        <div class="metric metric-pct">
+          <div class="v">83.3<span class="pct">%</span></div>
+          <div class="k">省下的時間</div>
         </div>
         <div class="metric">
           <div class="d">系統處理重複作業，<br /><span class="brick">專業人員保留最終覆核</span>。</div>
@@ -680,7 +728,7 @@ html.js .bub.in{opacity:1;transform:none;}
     </article>
   </div>
 
-  <p class="scene-foot-note">遇到不會的就問 AI，用 Vibe Coding 一邊描述、一邊試、一邊修正 —— 真正的門檻不是寫程式，是看見問題。</p>
+  <p class="scene-foot-note">「真正的門檻不是寫程式，是看見問題。」程式語言的門檻消失了，只要會描述需求，結果就會慢慢浮現。</p>
 </section>
 
 <!-- ===================== Scene 03 ===================== -->
@@ -1448,7 +1496,7 @@ var REDUCE = window.matchMedia && window.matchMedia("(prefers-reduced-motion: re
 var SCENES = [
   {id:"scene-01-title", n:"01", t:"拓展認知邊界、解除 AI 焦慮", ready:1,
    notes:["自我介紹：今年六月新加入的研發替代役，原本念生化科技系。","回看過往超充站題目：大家在各領域都有很深入的見解。","提出觀察：AI 領域變化太快，今天的 comment 下禮拜可能就不適用。","說明選題：想講比較不會變動的觀念，分享跨領域學習經驗。","帶出三個 TAKEAWAY（細節口頭展開）。"]},
-  {id:"scene-02-intro", n:"02", t:"我原本也不是學 AI 的", ready:1,
+  {id:"scene-02-intro", n:"02", t:"從抓老鼠到抓滑鼠⋯", ready:1,
    notes:["背景：生化科技系，做免疫與單細胞定序，實驗桌上拿 pipet 的人。","問題意識：看到重複、耗時的事情就想 SOP 化、自動化。","學習入口：遇到不會的就問 AI，先問怎麼拆問題、怎麼驗證。","Vibe Coding：一邊描述、一邊試、一邊修正。","跨領域學習最重要的環節是認知邊界的擴張。","Hook：小說家寫不出認知之外的劇情；畫家畫不出認知之外的畫面；投資人賺不到認知之外的錢。","轉場：接下來從一個很簡單的例子開始 —— 同一束花。"]},
   {id:"scene-03-flower", n:"03", t:"同一束花，為什麼每個人看見的不一樣？", ready:1,
    notes:["先只問「你第一個注意到什麼？」，讓觀眾自己看 10 秒。","按 → 逐一揭露六個專業視角，每個視角對應圖上一個亮點。","必講：圖片沒有改變，改變的是觀看圖片的人所擁有的框架。","結尾提醒：這些是候選視角，不等於專業判斷，仍要查證。","轉場：那我們怎麼知道自己漏看了什麼？"]},
