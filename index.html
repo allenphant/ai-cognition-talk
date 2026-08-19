@@ -1,0 +1,619 @@
+<!doctype html>
+<html lang="zh-Hant" class="no-js">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>拓展認知邊界、解除 AI 焦慮</title>
+<style>
+:root{
+  --paper:#F3EFE6;
+  --paper-raised:#F8F5EE;
+  --paper-deep:#E9E2D6;
+  --ink:#191715;
+  --ink-soft:#3E3934;
+  --muted:#716960;
+  --brick:#B45F3C;
+  --brick-dark:#87442F;
+  --line:#9A9083;
+  --line-light:#CEC5B8;
+  --line-faint:#E2DBD0;
+  --serif:"Noto Serif CJK TC","Noto Serif TC","Source Han Serif TC",Georgia,serif;
+  --sans:"Noto Sans CJK TC","Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;
+  --u:min(1vw,1.7778vh);
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;height:100%;}
+body{
+  background:#DCD5C8;
+  color:var(--ink);
+  font-family:var(--sans);
+  -webkit-font-smoothing:antialiased;
+  overflow:hidden;
+}
+html.no-js body{overflow:auto;background:var(--paper);}
+
+/* ---------- 舞台 ---------- */
+.deck{
+  width:100%;height:100%;
+  display:flex;align-items:center;justify-content:center;
+}
+.stage{
+  position:relative;
+  width:calc(var(--u) * 100);
+  height:calc(var(--u) * 56.25);
+  background:var(--paper);
+  overflow:hidden;
+  box-shadow:0 calc(var(--u)*0.6) calc(var(--u)*2.4) rgba(25,23,21,.18);
+}
+html.no-js .stage{width:100%;height:auto;box-shadow:none;}
+
+.scene{
+  position:absolute;inset:0;
+  padding:calc(var(--u)*5.5) calc(var(--u)*6.5);
+  display:flex;flex-direction:column;
+}
+html.js .scene{display:none;}
+html.js .scene.is-active{display:flex;}
+html.no-js .scene{position:static;border-bottom:1px solid var(--line-light);min-height:calc(var(--u)*56.25);}
+
+/* ---------- 共用排版 ---------- */
+.eyebrow{
+  font-size:calc(var(--u)*1.15);
+  letter-spacing:.28em;
+  color:var(--muted);
+  text-transform:uppercase;
+  margin:0 0 calc(var(--u)*1.4);
+}
+h1,h2,h3{font-family:var(--serif);font-weight:600;margin:0;line-height:1.24;}
+.scene-title{font-size:calc(var(--u)*3.6);letter-spacing:.01em;}
+.scene-sub{font-size:calc(var(--u)*1.5);color:var(--muted);margin-top:calc(var(--u)*1);line-height:1.7;font-weight:400;}
+.rule{height:1px;background:var(--line-light);border:0;margin:calc(var(--u)*2.2) 0;}
+.brick{color:var(--brick);}
+
+/* 頁碼與進度 */
+.stage-foot{
+  position:absolute;left:calc(var(--u)*6.5);right:calc(var(--u)*6.5);bottom:calc(var(--u)*2.4);
+  display:flex;align-items:center;justify-content:space-between;
+  font-size:calc(var(--u)*1.05);color:var(--muted);letter-spacing:.1em;
+  pointer-events:none;
+}
+html.no-js .stage-foot{display:none;}
+.progress{
+  position:absolute;left:0;right:0;bottom:0;height:calc(var(--u)*0.28);
+  background:var(--line-faint);
+}
+.progress > i{display:block;height:100%;background:var(--brick);width:0;transition:width .35s ease;}
+html.no-js .progress{display:none;}
+
+/* ---------- Scene 01 ---------- */
+#scene-01-title{justify-content:center;}
+.title-main{font-size:calc(var(--u)*6.4);line-height:1.16;letter-spacing:.02em;}
+.title-sub{font-size:calc(var(--u)*1.75);color:var(--ink-soft);margin-top:calc(var(--u)*1.6);font-weight:400;font-family:var(--sans);letter-spacing:.04em;}
+.takeaway-head{
+  margin-top:calc(var(--u)*4.2);
+  font-size:calc(var(--u)*1.1);letter-spacing:.42em;color:var(--brick);
+}
+.takeaways{
+  list-style:none;margin:calc(var(--u)*1.6) 0 0;padding:0;
+  display:grid;grid-template-columns:repeat(3,1fr);gap:calc(var(--u)*2.6);
+}
+.takeaways li{
+  border-top:calc(var(--u)*0.16) solid var(--ink);
+  padding-top:calc(var(--u)*1.3);
+}
+.takeaways .num{
+  display:block;font-family:var(--serif);font-size:calc(var(--u)*1.6);
+  color:var(--brick);letter-spacing:.1em;margin-bottom:calc(var(--u)*0.7);
+}
+.takeaways .txt{font-size:calc(var(--u)*1.65);line-height:1.62;color:var(--ink-soft);}
+.byline{
+  position:absolute;right:calc(var(--u)*6.5);bottom:calc(var(--u)*5.6);
+  text-align:right;font-size:calc(var(--u)*1.15);color:var(--muted);line-height:1.9;letter-spacing:.05em;
+}
+
+/* ---------- Scene 02 ---------- */
+.two-col{
+  display:grid;grid-template-columns:1fr 1fr;gap:calc(var(--u)*3.4);
+  flex:1;min-height:0;margin-top:calc(var(--u)*1.8);
+}
+.proj{
+  background:var(--paper-raised);
+  border:1px solid var(--line-light);
+  padding:calc(var(--u)*2.2) calc(var(--u)*2.4);
+  display:flex;flex-direction:column;
+}
+.proj-kicker{font-size:calc(var(--u)*0.95);letter-spacing:.24em;color:var(--muted);}
+.proj-name{font-family:var(--serif);font-size:calc(var(--u)*2.05);margin:calc(var(--u)*0.6) 0 calc(var(--u)*0.5);line-height:1.3;}
+.proj-lede{font-size:calc(var(--u)*1.12);color:var(--muted);line-height:1.68;}
+.proj-block{margin-top:calc(var(--u)*1.6);}
+.proj-label{
+  font-size:calc(var(--u)*0.95);letter-spacing:.2em;color:var(--brick);
+  display:flex;align-items:center;gap:calc(var(--u)*0.8);margin-bottom:calc(var(--u)*0.8);
+}
+.proj-label::after{content:"";flex:1;height:1px;background:var(--line-faint);}
+.pain{list-style:none;margin:0;padding:0;display:grid;gap:calc(var(--u)*0.55);}
+.pain li{font-size:calc(var(--u)*1.12);color:var(--ink-soft);line-height:1.55;padding-left:calc(var(--u)*1.5);position:relative;}
+.pain li::before{content:"";position:absolute;left:0;top:calc(var(--u)*0.72);width:calc(var(--u)*0.62);height:calc(var(--u)*0.62);border:1px solid var(--line);border-radius:50%;}
+.flow{display:flex;align-items:stretch;gap:calc(var(--u)*0.5);}
+.flow .step{
+  flex:1;border:1px solid var(--line-light);background:var(--paper);
+  padding:calc(var(--u)*0.75) calc(var(--u)*0.6);
+  font-size:calc(var(--u)*1.0);line-height:1.4;text-align:center;color:var(--ink-soft);
+}
+.flow .arrow{align-self:center;color:var(--line);font-size:calc(var(--u)*1.1);}
+.metrics{display:flex;align-items:flex-end;gap:calc(var(--u)*2.4);margin-top:auto;padding-top:calc(var(--u)*1.6);border-top:1px solid var(--line-light);}
+.metric .v{font-family:var(--serif);font-size:calc(var(--u)*3.1);color:var(--brick);line-height:1;}
+.metric .k{font-size:calc(var(--u)*0.98);color:var(--muted);margin-top:calc(var(--u)*0.45);letter-spacing:.06em;}
+.metric .d{font-size:calc(var(--u)*1.05);color:var(--ink-soft);line-height:1.5;}
+.scene-foot-note{
+  margin-top:calc(var(--u)*1.6);font-size:calc(var(--u)*1.2);color:var(--ink-soft);
+  font-family:var(--serif);letter-spacing:.03em;
+}
+
+/* ---------- Scene 03 ---------- */
+#scene-03-flower{padding:0;}
+.flower-wrap{position:relative;width:100%;height:100%;display:flex;}
+.flower-img{position:relative;flex:1;min-width:0;overflow:hidden;background:var(--paper-deep);}
+.flower-img img{width:100%;height:100%;object-fit:cover;display:block;}
+.flower-ask{
+  position:absolute;left:calc(var(--u)*4);top:calc(var(--u)*3.6);
+  background:rgba(248,245,238,.94);border-left:calc(var(--u)*0.35) solid var(--brick);
+  padding:calc(var(--u)*1.1) calc(var(--u)*1.7);
+  font-family:var(--serif);font-size:calc(var(--u)*2.1);letter-spacing:.03em;
+}
+.hot{
+  position:absolute;width:calc(var(--u)*3.2);height:calc(var(--u)*3.2);
+  transform:translate(-50%,-50%);border-radius:50%;
+  border:calc(var(--u)*0.22) solid var(--brick);
+  background:rgba(180,95,60,.14);
+  opacity:0;transition:opacity .4s ease,transform .4s ease;
+  pointer-events:none;
+}
+.hot::after{
+  content:"";position:absolute;inset:calc(var(--u)*-0.9);border-radius:50%;
+  border:1px solid rgba(180,95,60,.45);
+}
+html.js .hot.is-on{opacity:1;}
+html.js .hot.is-cur{transform:translate(-50%,-50%) scale(1.18);background:rgba(180,95,60,.3);}
+.flower-side{
+  width:calc(var(--u)*33);flex:none;
+  background:var(--paper);border-left:1px solid var(--line-light);
+  padding:calc(var(--u)*3.4) calc(var(--u)*2.6) calc(var(--u)*4.4);
+  display:flex;flex-direction:column;
+}
+.roles{list-style:none;margin:calc(var(--u)*1.4) 0 0;padding:0;display:grid;gap:calc(var(--u)*0.9);}
+.role{border-top:1px solid var(--line-faint);padding-top:calc(var(--u)*0.85);}
+html.js .role{opacity:0;transform:translateY(calc(var(--u)*0.6));transition:opacity .45s ease,transform .45s ease;}
+html.js .role.is-on{opacity:1;transform:none;}
+.role button{
+  all:unset;display:block;width:100%;cursor:pointer;
+}
+.role button:focus-visible{outline:2px solid var(--brick);outline-offset:3px;}
+.role .who{
+  font-family:var(--serif);font-size:calc(var(--u)*1.5);color:var(--ink);
+  display:flex;align-items:baseline;gap:calc(var(--u)*0.8);
+}
+.role .who i{font-style:normal;font-size:calc(var(--u)*0.95);color:var(--muted);letter-spacing:.16em;}
+.role .say{
+  font-size:calc(var(--u)*1.08);color:var(--muted);line-height:1.6;
+  margin-top:calc(var(--u)*0.4);
+  max-height:0;overflow:hidden;transition:max-height .45s ease,margin .45s ease,color .3s ease;
+}
+html.js .role.is-cur .say{max-height:calc(var(--u)*14);}
+html.no-js .role .say{max-height:none;}
+.role.is-cur .who{color:var(--brick);}
+.flower-close{
+  margin-top:auto;padding-top:calc(var(--u)*1.6);border-top:calc(var(--u)*0.16) solid var(--ink);
+  font-family:var(--serif);font-size:calc(var(--u)*1.6);letter-spacing:.04em;
+}
+html.js .flower-close{opacity:0;transition:opacity .5s ease;}
+html.js .flower-close.is-on{opacity:1;}
+
+/* ---------- 未製作頁 ---------- */
+.todo{align-items:center;justify-content:center;text-align:center;}
+.todo .t{font-family:var(--serif);font-size:calc(var(--u)*3);}
+.todo .m{margin-top:calc(var(--u)*1.2);color:var(--muted);font-size:calc(var(--u)*1.3);letter-spacing:.1em;}
+
+/* ---------- 總覽 ---------- */
+.overlay{
+  position:fixed;inset:0;background:rgba(25,23,21,.93);
+  z-index:50;padding:4vh 4vw;overflow:auto;
+}
+.overlay[hidden]{display:none;}
+.overlay h2{color:var(--paper);font-size:2.1vh;letter-spacing:.3em;font-weight:400;margin-bottom:2.4vh;}
+.ov-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.6vh;}
+.ov-item{
+  all:unset;cursor:pointer;background:var(--paper);color:var(--ink);
+  padding:1.6vh 1.6vh;min-height:11vh;display:flex;flex-direction:column;gap:.8vh;
+  border-left:.5vh solid var(--line-light);
+}
+.ov-item:hover,.ov-item:focus-visible{border-left-color:var(--brick);outline:none;}
+.ov-item[data-ready="0"]{opacity:.42;}
+.ov-item .n{font-family:var(--serif);font-size:1.8vh;color:var(--brick);}
+.ov-item .t{font-size:1.6vh;line-height:1.5;}
+.ov-hint{margin-top:2.4vh;color:#9B948C;font-size:1.5vh;letter-spacing:.14em;}
+
+/* ---------- 講者備忘 ---------- */
+.notes{
+  position:fixed;right:0;top:0;bottom:0;width:min(34vw,520px);
+  background:#191715;color:#E9E2D6;z-index:60;
+  padding:3.4vh 3vh;overflow:auto;font-size:1.8vh;line-height:1.8;
+}
+.notes[hidden]{display:none;}
+.notes h3{color:var(--paper);font-size:2vh;margin-bottom:1.6vh;}
+.notes ol{padding-left:2.4vh;margin:0;}
+.notes li{margin-bottom:1vh;}
+
+.helpbar{
+  position:fixed;left:1.6vh;bottom:1.6vh;z-index:40;
+  display:flex;gap:.8vh;
+}
+.helpbar button{
+  all:unset;cursor:pointer;background:rgba(25,23,21,.72);color:#F3EFE6;
+  padding:.7vh 1.4vh;font-size:1.4vh;letter-spacing:.12em;border-radius:2px;
+}
+.helpbar button:hover,.helpbar button:focus-visible{background:var(--brick);outline:none;}
+html.no-js .helpbar{display:none;}
+
+@media (prefers-reduced-motion:reduce){
+  *{transition-duration:.01ms !important;animation-duration:.01ms !important;}
+}
+</style>
+</head>
+<body>
+
+<div class="deck">
+<div class="stage" id="stage">
+
+<!-- ===================== Scene 01 ===================== -->
+<section class="scene" id="scene-01-title" data-steps="0">
+  <p class="eyebrow">AI 超充站　技術分享</p>
+  <h1 class="title-main">拓展認知邊界<br />解除 AI 焦慮</h1>
+  <p class="title-sub">從 AI Agent、吸收 AI 知識的方法論，到開始自己的專案</p>
+
+  <p class="takeaway-head">TAKEAWAY</p>
+  <ol class="takeaways">
+    <li><span class="num">01</span><span class="txt">一套用來吸收 AI 知識的方法論＋Prompt</span></li>
+    <li><span class="num">02</span><span class="txt">AI Agent 到底有什麼特別的</span></li>
+    <li><span class="num">03</span><span class="txt">一個開始你自己的專案的環境和勇氣</span></li>
+  </ol>
+</section>
+
+<!-- ===================== Scene 02 ===================== -->
+<section class="scene" id="scene-02-intro" data-steps="0">
+  <p class="eyebrow">Scene 02</p>
+  <h2 class="scene-title">我原本也不是學 AI 的</h2>
+  <p class="scene-sub">生化科技系 → 想把重複、耗時的工作 SOP 化與自動化 → 一邊問 AI、一邊做出工具</p>
+
+  <div class="two-col">
+    <article class="proj">
+      <p class="proj-kicker">RULE-AWARE SCHEDULING</p>
+      <h3 class="proj-name">CDC 排班引擎服務</h3>
+      <p class="proj-lede">把零散的排班規則轉成明確判斷條件，再由 CP-SAT 自動排班並輸出班表、報表與差勤 CSV。</p>
+
+      <div class="proj-block">
+        <p class="proj-label">痛點</p>
+        <ul class="pain">
+          <li>多人共編試算表，格式錯誤或誤動他人內容</li>
+          <li>彙整、核對與調整，每個月要花三個工作天</li>
+          <li>零散口訣與例外難以轉成一致的判斷條件</li>
+        </ul>
+      </div>
+
+      <div class="proj-block">
+        <p class="proj-label">解法</p>
+        <div class="flow">
+          <div class="step">圖形化<br />設定規則</div>
+          <span class="arrow">→</span>
+          <div class="step">排程前<br />自動檢核</div>
+          <span class="arrow">→</span>
+          <div class="step">CP-SAT<br />求解排班</div>
+          <span class="arrow">→</span>
+          <div class="step">班表報表<br />與 CSV</div>
+        </div>
+      </div>
+
+      <div class="metrics">
+        <div class="metric">
+          <div class="v">3 天 → 5 分</div>
+          <div class="k">第一版班表產出時間</div>
+        </div>
+        <div class="metric">
+          <div class="d">運行時是<span class="brick">最佳化求解器</span>，<br />不是模型，也不是 Agent。</div>
+        </div>
+      </div>
+    </article>
+
+    <article class="proj">
+      <p class="proj-kicker">CLINICAL SEQUENCING PIPELINE</p>
+      <h3 class="proj-name">TPMGD 定序上傳自動化工具</h3>
+      <p class="proj-lede">把序列整理、資料核對、BLAST 比對與標準檔案產出，整合成一個受控的一站式流程。</p>
+
+      <div class="proj-block">
+        <p class="proj-label">痛點</p>
+        <ul class="pain">
+          <li>逐筆修正序列格式、合併檔案</li>
+          <li>轉換編號、搬移欄位，人工核對</li>
+          <li>逐頁查看比對結果再人工回填</li>
+        </ul>
+      </div>
+
+      <div class="proj-block">
+        <p class="proj-label">解法</p>
+        <div class="flow">
+          <div class="step">匯入序列<br />自動清洗</div>
+          <span class="arrow">→</span>
+          <div class="step">核對檢體<br />欄位映射</div>
+          <span class="arrow">→</span>
+          <div class="step">執行<br />BLAST 比對</div>
+          <span class="arrow">→</span>
+          <div class="step">標準格式<br />輸出</div>
+        </div>
+      </div>
+
+      <div class="metrics">
+        <div class="metric">
+          <div class="v">90 → 15 分</div>
+          <div class="k">單次作業時間</div>
+        </div>
+        <div class="metric">
+          <div class="d">系統處理重複作業，<br /><span class="brick">專業人員保留最終覆核</span>。</div>
+        </div>
+      </div>
+    </article>
+  </div>
+
+  <p class="scene-foot-note">遇到不會的就問 AI，用 Vibe Coding 一邊描述、一邊試、一邊修正 —— 真正的門檻不是寫程式，是看見問題。</p>
+</section>
+
+<!-- ===================== Scene 03 ===================== -->
+<section class="scene" id="scene-03-flower" data-steps="7">
+  <div class="flower-wrap">
+    <div class="flower-img">
+      <img src="assets/images/scene-03-flower/scene-03-flower-hero.png"
+           alt="花店櫃檯上的仙人掌封閉生態瓶展示，旁邊有黃底黑字標價牌與成堆的東北田園黑土包裝。" />
+      <p class="flower-ask">你第一個注意到什麼？</p>
+      <span class="hot" data-hot="0" style="left:17%;top:36%"></span>
+      <span class="hot" data-hot="1" style="left:80%;top:14%"></span>
+      <span class="hot" data-hot="2" style="left:40%;top:86%"></span>
+      <span class="hot" data-hot="3" style="left:46%;top:50%"></span>
+      <span class="hot" data-hot="4" style="left:56%;top:88%"></span>
+      <span class="hot" data-hot="5" style="left:74%;top:73%"></span>
+    </div>
+
+    <aside class="flower-side">
+      <p class="eyebrow">Scene 03</p>
+      <h2 class="scene-title" style="font-size:calc(var(--u)*2.3)">同一束花，<br />為什麼每個人<br />看見的不一樣？</h2>
+
+      <ul class="roles">
+        <li class="role" data-role="0"><button type="button">
+          <span class="who">視覺 <i>DESIGN</i></span>
+          <span class="say">先看配色、構圖、留白與焦點落在哪裡。</span>
+        </button></li>
+        <li class="role" data-role="1"><button type="button">
+          <span class="who">攝影 <i>PHOTO</i></span>
+          <span class="say">先看光線方向、景深、白平衡與玻璃上的反光。</span>
+        </button></li>
+        <li class="role" data-role="2"><button type="button">
+          <span class="who">設計 <i>SIGNAGE</i></span>
+          <span class="say">黃底黑字通常是警示用途的配色，出現在標價牌上其實很違和。</span>
+        </button></li>
+        <li class="role" data-role="3"><button type="button">
+          <span class="who">生命科學 <i>BOTANY</i></span>
+          <span class="say">仙人掌不該被關在密閉潮濕的瓶子裡，它需要通風乾燥的開放式環境。</span>
+        </button></li>
+        <li class="role" data-role="4"><button type="button">
+          <span class="who">商業行銷 <i>PRICING</i></span>
+          <span class="say">直接寫 299 沒有吸引力，要先寫 1299 再劃掉改成 299。</span>
+        </button></li>
+        <li class="role" data-role="5"><button type="button">
+          <span class="who">檢疫與法務 <i>QUARANTINE</i></span>
+          <span class="say">依植物防疫檢疫法第 15 條，土壤禁止輸入，以免病蟲害藉由土壤跨境傳播。</span>
+        </button></li>
+      </ul>
+
+      <p class="flower-close">圖片沒有改變，<br />改變的是<span class="brick">看圖片的人</span>。<br />
+        <span style="font-size:calc(var(--u)*1.15);color:var(--muted);font-family:var(--sans)">候選視角 ≠ 專業判斷</span></p>
+    </aside>
+  </div>
+</section>
+
+<div class="stage-foot"><span id="foot-title"></span><span id="foot-num"></span></div>
+<div class="progress"><i id="progress-bar"></i></div>
+</div><!-- /stage -->
+</div><!-- /deck -->
+
+<div class="helpbar">
+  <button type="button" data-cmd="overview">總覽 O</button>
+  <button type="button" data-cmd="notes">備忘 N</button>
+  <button type="button" data-cmd="reset">重設 R</button>
+</div>
+
+<div class="overlay" id="overview" hidden>
+  <h2>SCENE 總覽</h2>
+  <div class="ov-grid" id="ov-grid"></div>
+  <p class="ov-hint">點選任一頁跳轉　·　Esc 關閉　·　← → 翻頁</p>
+</div>
+
+<aside class="notes" id="notes" hidden>
+  <h3 id="notes-title">講者備忘</h3>
+  <div id="notes-body"></div>
+</aside>
+
+<script>
+document.documentElement.className = "js";
+
+var SCENES = [
+  {id:"scene-01-title", n:"01", t:"拓展認知邊界、解除 AI 焦慮", ready:1,
+   notes:["自我介紹：今年六月新加入的研發替代役，原本念生化科技系。","回看過往超充站題目：大家在各領域都有很深入的見解。","提出觀察：AI 領域變化太快，今天的 comment 下禮拜可能就不適用。","說明選題：想講比較不會變動的觀念，分享跨領域學習經驗。","帶出三個 TAKEAWAY。"]},
+  {id:"scene-02-intro", n:"02", t:"我原本也不是學 AI 的", ready:1,
+   notes:["背景：生化科技系，做免疫與單細胞定序，實驗桌上拿 pipet 的人。","問題意識：看到重複、耗時的事情就想 SOP 化、自動化。","學習入口：遇到不會的就問 AI，先問怎麼拆問題、怎麼驗證。","Vibe Coding：一邊描述、一邊試、一邊修正。","跨領域學習最重要的環節是認知邊界的擴張。","Hook：小說家寫不出認知之外的劇情；畫家畫不出認知之外的畫面；投資人賺不到認知之外的錢。","轉場：接下來從一個很簡單的例子開始 —— 同一束花。"]},
+  {id:"scene-03-flower", n:"03", t:"同一束花，為什麼每個人看見的不一樣？", ready:1,
+   notes:["先只問「你第一個注意到什麼？」，讓觀眾自己看 10 秒。","按 → 逐一揭露六個專業視角，每個視角都對應圖上一個亮點。","必講：圖片沒有改變，改變的是觀看圖片的人所擁有的框架。","結尾提醒：這些是候選視角，不等於專業判斷，仍要查證。","轉場到 Scene 04：那我們怎麼知道自己漏看了什麼？"]},
+  {id:"scene-04-known-unknown", n:"04", t:"你知道自己不知道什麼嗎？", ready:0},
+  {id:"scene-05-cognition-prompt", n:"05", t:"一段 Prompt 搭配任意模型即可擴展認知", ready:0},
+  {id:"scene-06-llm-agent", n:"06", t:"同一句「幫我下載影片」，AI 到底能做到哪一步？", ready:0},
+  {id:"scene-07-agent-parts", n:"07", t:"Agent 是怎麼被組裝起來的？", ready:0},
+  {id:"scene-08-agent-ready-world", n:"08", t:"世界正在替 Agent 開門，也同時加上門禁", ready:0},
+  {id:"scene-09-agent-or-not", n:"09", t:"AI Agent 很強，但你的工作到底需要多少 AI？", ready:0},
+  {id:"scene-10-ai-cognition-map", n:"10", t:"建立一張自己的 AI 認知地圖", ready:0},
+  {id:"scene-11-colony-counter", n:"11", t:"案例一：個人用專案＋演算法", ready:0},
+  {id:"scene-12-meeting-records", n:"12", t:"案例二：團體用專案＋模型", ready:0},
+  {id:"scene-13-satellite-remote-sensing", n:"13", t:"案例三：衛星遙測農業監測", ready:0},
+  {id:"scene-14-case-wall", n:"14", t:"看看大家的創意，找找認知之外的解法", ready:0},
+  {id:"scene-15-boundaries", n:"15", t:"AI 能做得越多，我們越需要守住邊界", ready:0},
+  {id:"scene-16-maturity", n:"16", t:"我希望大家站在開悟之坡的起點", ready:0}
+];
+
+var stage = document.getElementById("stage");
+
+/* 為尚未製作的頁建立佔位 section */
+SCENES.forEach(function(s){
+  if(document.getElementById(s.id)) return;
+  var el = document.createElement("section");
+  el.className = "scene todo";
+  el.id = s.id;
+  el.setAttribute("data-steps","0");
+  el.innerHTML = '<p class="eyebrow">Scene ' + s.n + '</p>' +
+                 '<p class="t">' + s.t + '</p>' +
+                 '<p class="m">尚未製作</p>';
+  stage.insertBefore(el, document.querySelector(".stage-foot"));
+});
+
+var idx = 0, step = 0;
+
+function scene(){ return document.getElementById(SCENES[idx].id); }
+function maxStep(){ return parseInt(scene().getAttribute("data-steps"),10) || 0; }
+
+function render(){
+  SCENES.forEach(function(s,i){
+    document.getElementById(s.id).classList.toggle("is-active", i === idx);
+  });
+  applySteps();
+  document.getElementById("foot-title").textContent = SCENES[idx].t;
+  document.getElementById("foot-num").textContent = SCENES[idx].n + " / 16";
+  document.getElementById("progress-bar").style.width =
+    ((idx + 1) / SCENES.length * 100) + "%";
+  if(location.hash.slice(1) !== SCENES[idx].id){
+    history.replaceState(null,"","#" + SCENES[idx].id);
+  }
+  renderNotes();
+}
+
+/* Scene 03 的分段揭露 */
+function applySteps(){
+  var sc = scene();
+  var roles = sc.querySelectorAll(".role");
+  var hots  = sc.querySelectorAll(".hot");
+  roles.forEach(function(r,i){
+    r.classList.toggle("is-on", i < step);
+    r.classList.toggle("is-cur", i === step - 1);
+  });
+  hots.forEach(function(h,i){
+    h.classList.toggle("is-on", i < step);
+    h.classList.toggle("is-cur", i === step - 1);
+  });
+  var close = sc.querySelector(".flower-close");
+  if(close) close.classList.toggle("is-on", step >= maxStep());
+}
+
+function next(){
+  if(step < maxStep()){ step++; applySteps(); return; }
+  if(idx < SCENES.length - 1){ idx++; step = 0; render(); }
+}
+function prev(){
+  if(step > 0){ step--; applySteps(); return; }
+  if(idx > 0){ idx--; step = 0; render(); }
+}
+function goTo(i){ idx = i; step = 0; render(); }
+
+/* 點角色 = 直接跳到該角色 */
+document.querySelectorAll(".role button").forEach(function(b){
+  b.addEventListener("click", function(){
+    step = parseInt(b.parentNode.getAttribute("data-role"),10) + 1;
+    applySteps();
+  });
+});
+
+/* 總覽 */
+var ov = document.getElementById("overview");
+var ovGrid = document.getElementById("ov-grid");
+SCENES.forEach(function(s,i){
+  var b = document.createElement("button");
+  b.type = "button"; b.className = "ov-item";
+  b.setAttribute("data-ready", s.ready);
+  b.innerHTML = '<span class="n">' + s.n + '</span><span class="t">' + s.t + '</span>';
+  b.addEventListener("click", function(){ ov.hidden = true; goTo(i); });
+  ovGrid.appendChild(b);
+});
+function toggleOverview(){
+  ov.hidden = !ov.hidden;
+  if(!ov.hidden) ovGrid.children[idx].focus();
+}
+
+/* 講者備忘 */
+var notesEl = document.getElementById("notes");
+function renderNotes(){
+  var s = SCENES[idx];
+  document.getElementById("notes-title").textContent = s.n + "　" + s.t;
+  var body = document.getElementById("notes-body");
+  body.innerHTML = "";
+  if(s.notes && s.notes.length){
+    var ol = document.createElement("ol");
+    s.notes.forEach(function(t){
+      var li = document.createElement("li"); li.textContent = t; ol.appendChild(li);
+    });
+    body.appendChild(ol);
+  } else {
+    body.textContent = "（此頁尚未撰寫備忘）";
+  }
+}
+
+document.querySelectorAll(".helpbar button").forEach(function(b){
+  b.addEventListener("click", function(){
+    var c = b.getAttribute("data-cmd");
+    if(c === "overview") toggleOverview();
+    if(c === "notes") notesEl.hidden = !notesEl.hidden;
+    if(c === "reset"){ step = 0; applySteps(); }
+  });
+});
+
+document.addEventListener("keydown", function(e){
+  if(e.key === "Escape"){ ov.hidden = true; notesEl.hidden = true; return; }
+  if(!ov.hidden && (e.key === "Enter" || e.key === " ")) return;
+  switch(e.key){
+    case "ArrowRight": case "PageDown": case " ": case "Enter":
+      e.preventDefault(); next(); break;
+    case "ArrowLeft": case "PageUp":
+      e.preventDefault(); prev(); break;
+    case "Home": e.preventDefault(); goTo(0); break;
+    case "End": e.preventDefault(); goTo(SCENES.length - 1); break;
+    case "o": case "O": toggleOverview(); break;
+    case "n": case "N": notesEl.hidden = !notesEl.hidden; break;
+    case "r": case "R": step = 0; applySteps(); break;
+  }
+});
+
+/* 觸控：左右滑動翻頁 */
+var tx = null;
+stage.addEventListener("touchstart", function(e){ tx = e.touches[0].clientX; }, {passive:true});
+stage.addEventListener("touchend", function(e){
+  if(tx === null) return;
+  var d = e.changedTouches[0].clientX - tx;
+  if(Math.abs(d) > 50){ d < 0 ? next() : prev(); }
+  tx = null;
+}, {passive:true});
+
+/* 開場定位 */
+var h = location.hash.slice(1);
+var found = SCENES.findIndex(function(s){ return s.id === h; });
+if(found >= 0) idx = found;
+window.addEventListener("hashchange", function(){
+  var i = SCENES.findIndex(function(s){ return s.id === location.hash.slice(1); });
+  if(i >= 0 && i !== idx) goTo(i);
+});
+
+render();
+</script>
+</body>
+</html>
