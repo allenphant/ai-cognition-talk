@@ -1,0 +1,2363 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AI 專案座標分類器 Demo</title>
+  <style>
+    :root {
+      --paper: #f3efe6;
+      --paper-raised: #f8f5ee;
+      --paper-deep: #e9e2d6;
+      --ink: #191715;
+      --ink-soft: #3e3934;
+      --muted: #716960;
+      --brick: #b45f3c;
+      --brick-dark: #87442f;
+      --brick-pale: #e2c6b5;
+      --taupe-line: #9a9083;
+      --taupe-light: #cec5b8;
+      --taupe-faint: #e2dbd0;
+      --point-white: #f8f5ee;
+      --point-mid: #9b948c;
+      --point-dark: #393531;
+      --focus-ring: #b45f3c;
+      --sensitive-red: #a34436;
+      --sensitive-red-soft: #c98578;
+      --display: "Noto Serif TC", "Source Han Serif TC", "Songti TC", "PMingLiU", serif;
+      --body: "Noto Sans TC", "Source Han Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      min-height: 100%;
+      color: var(--ink);
+      background: var(--paper);
+      font-family: var(--body);
+    }
+
+    button, input { font: inherit; }
+
+    button:focus-visible,
+    [tabindex]:focus-visible {
+      outline: 2px solid var(--focus-ring);
+      outline-offset: 3px;
+    }
+
+    .app {
+      min-height: 100vh;
+      padding: 28px 32px 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .topbar {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: end;
+      gap: 24px;
+      border-bottom: 1px solid var(--taupe-line);
+      padding-bottom: 14px;
+    }
+
+    .eyebrow {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      color: var(--brick-dark);
+      font-size: 13px;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .eyebrow-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--brick);
+      flex: 0 0 auto;
+    }
+
+    h1 {
+      font-family: var(--display);
+      font-size: clamp(30px, 4vw, 58px);
+      font-weight: 600;
+      letter-spacing: .01em;
+      line-height: 1.05;
+      margin: 0;
+    }
+
+    .subtitle {
+      margin: 10px 0 0;
+      max-width: 760px;
+      color: var(--ink-soft);
+      font-size: 16px;
+      line-height: 1.7;
+    }
+
+    .page-number {
+      font-family: var(--display);
+      font-size: 18px;
+      white-space: nowrap;
+      color: var(--ink-soft);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .page-number::before {
+      content: "";
+      width: 42px;
+      border-top: 1px solid var(--taupe-line);
+    }
+
+    .workspace {
+      flex: 0 0 auto;
+      height: clamp(620px, calc(100vh - 190px), 770px);
+      min-height: 620px;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 300px;
+      align-items: stretch;
+      gap: 20px;
+    }
+
+    .map-panel,
+    .tray-panel {
+      min-width: 0;
+    }
+
+    .map-panel {
+      position: relative;
+      height: 100%;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .map-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      min-height: 38px;
+    }
+
+    .map-header h2,
+    .tray-panel h2 {
+      font-family: var(--display);
+      font-weight: 600;
+      font-size: 20px;
+      margin: 0;
+    }
+
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 7px;
+    }
+
+    .tool-button {
+      border: 1px solid var(--taupe-line);
+      color: var(--ink);
+      background: transparent;
+      padding: 7px 10px;
+      cursor: pointer;
+      border-radius: 2px;
+      transition: background-color 160ms ease, color 160ms ease, border-color 160ms ease;
+    }
+
+    .tool-button:hover {
+      border-color: var(--brick);
+      color: var(--brick-dark);
+      background: var(--paper-raised);
+    }
+
+    .tool-button[aria-pressed="true"] {
+      color: var(--brick-dark);
+      border-color: var(--brick);
+      box-shadow: inset 0 -2px 0 var(--brick);
+    }
+
+    .plot-wrap {
+      position: relative;
+      flex: 1 1 auto;
+      min-height: 0;
+      background: var(--paper-raised);
+      border: 1px solid var(--taupe-line);
+      overflow: hidden;
+    }
+
+    .plot {
+      position: absolute;
+      inset: 42px 28px 82px 190px;
+      user-select: none;
+      touch-action: none;
+    }
+
+    .x-band {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      border-left: 1px solid var(--taupe-faint);
+    }
+
+    .x-band:last-of-type {
+      border-right: 1px solid var(--taupe-faint);
+    }
+
+    .x-band.active {
+      background: rgba(180, 95, 60, .055);
+    }
+
+    .x-band-label {
+      position: absolute;
+      bottom: -58px;
+      width: 25%;
+      min-width: 0;
+      text-align: center;
+      color: var(--ink-soft);
+      font-size: 12px;
+      line-height: 1.4;
+      padding: 0 10px;
+      word-break: keep-all;
+      overflow-wrap: normal;
+      white-space: normal;
+    }
+
+    .x-band-label strong {
+      display: block;
+      color: var(--ink);
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+
+    .x-band-label span {
+      display: block;
+      color: var(--muted);
+      font-size: 10px;
+    }
+
+    .y-grid {
+      position: absolute;
+      left: 0;
+      right: 0;
+      border-top: 1px solid var(--taupe-faint);
+    }
+
+    .y-label {
+      position: absolute;
+      left: -145px;
+      width: 126px;
+      transform: translateY(50%);
+      text-align: right;
+      color: var(--ink-soft);
+      font-size: 11px;
+      line-height: 1.4;
+      word-break: keep-all;
+      overflow-wrap: normal;
+      white-space: normal;
+    }
+
+    .y-label strong {
+      display: block;
+      color: var(--ink);
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+
+    .y-label span {
+      display: block;
+      color: var(--muted);
+      font-size: 9px;
+    }
+
+    .axis-x {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      border-top: 1.5px solid var(--ink);
+    }
+
+    .axis-y {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      border-left: 1.5px solid var(--ink);
+    }
+
+    .axis-title-x {
+      position: absolute;
+      top: 12px;
+      left: 190px;
+      right: 28px;
+      text-align: center;
+      font-family: var(--display);
+      font-size: 14px;
+      color: var(--ink);
+      word-break: keep-all;
+    }
+
+    .axis-title-y {
+      position: absolute;
+      left: 14px;
+      top: 42px;
+      bottom: 82px;
+      width: 22px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      writing-mode: vertical-rl;
+      text-orientation: upright;
+      white-space: nowrap;
+      font-family: var(--display);
+      font-size: 14px;
+      line-height: 1;
+      color: var(--ink);
+    }
+
+    .guide-v,
+    .guide-h {
+      position: absolute;
+      display: none;
+      pointer-events: none;
+      z-index: 9;
+    }
+
+    .guide-v {
+      top: 0;
+      bottom: 0;
+      border-left: 1px dashed var(--brick);
+    }
+
+    .guide-h {
+      left: 0;
+      right: 0;
+      border-top: 1px dashed var(--brick);
+    }
+
+    .candidate-label {
+      position: absolute;
+      z-index: 12;
+      display: none;
+      pointer-events: none;
+      color: var(--brick-dark);
+      background: var(--paper-raised);
+      border: 1px solid var(--brick-pale);
+      padding: 5px 7px;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .target {
+      position: absolute;
+      width: 22px;
+      height: 22px;
+      transform: translate(-50%, -50%);
+      border: 1px dashed var(--brick);
+      border-radius: 50%;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 160ms ease;
+    }
+
+    .show-targets .target { opacity: .45; }
+
+    .project-point {
+      position: absolute;
+      transform: translate(-50%, -50%);
+      border-radius: 50%;
+      width: var(--size, 22px);
+      height: var(--size, 22px);
+      cursor: grab;
+      z-index: 15;
+      touch-action: none;
+      transition: box-shadow 160ms ease, border-color 160ms ease;
+      color: var(--ink);
+      display: grid;
+      place-items: center;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .project-point:active { cursor: grabbing; }
+
+    .project-point.drag-source-hidden {
+      opacity: 0;
+    }
+
+    .drag-point-preview {
+      display: none;
+      pointer-events: none;
+      cursor: grabbing;
+      z-index: 40;
+      box-shadow: 0 0 0 4px var(--brick-pale);
+    }
+
+    .drag-point-preview.visible {
+      display: grid;
+    }
+
+    .project-point:hover,
+    .project-point.is-selected {
+      box-shadow: 0 0 0 3px var(--brick-pale);
+      border-color: var(--brick);
+      z-index: 22;
+    }
+
+    .dev-human {
+      background: var(--point-white);
+      border: 1.5px solid var(--ink);
+    }
+
+    .dev-chat {
+      background: var(--point-mid);
+      border: 1.5px solid var(--ink);
+    }
+
+    .dev-agent {
+      background: var(--point-dark);
+      border: 1.5px solid var(--paper-raised);
+      color: var(--paper-raised);
+    }
+
+    .dev-unknown {
+      background: var(--paper-raised);
+      border: 1.5px dashed var(--ink-soft);
+    }
+
+    .sensitivity-high::before,
+    .sensitivity-very-high::before {
+      content: "";
+      position: absolute;
+      inset: -5px;
+      border-radius: 50%;
+      border: 1.5px solid var(--sensitive-red);
+      pointer-events: none;
+    }
+
+    .sensitivity-very-high::after {
+      content: "";
+      position: absolute;
+      inset: -9px;
+      border-radius: 50%;
+      border: 1px solid var(--sensitive-red-soft);
+      pointer-events: none;
+    }
+
+    .point-label {
+      position: absolute;
+      z-index: 18;
+      transform: translate(-50%, -145%);
+      background: var(--paper-raised);
+      border-bottom: 1px solid var(--taupe-line);
+      padding: 3px 4px;
+      font-size: 11px;
+      color: var(--ink);
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 220ms ease;
+      white-space: nowrap;
+    }
+
+    .point-label.visible { opacity: 1; }
+
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px 18px;
+      align-items: center;
+      border-top: 1px solid var(--taupe-line);
+      padding-top: 10px;
+      font-size: 12px;
+      color: var(--ink-soft);
+    }
+
+    .legend-title {
+      font-family: var(--display);
+      color: var(--ink);
+    }
+
+    .legend-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .legend-dot {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      flex: 0 0 auto;
+    }
+
+    .legend-risk {
+      width: 18px;
+      height: 18px;
+      border: 1.5px solid var(--sensitive-red);
+      border-radius: 50%;
+      position: relative;
+    }
+
+    .legend-risk::after {
+      content: "";
+      position: absolute;
+      inset: -4px;
+      border: 1px solid var(--sensitive-red-soft);
+      border-radius: 50%;
+    }
+
+
+    .tray-panel {
+      height: 100%;
+      min-height: 0;
+      overflow: hidden;
+      border-left: 1px solid var(--taupe-line);
+      padding-left: 18px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .tray-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .tray-utilities {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 6px 10px;
+      margin: -4px 0 10px;
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .text-button {
+      border: 0;
+      border-bottom: 1px solid var(--taupe-line);
+      background: transparent;
+      color: var(--ink-soft);
+      padding: 2px 0;
+      cursor: pointer;
+    }
+
+    .text-button:hover {
+      color: var(--brick-dark);
+      border-bottom-color: var(--brick);
+    }
+
+    .storage-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .storage-status::before {
+      content: "";
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--taupe-line);
+    }
+
+    .storage-status.is-on::before {
+      background: var(--brick);
+    }
+
+    .tag-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      margin-top: 6px;
+    }
+
+    .tag {
+      display: inline-block;
+      border: 1px solid var(--taupe-light);
+      padding: 2px 5px;
+      color: var(--ink-soft);
+      background: transparent;
+      font-size: 10px;
+      line-height: 1.3;
+    }
+
+    .dialog {
+      width: min(760px, calc(100vw - 32px));
+      height: min(720px, calc(100dvh - 40px));
+      max-height: calc(100dvh - 40px);
+      overflow: hidden;
+      border: 1px solid var(--taupe-line);
+      background: var(--paper-raised);
+      color: var(--ink);
+      padding: 0;
+    }
+
+    .dialog::backdrop {
+      background: rgba(25, 23, 21, .34);
+    }
+
+    .dialog-form {
+      height: 100%;
+      min-height: 0;
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr) auto;
+      padding: 0;
+    }
+
+    .dialog-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: start;
+      gap: 18px;
+      padding: 20px 22px 14px;
+      border-bottom: 1px solid var(--taupe-line);
+      background: var(--paper-raised);
+    }
+
+    .dialog-body {
+      min-height: 0;
+      overflow: auto;
+      padding: 0 22px 18px;
+    }
+
+    .dialog-header h2 {
+      margin: 0;
+      font-family: var(--display);
+      font-size: 25px;
+      font-weight: 600;
+    }
+
+    .dialog-header p {
+      margin: 5px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.55;
+    }
+
+    .dialog-close {
+      border: 0;
+      background: transparent;
+      color: var(--ink);
+      cursor: pointer;
+      font-size: 20px;
+      line-height: 1;
+      padding: 2px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px 16px;
+      margin-top: 16px;
+      align-items: start;
+    }
+
+    .form-field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      min-width: 0;
+    }
+
+    .form-field.full {
+      grid-column: 1 / -1;
+    }
+
+    .form-field label,
+    .form-field legend {
+      color: var(--ink-soft);
+      font-size: 12px;
+    }
+
+    .form-field input,
+    .form-field select,
+    .form-field textarea {
+      width: 100%;
+      border: 1px solid var(--taupe-line);
+      background: var(--paper);
+      color: var(--ink);
+      padding: 9px 10px;
+      border-radius: 0;
+    }
+
+    input[type="checkbox"] {
+      accent-color: var(--brick);
+    }
+
+    .tag-option input[type="checkbox"] {
+      appearance: none;
+      inline-size: 15px;
+      block-size: 15px;
+      border: 1px solid var(--taupe-line);
+      background: var(--paper);
+      display: inline-grid;
+      place-content: center;
+    }
+
+    .tag-option input[type="checkbox"]::before {
+      content: "";
+      inline-size: 7px;
+      block-size: 7px;
+      transform: scale(0);
+      transition: transform 120ms ease;
+      background: var(--brick);
+    }
+
+    .tag-option input[type="checkbox"]:checked {
+      border-color: var(--brick-dark);
+      background: var(--paper-raised);
+    }
+
+    .tag-option input[type="checkbox"]:checked::before {
+      transform: scale(1);
+    }
+
+    .tag-option input[type="checkbox"]:focus-visible {
+      outline: 2px solid var(--focus-ring);
+      outline-offset: 2px;
+    }
+
+    .form-field textarea {
+      min-height: 78px;
+      resize: vertical;
+    }
+
+    .tag-options {
+      display: block;
+      border: 0;
+      padding: 0;
+      margin: 0;
+      min-width: 0;
+    }
+
+    .tag-options legend {
+      margin-bottom: 8px;
+    }
+
+    .tag-checkbox-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(110px, 1fr));
+      gap: 9px 14px;
+    }
+
+    .tag-option {
+      display: inline-flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 7px;
+      min-width: 0;
+      color: var(--ink-soft);
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .tag-option input[type="checkbox"] {
+      width: 15px;
+      height: 15px;
+      flex: 0 0 auto;
+      margin: 0;
+      padding: 0;
+    }
+
+    .dialog-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      margin: 0;
+      padding: 14px 22px 18px;
+      border-top: 1px solid var(--taupe-line);
+      background: var(--paper-raised);
+    }
+
+    .primary-button {
+      border: 1px solid var(--brick);
+      background: var(--brick);
+      color: var(--paper-raised);
+      padding: 8px 13px;
+      cursor: pointer;
+    }
+
+    .secondary-button,
+    .danger-button {
+      border: 1px solid var(--taupe-line);
+      background: transparent;
+      color: var(--ink);
+      padding: 8px 13px;
+      cursor: pointer;
+    }
+
+    .danger-button {
+      border-color: var(--sensitive-red);
+      color: var(--sensitive-red);
+    }
+
+    .detail-actions {
+      margin-top: 10px;
+    }
+
+    .tray-intro {
+      margin: 6px 0 14px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
+    .tray {
+      flex: 1 1 auto;
+      min-height: 120px;
+      overflow: auto;
+      padding-right: 4px;
+    }
+
+    .tray.drop-active {
+      background: rgba(180, 95, 60, .045);
+      outline: 1px dashed var(--brick);
+      outline-offset: 4px;
+    }
+
+    .project-group {
+      margin-bottom: 20px;
+    }
+
+    .group-title {
+      margin: 0 0 8px;
+      color: var(--brick-dark);
+      font-size: 12px;
+      letter-spacing: .08em;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .group-title::after {
+      content: "";
+      flex: 1;
+      border-top: 1px solid var(--taupe-light);
+    }
+
+    .project-card {
+      width: 100%;
+      text-align: left;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      gap: 8px;
+      background: transparent;
+      color: var(--ink);
+      border: 0;
+      border-bottom: 1px solid var(--taupe-light);
+      padding: 9px 4px 9px 2px;
+      cursor: grab;
+      touch-action: none;
+    }
+
+    .project-card:active { cursor: grabbing; }
+
+    .project-card:hover,
+    .project-card.is-active {
+      color: var(--brick-dark);
+      border-bottom-color: var(--brick);
+      background: var(--paper-raised);
+    }
+
+    .project-card[hidden] { display: none; }
+
+    .card-title {
+      font-size: 14px;
+      line-height: 1.35;
+    }
+
+    .card-mark {
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+    }
+
+    .placed-list {
+      flex: 0 0 auto;
+      max-height: 116px;
+      overflow: auto;
+      border-top: 1px solid var(--taupe-line);
+      padding-top: 10px;
+      margin-top: 8px;
+      min-height: 62px;
+    }
+
+    .placed-title {
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 7px;
+    }
+
+    .placed-items {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+    }
+
+    .placed-chip {
+      border: 1px solid var(--taupe-light);
+      background: transparent;
+      color: var(--ink-soft);
+      padding: 3px 6px;
+      font-size: 11px;
+      cursor: pointer;
+    }
+
+    .details {
+      flex: 0 0 190px;
+      min-height: 0;
+      overflow: auto;
+      margin-top: 12px;
+      padding-top: 12px;
+      padding-right: 4px;
+      border-top: 1px solid var(--taupe-line);
+    }
+
+    .details-kicker {
+      color: var(--brick-dark);
+      font-size: 11px;
+      letter-spacing: .08em;
+      margin-bottom: 5px;
+    }
+
+    .details h3 {
+      font-family: var(--display);
+      font-size: 18px;
+      margin: 0 0 7px;
+      font-weight: 600;
+    }
+
+    .details p {
+      margin: 0 0 8px;
+      color: var(--ink-soft);
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
+    .details dl {
+      display: grid;
+      grid-template-columns: 74px 1fr;
+      gap: 4px 7px;
+      margin: 0;
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    .details dt { color: var(--muted); }
+    .details dd { margin: 0; }
+
+    .tooltip {
+      position: fixed;
+      z-index: 1000;
+      width: min(300px, calc(100vw - 24px));
+      background: var(--paper-raised);
+      color: var(--ink);
+      border: 1px solid var(--taupe-line);
+      padding: 11px 12px;
+      display: none;
+      pointer-events: none;
+    }
+
+    .tooltip.visible { display: block; }
+
+    .tooltip-title {
+      font-family: var(--display);
+      font-size: 17px;
+      margin-bottom: 5px;
+    }
+
+    .tooltip p {
+      margin: 0 0 6px;
+      color: var(--ink-soft);
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    .tooltip-row {
+      display: grid;
+      grid-template-columns: 64px 1fr;
+      gap: 6px;
+      margin-top: 3px;
+      font-size: 11px;
+    }
+
+    .tooltip-key { color: var(--muted); }
+
+    .drag-ghost {
+      position: fixed;
+      z-index: 1200;
+      pointer-events: none;
+      background: rgba(248, 245, 238, .92);
+      border: 1px solid var(--brick);
+      color: var(--brick-dark);
+      padding: 7px 10px;
+      font-size: 13px;
+      transform: translate(10px, 10px);
+      display: none;
+    }
+
+    .drag-ghost.visible { display: block; }
+
+    .status {
+      min-height: 18px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    @media (max-width: 900px) {
+      .app { padding: 20px 18px; }
+
+      .workspace {
+        height: auto;
+        min-height: 0;
+        grid-template-columns: 1fr;
+      }
+
+      .map-panel,
+      .tray-panel {
+        height: auto;
+        overflow: visible;
+      }
+
+      .plot-wrap {
+        flex: none;
+        height: 590px;
+        min-height: 590px;
+      }
+
+      .tray-panel {
+        border-left: 0;
+        border-top: 1px solid var(--taupe-line);
+        padding-left: 0;
+        padding-top: 16px;
+      }
+
+      .tray {
+        max-height: none;
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 14px;
+      }
+
+      .placed-list,
+      .details {
+        max-height: none;
+        overflow: visible;
+        flex: none;
+      }
+
+      .project-group { margin-bottom: 0; }
+    }
+
+    @media (max-width: 560px) {
+      .topbar { grid-template-columns: 1fr; }
+      .form-grid { grid-template-columns: 1fr; }
+      .tag-checkbox-grid { grid-template-columns: repeat(2, minmax(110px, 1fr)); }
+      .page-number { justify-self: start; }
+      .tray { grid-template-columns: 1fr; }
+      .plot { inset: 48px 18px 92px 126px; }
+      .axis-title-x { top: 14px; left: 126px; right: 18px; }
+      .axis-title-y { left: 4px; top: 48px; bottom: 92px; }
+      .y-label { left: -96px; width: 82px; font-size: 9px; }
+      .y-label span { font-size: 8px; }
+      .x-band-label { bottom: -66px; font-size: 9px; padding: 0 4px; }
+      .x-band-label span { font-size: 8px; }
+      .toolbar { justify-content: flex-start; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 1ms !important;
+        transition-duration: 1ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header class="topbar">
+      <div>
+        <div class="eyebrow"><span class="eyebrow-dot"></span>AI PROJECT MAP / INTERACTIVE DEMO</div>
+        <h1>你想要的「AI」，到底是哪一種？</h1>
+        <p class="subtitle">
+          把右側專案拖進圖上：橫向表示成品運行時的主要決策機制；縱向表示這個專案需要維護到哪一層技術架構；點的灰階表示開發時使用 AI 的方式。
+        </p>
+      </div>
+      <div class="page-number">12 / 16</div>
+    </header>
+
+    <section class="workspace">
+      <section class="map-panel" aria-labelledby="map-title">
+        <div class="map-header">
+          <h2 id="map-title">專案分類工作台</h2>
+          <div class="toolbar" aria-label="座標控制">
+            <button class="tool-button" id="undoBtn" type="button">復原</button>
+            <button class="tool-button" id="resetBtn" type="button">重設</button>
+            <button class="tool-button" id="snapBtn" type="button" aria-pressed="false">吸附欄位：關</button>
+            <button class="tool-button" id="targetsBtn" type="button" aria-pressed="false">建議位置</button>
+            <button class="tool-button" id="placeAllBtn" type="button">全部放入</button>
+          </div>
+        </div>
+
+        <div class="plot-wrap" id="plotWrap">
+          <div class="axis-title-y">系統需要維護到哪一層技術架構？</div>
+          <div class="axis-title-x">系統在運行時如何決定下一步？</div>
+
+          <div class="plot" id="plot" role="application" aria-label="AI 專案二維座標">
+            <div class="axis-x"></div>
+            <div class="axis-y"></div>
+
+            <div class="x-band" data-band="0" style="left:0%; width:25%;"></div>
+            <div class="x-band" data-band="1" style="left:25%; width:25%;"></div>
+            <div class="x-band" data-band="2" style="left:50%; width:25%;"></div>
+            <div class="x-band" data-band="3" style="left:75%; width:25%;"></div>
+
+            <div class="x-band-label" style="left:0%;">
+              <strong>條件規則／固定流程</strong>
+              <span>if–else、閾值、預設步驟</span>
+            </div>
+            <div class="x-band-label" style="left:25%;">
+              <strong>搜尋、最佳化／傳統演算法</strong>
+              <span>求解、排程、影像處理</span>
+            </div>
+            <div class="x-band-label" style="left:50%;">
+              <strong>從資料學習的模型</strong>
+              <span>辨識、預測、翻譯、生成</span>
+            </div>
+            <div class="x-band-label" style="left:75%;">
+              <strong>Agentic 控制迴圈</strong>
+              <span>規劃、工具使用、觀察與重試</span>
+            </div>
+
+            <div class="y-grid" style="bottom:0%;"></div>
+            <div class="y-grid" style="bottom:25%;"></div>
+            <div class="y-grid" style="bottom:50%;"></div>
+            <div class="y-grid" style="bottom:75%;"></div>
+            <div class="y-grid" style="bottom:100%;"></div>
+
+            <div class="y-label" style="bottom:12.5%;">
+              <strong>單機／Script／CLI</strong>
+              <span>腳本、Shell、Notebook、平台設定</span>
+            </div>
+            <div class="y-label" style="bottom:37.5%;">
+              <strong>前端介面</strong>
+              <span>Browser App、HTML／CSS／JS</span>
+            </div>
+            <div class="y-label" style="bottom:62.5%;">
+              <strong>後端服務／Server</strong>
+              <span>API、Worker、Server process</span>
+            </div>
+            <div class="y-label" style="bottom:87.5%;">
+              <strong>資料庫／持久化層</strong>
+              <span>儲存、查詢、同步、長期狀態</span>
+            </div>
+
+            <div class="guide-v" id="guideV"></div>
+            <div class="guide-h" id="guideH"></div>
+            <div class="candidate-label" id="candidateLabel"></div>
+            <div class="project-point drag-point-preview" id="dragPointPreview" aria-hidden="true"></div>
+          </div>
+        </div>
+
+        <div class="legend" aria-label="圖例">
+          <span class="legend-title">縱軸＝架構層級；點大小固定</span>
+          <span class="legend-title">開發方式</span>
+          <span class="legend-item"><span class="legend-dot dev-human"></span>未使用生成式 AI</span>
+          <span class="legend-item"><span class="legend-dot dev-chat"></span>對話式 AI 協助</span>
+          <span class="legend-item"><span class="legend-dot dev-agent"></span>AI Agent 協助</span>
+          <span class="legend-item"><span class="legend-dot dev-unknown">?</span>未公開／待查證</span>
+          <span class="legend-item"><span class="legend-risk"></span>紅色外環＝敏感資料</span>
+        </div>
+        <div class="status" id="status" aria-live="polite"></div>
+      </section>
+
+      <aside class="tray-panel" aria-labelledby="tray-title">
+        <div class="tray-heading">
+          <h2 id="tray-title">等待分類的專案</h2>
+          <button class="tool-button" id="addProjectBtn" type="button">＋ 新增專案</button>
+        </div>
+        <p class="tray-intro">拖曳標籤到左側自由放置；需要整齊分類時，可開啟「吸附欄位」。也可按 Enter 放到建議位置。</p>
+        <div class="tray-utilities">
+          <span class="storage-status" id="storageStatus">本機保存：檢查中</span>
+          <button class="text-button" id="toggleStorageBtn" type="button">切換</button>
+          <button class="text-button" id="exportBtn" type="button">匯出 JSON</button>
+          <button class="text-button" id="clearStorageBtn" type="button">清除本機資料</button>
+        </div>
+        <div class="tray" id="tray"></div>
+
+        <div class="placed-list">
+          <div class="placed-title">已放置</div>
+          <div class="placed-items" id="placedItems"></div>
+        </div>
+
+        <section class="details" id="details" aria-live="polite">
+          <div class="details-kicker">PROJECT NOTE</div>
+          <h3>選一個專案</h3>
+          <p>Hover 可快速預覽；點擊或按 Enter 查看完整說明。</p>
+        </section>
+      </aside>
+    </section>
+  </main>
+
+
+  <dialog class="dialog" id="addProjectDialog">
+    <form class="dialog-form" id="addProjectForm" method="dialog">
+      <div class="dialog-header">
+        <div>
+          <h2>現場新增專案</h2>
+          <p>選擇屬性後，專案會先出現在右側等待區，再由你拖到座標上。</p>
+        </div>
+        <button class="dialog-close" id="closeDialogBtn" type="button" aria-label="關閉">×</button>
+      </div>
+
+      <div class="dialog-body" id="dialogBody">
+        <div class="form-grid">
+        <div class="form-field">
+          <label for="projectTitle">專案名稱 *</label>
+          <input id="projectTitle" name="title" required maxlength="60" />
+        </div>
+
+        <div class="form-field">
+          <label for="projectGroup">分類</label>
+          <select id="projectGroup" name="group">
+            <option value="現場新增">現場新增</option>
+            <option value="我的專案">我的專案</option>
+            <option value="生活／公部門">生活／公部門</option>
+            <option value="Agent／外部案例">Agent／外部案例</option>
+          </select>
+        </div>
+
+        <div class="form-field full">
+          <label for="projectDescription">一句話簡介 *</label>
+          <textarea id="projectDescription" name="description" required maxlength="240"></textarea>
+        </div>
+
+        <div class="form-field">
+          <label for="projectRuntime">運行時決策機制</label>
+          <select id="projectRuntime" name="runtime">
+            <option value="rule">條件規則／固定流程</option>
+            <option value="algorithm">搜尋、最佳化／傳統演算法</option>
+            <option value="model">從資料學習的模型</option>
+            <option value="agent">Agentic 控制迴圈</option>
+          </select>
+        </div>
+
+        <div class="form-field">
+          <label for="projectArchitecture">架構層級（Y 軸）</label>
+          <select id="projectArchitecture" name="architecture">
+            <option value="script">單機／Script／CLI</option>
+            <option value="frontend">前端介面／Browser App</option>
+            <option value="backend">後端服務／Server</option>
+            <option value="database">資料庫／持久化層</option>
+          </select>
+        </div>
+
+        <div class="form-field">
+          <label for="projectExternal">外部作用（額外 Metadata）</label>
+          <select id="projectExternal" name="external">
+            <option value="closed">封閉式輸入輸出</option>
+            <option value="read">讀取外部資料</option>
+            <option value="write">寫入／執行／改變外部狀態</option>
+          </select>
+        </div>
+
+        <div class="form-field">
+          <label for="projectDev">開發時 AI 協助</label>
+          <select id="projectDev" name="dev">
+            <option value="human">未使用生成式 AI</option>
+            <option value="chat">對話式 AI 協助</option>
+            <option value="agent">AI Agent 協助</option>
+            <option value="unknown">未公開／待查證</option>
+          </select>
+        </div>
+
+        <div class="form-field">
+          <label for="projectSensitivity">資料敏感度</label>
+          <select id="projectSensitivity" name="sensitivity">
+            <option value="low">一般／公開資料</option>
+            <option value="high">敏感資料</option>
+            <option value="very-high">高度敏感資料</option>
+          </select>
+        </div>
+
+        <fieldset class="form-field full tag-options">
+          <legend>Tags（可複選）</legend>
+          <div class="tag-checkbox-grid">
+            <label class="tag-option"><input type="checkbox" name="tags" value="文字" /><span>文字</span></label>
+            <label class="tag-option"><input type="checkbox" name="tags" value="影像" /><span>影像</span></label>
+            <label class="tag-option"><input type="checkbox" name="tags" value="語音" /><span>語音</span></label>
+            <label class="tag-option"><input type="checkbox" name="tags" value="感測器" /><span>感測器</span></label>
+            <label class="tag-option"><input type="checkbox" name="tags" value="API" /><span>API</span></label>
+            <label class="tag-option"><input type="checkbox" name="tags" value="資料庫" /><span>資料庫</span></label>
+            <label class="tag-option"><input type="checkbox" name="tags" value="健康" /><span>健康</span></label>
+            <label class="tag-option"><input type="checkbox" name="tags" value="辦公流程" /><span>辦公流程</span></label>
+            <label class="tag-option"><input type="checkbox" name="tags" value="公共服務" /><span>公共服務</span></label>
+          </div>
+        </fieldset>
+        </div>
+      </div>
+
+      <div class="dialog-actions">
+        <button class="secondary-button" id="cancelAddBtn" type="button">取消</button>
+        <button class="primary-button" type="submit">建立專案字卡</button>
+      </div>
+    </form>
+  </dialog>
+
+  <div class="tooltip" id="tooltip" role="tooltip"></div>
+  <div class="drag-ghost" id="dragGhost"></div>
+
+  <script>
+    (() => {
+      "use strict";
+
+      const baseProjects = [
+        {
+          id: "colony-counter",
+          group: "我的專案",
+          title: "Colony Counter",
+          shortDescription: "純前端菌落計數工具；成品運行時不需要 LLM。",
+          runtime: "傳統影像演算法",
+          external: "只處理本機圖片並匯出結果",
+          dev: "chat",
+          devText: "對話式 AI 協助開發",
+          x: 0.38, y: 0.375,
+          architectureKey: "frontend",
+          architecture: "前端介面",
+          architectureNote: "純前端 Browser App；沒有自建後端或資料庫。",
+          sensitivity: "high",
+          complexity: 3,
+          tags: ["影像", "本機工具"],
+          why: "使用 adaptive thresholding、distance transform、local maxima 等演算法；不是單一 if–else，也不會自主規劃下一步。",
+          moves: "若改成 CLI 版會往下；若加入後端 API 會往上；若再保存專案、批次與歷史結果到資料庫，會移到最上層。"
+        },
+        {
+          id: "cp-sat",
+          group: "我的專案",
+          title: "CP-SAT 排班",
+          shortDescription: "把規則寫成限制，再搜尋可行且較好的班表。",
+          runtime: "搜尋／最佳化演算法",
+          external: "產生班表草稿；正式發布需人工核准",
+          dev: "unknown",
+          devText: "開發方式待確認",
+          x: 0.43, y: 0.125,
+          architectureKey: "script",
+          architecture: "單機／Script／CLI",
+          architectureNote: "暫以 solver script／CLI 版本分類；若現有專案已有 GUI 或 Web UI，可再上移。",
+          sensitivity: "high",
+          complexity: 4,
+          tags: ["最佳化", "排班"],
+          why: "它可能非常複雜，但複雜不等於機器學習。CP-SAT 是最佳化求解器，不是 LLM，也不是 Agent。",
+          moves: "目前暫以純 solver script 分類；若加入 Web UI、後端排班服務或歷史班表資料庫，Y 軸會逐層上移；若 Agent 自行決定放寬限制，X 軸才會向右。"
+        },
+        {
+          id: "hai",
+          group: "我的專案",
+          title: "HAI 年報流程",
+          shortDescription: "資料下載、清理、指標計算、圖表與輸出驗證的模組化流程。",
+          runtime: "固定 Workflow＋傳統程式",
+          external: "讀資料庫、寫入檔案與報表",
+          dev: "agent",
+          devText: "AI Agent 協助開發",
+          x: 0.22, y: 0.125,
+          architectureKey: "script",
+          architecture: "單機／Script／CLI",
+          architectureNote: "HAI 本身是 R／CLI pipeline；DW 是外部資料來源，不等於這個專案自己維護 Database layer。",
+          sensitivity: "very-high",
+          complexity: 4,
+          tags: ["資料庫", "辦公流程"],
+          why: "運行時主要依固定規則執行；Agent 參與的是重構、測試與文件化，而不是每次報表都自主決策。",
+          moves: "若未來替 HAI 加上 Web 前端、常駐後端服務或自己的持久化資料庫，Y 軸才會上移；若 Agent 開始自主修復與重跑，X 軸會往右。"
+        },
+        {
+          id: "name-demon",
+          group: "我的專案",
+          title: "Name the Demon",
+          shortDescription: "協助整理主觀經驗、搜尋研究詞彙與替代解釋。",
+          runtime: "Agentic 搜尋／研究",
+          external: "讀取公開研究，不寫入外部系統",
+          dev: "unknown",
+          devText: "原型開發方式尚未決定",
+          x: 0.88, y: 0.125,
+          architectureKey: "script",
+          architecture: "單機／Script／CLI／平台設定",
+          architectureNote: "若先做成 Gemini Gem，自己維護的部分主要是平台設定與 Prompt，沒有自建前後端。",
+          sensitivity: "very-high",
+          complexity: 3,
+          tags: ["文字", "健康", "研究"],
+          why: "它會規劃搜尋、比較來源並重新整理回答，所以在 Agent 區；但外部行動少，不代表健康內容錯誤的風險低。",
+          moves: "若仍是 Gemini Gem，維持在最下層；若包成網站會上移到前端；若加自建搜尋服務再上移到後端；若保存個人紀錄則進入資料庫層。",
+          warning: "不是診斷、治療或危機服務。"
+        },
+        {
+          id: "ai-elevator",
+          group: "生活／公部門",
+          title: "AI 電梯",
+          shortDescription: "紅外線偵測手指位置，停留夠久就觸發按鍵。",
+          runtime: "條件規則／閾值",
+          external: "直接控制實體設備",
+          dev: "unknown",
+          devText: "開發方式未公開",
+          x: 0.1, y: 0.125,
+          architectureKey: "script",
+          architecture: "單機／嵌入式邏輯",
+          architectureNote: "核心是感測器＋本地控制邏輯；不需要 Web 前後端。",
+          sensitivity: "low",
+          complexity: 1,
+          tags: ["感測器", "公共服務"],
+          why: "按照目前描述，它不需要模型或 Agent，但仍能直接改變實體世界。",
+          moves: "若只增加視覺辨識，主要是 X 軸往模型區移；只有加入網路服務或資料庫時，Y 軸才會上移。"
+        },
+        {
+          id: "tdx",
+          group: "生活／公部門",
+          title: "TDX 雪隧車道工具",
+          shortDescription: "讀取即時交通資料，再用規則或演算法提出車道建議。",
+          runtime: "條件規則／演算法",
+          external: "讀取公開即時 API",
+          dev: "unknown",
+          devText: "開發方式未公開",
+          x: 0.3, y: 0.375,
+          architectureKey: "frontend",
+          architecture: "前端介面",
+          architectureNote: "以瀏覽器前端讀取 TDX API 並呈現結果的代表性實作。",
+          sensitivity: "low",
+          complexity: 2,
+          tags: ["API", "公共服務"],
+          why: "AI 可能協助開發，但運行時可以完全依公開資料與固定規則完成。",
+          moves: "若改成純 CLI 工具可往下；若加入自建後端 proxy／cache 可上移；若保存歷史交通資料與使用紀錄則進入資料庫層。"
+        },
+        {
+          id: "speech-to-text",
+          group: "生活／公部門",
+          title: "語音轉文字",
+          shortDescription: "錄音輸入，輸出逐字稿。",
+          runtime: "從資料學習的模型",
+          external: "封閉式輸入輸出",
+          dev: "unknown",
+          devText: "依產品而定",
+          x: 0.64, y: 0.125,
+          architectureKey: "script",
+          architecture: "單機／Script／CLI",
+          architectureNote: "以單一模型／CLI 或本地程式作為代表性最小實作。",
+          sensitivity: "high",
+          complexity: 2,
+          tags: ["語音", "模型"],
+          why: "產品運行時使用模型，但輸入輸出固定，沒有持續規劃與工具選擇，因此不是 Agent。",
+          moves: "若包成 Browser UI 會上移到前端；若做成上傳／轉錄服務則進入後端；是否變成 Agent 則由 X 軸決定。"
+        },
+        {
+          id: "meeting-workflow",
+          group: "生活／公部門",
+          title: "會議紀錄 Workflow",
+          shortDescription: "語音辨識、講者分離、摘要、決議與固定格式輸出。",
+          runtime: "固定 Workflow＋多個模型",
+          external: "讀取錄音並產生文件",
+          dev: "unknown",
+          devText: "依產品而定",
+          x: 0.58, y: 0.625,
+          architectureKey: "backend",
+          architecture: "後端服務／Server",
+          architectureNote: "多模型處理流程通常需要一個服務端 pipeline／worker 執行。",
+          sensitivity: "very-high",
+          complexity: 3,
+          tags: ["語音", "辦公流程"],
+          why: "雖然使用多個模型，但步驟仍預先定義；多模型不等於 Agent。",
+          moves: "若只做本地批次腳本可往下；若加入前端上傳介面、後端處理服務或會議資料庫，Y 軸會逐層上移；是否自主決定下一步則由 X 軸判斷。"
+        },
+        {
+          id: "miyamoto",
+          group: "Agent／外部案例",
+          title: "宮本佳林診斷網站",
+          shortDescription: "以 Claude 與 Cursor 進行 Vibe Coding 的網站案例。",
+          runtime: "固定網頁邏輯",
+          external: "封閉式互動網站",
+          dev: "agent",
+          devText: "AI Agent 協助開發",
+          x: 0.14, y: 0.375,
+          architectureKey: "frontend",
+          architecture: "前端介面",
+          architectureNote: "公開作品以網站為主，代表性分類為前端產品。",
+          sensitivity: "low",
+          complexity: 1,
+          tags: ["網站", "Vibe Coding"],
+          why: "開發時使用具 Agent 能力的工具，但成品運行時未必需要模型或 Agent。",
+          moves: "若只是靜態網站維持前端層；若加入自建 API 或使用者資料保存，Y 軸才會往後端／資料庫移。"
+        },
+        {
+          id: "odysseus",
+          group: "Agent／外部案例",
+          title: "Odysseus",
+          shortDescription: "自托管、local-first 的 All-in-one AI 工作空間。",
+          runtime: "Agentic 控制迴圈",
+          external: "檔案、Shell、Email、Calendar、MCP",
+          dev: "agent",
+          devText: "AI Agent 協助開發",
+          x: 0.92, y: 0.875,
+          architectureKey: "database",
+          architecture: "資料庫／持久化層",
+          architectureNote: "All-in-one 工作空間包含後端、長期狀態、記憶與多項服務整合。",
+          sensitivity: "very-high",
+          complexity: 5,
+          tags: ["自托管", "MCP", "多工具"],
+          why: "運行時會使用 Agent、工具與多種外部能力，因此位於右上；自托管不會自動消除權限與 Prompt injection 風險。",
+          moves: "若裁成單機 CLI 或純前端聊天殼，Y 軸可下降；目前因長期狀態與多服務整合放在資料庫層。"
+        },
+        {
+          id: "meeting-agent",
+          group: "Agent／外部案例",
+          title: "會議 Agent",
+          shortDescription: "理解會議後查行事曆、建任務、寄摘要並追蹤。",
+          runtime: "Agentic 控制迴圈",
+          external: "寫入任務、郵件與行事曆",
+          dev: "unknown",
+          devText: "依產品而定",
+          x: 0.85, y: 0.625,
+          architectureKey: "backend",
+          architecture: "後端服務／Server",
+          architectureNote: "Agent orchestration、Email／Calendar／Task integrations 需要服務端執行層。",
+          sensitivity: "very-high",
+          complexity: 4,
+          tags: ["辦公流程", "行事曆", "Email"],
+          why: "它會根據會議內容決定下一步，並改變多個外部系統。",
+          moves: "若只做固定摘要，X 軸會向左；若改成本地腳本或單一 Browser App，Y 軸也可下降。"
+        },
+        {
+          id: "payment-agent",
+          group: "Agent／外部案例",
+          title: "支付 Agent",
+          shortDescription: "在授權額度與核准商家範圍內完成程式化付款。",
+          runtime: "Agentic 控制迴圈",
+          external: "付款並改變財務狀態",
+          dev: "unknown",
+          devText: "依服務而定",
+          x: 0.94, y: 0.875,
+          architectureKey: "database",
+          architecture: "資料庫／持久化層",
+          architectureNote: "身份、支付政策、交易紀錄與稽核狀態需要持久化資料。",
+          sensitivity: "very-high",
+          complexity: 4,
+          tags: ["支付", "API", "高權限"],
+          why: "同時具備自主決策、身分、錢包與不可逆的外部動作，因此治理需求最高。",
+          moves: "若只做付款建議，X 軸可能仍可維持模型／Agent，但若不再保存政策、交易與稽核狀態，Y 軸可下降。"
+        }
+      ];
+
+      const STORAGE_KEY = "ai-project-map-demo-v8-architecture-axis";
+      const runtimeOptions = {
+        rule: {
+          label: "條件規則／固定流程",
+          x: 0.125
+        },
+        algorithm: {
+          label: "搜尋、最佳化／傳統演算法",
+          x: 0.375
+        },
+        model: {
+          label: "從資料學習的模型",
+          x: 0.625
+        },
+        agent: {
+          label: "Agentic 控制迴圈",
+          x: 0.875
+        }
+      };
+      const architectureOptions = {
+        script: {
+          label: "單機／Script／CLI",
+          y: 0.125
+        },
+        frontend: {
+          label: "前端介面",
+          y: 0.375
+        },
+        backend: {
+          label: "後端服務／Server",
+          y: 0.625
+        },
+        database: {
+          label: "資料庫／持久化層",
+          y: 0.875
+        }
+      };
+
+      const externalOptions = {
+        closed: { label: "封閉式輸入輸出" },
+        read: { label: "讀取外部資料" },
+        write: { label: "寫入／執行／改變外部狀態" }
+      };
+      const devOptions = {
+        human: "未使用生成式 AI",
+        chat: "對話式 AI 協助開發",
+        agent: "AI Agent 協助開發",
+        unknown: "開發方式未公開／待查證"
+      };
+
+      function readPersisted() {
+        try {
+          const raw = window.localStorage.getItem(STORAGE_KEY);
+          if (!raw) return { customProjects: [], placed: {}, persistEnabled: true };
+          const parsed = JSON.parse(raw);
+          return {
+            customProjects: Array.isArray(parsed.customProjects) ? parsed.customProjects : [],
+            placed: parsed.placed && typeof parsed.placed === "object" ? parsed.placed : {},
+            persistEnabled: parsed.persistEnabled !== false
+          };
+        } catch (error) {
+          return { customProjects: [], placed: {}, persistEnabled: false, unavailable: true };
+        }
+      }
+
+      const persisted = readPersisted();
+      let customProjects = persisted.customProjects;
+      let projects = [...baseProjects, ...customProjects];
+
+      const xBandNames = [
+        "條件規則／固定流程",
+        "搜尋、最佳化／傳統演算法",
+        "從資料學習的模型",
+        "Agentic 控制迴圈"
+      ];
+
+      const devClass = {
+        human: "dev-human",
+        chat: "dev-chat",
+        agent: "dev-agent",
+        unknown: "dev-unknown"
+      };
+
+      const state = {
+        placed: persisted.placed,
+        selectedId: null,
+        showTargets: false,
+        snapX: false,
+        persistEnabled: persisted.persistEnabled,
+        storageUnavailable: Boolean(persisted.unavailable),
+        history: [],
+        drag: null
+      };
+
+      const plot = document.getElementById("plot");
+      const plotWrap = document.getElementById("plotWrap");
+      const tray = document.getElementById("tray");
+      const placedItems = document.getElementById("placedItems");
+      const tooltip = document.getElementById("tooltip");
+      const details = document.getElementById("details");
+      const dragGhost = document.getElementById("dragGhost");
+      const guideV = document.getElementById("guideV");
+      const guideH = document.getElementById("guideH");
+      const candidateLabel = document.getElementById("candidateLabel");
+      const dragPointPreview = document.getElementById("dragPointPreview");
+      const status = document.getElementById("status");
+      const snapBtn = document.getElementById("snapBtn");
+      const targetsBtn = document.getElementById("targetsBtn");
+      const resetBtn = document.getElementById("resetBtn");
+      const undoBtn = document.getElementById("undoBtn");
+      const placeAllBtn = document.getElementById("placeAllBtn");
+      const addProjectBtn = document.getElementById("addProjectBtn");
+      const addProjectDialog = document.getElementById("addProjectDialog");
+      const addProjectForm = document.getElementById("addProjectForm");
+      const dialogBody = document.getElementById("dialogBody");
+      const closeDialogBtn = document.getElementById("closeDialogBtn");
+      const cancelAddBtn = document.getElementById("cancelAddBtn");
+      const storageStatus = document.getElementById("storageStatus");
+      const toggleStorageBtn = document.getElementById("toggleStorageBtn");
+      const exportBtn = document.getElementById("exportBtn");
+      const clearStorageBtn = document.getElementById("clearStorageBtn");
+
+      function escapeHtml(value) {
+        return String(value)
+          .replaceAll("&", "&amp;")
+          .replaceAll("<", "&lt;")
+          .replaceAll(">", "&gt;")
+          .replaceAll('"', "&quot;");
+      }
+
+      function persistState() {
+        updateStorageStatus();
+        if (!state.persistEnabled || state.storageUnavailable) return;
+
+        try {
+          window.localStorage.setItem(STORAGE_KEY, JSON.stringify({
+            customProjects,
+            placed: state.placed,
+            persistEnabled: state.persistEnabled
+          }));
+        } catch (error) {
+          state.storageUnavailable = true;
+          state.persistEnabled = false;
+          updateStorageStatus();
+        }
+      }
+
+      function updateStorageStatus() {
+        storageStatus.classList.toggle("is-on", state.persistEnabled && !state.storageUnavailable);
+        if (state.storageUnavailable) {
+          storageStatus.textContent = "本機保存：此環境不可用";
+          toggleStorageBtn.disabled = true;
+          clearStorageBtn.disabled = true;
+          return;
+        }
+        storageStatus.textContent = state.persistEnabled ? "本機保存：開" : "本機保存：關";
+        toggleStorageBtn.textContent = state.persistEnabled ? "關閉" : "開啟";
+      }
+
+      function snapshot() {
+        return JSON.parse(JSON.stringify(state.placed));
+      }
+
+      function pushHistory() {
+        state.history.push(snapshot());
+        if (state.history.length > 40) state.history.shift();
+      }
+
+      function announce(message) {
+        status.textContent = message;
+      }
+
+      function pointSize() {
+        return 25;
+      }
+
+      function sensitivityClass(project) {
+        if (project.sensitivity === "very-high") return "sensitivity-very-high";
+        if (project.sensitivity === "high") return "sensitivity-high";
+        return "";
+      }
+
+      function getProject(id) {
+        return projects.find(project => project.id === id);
+      }
+
+      function createTray() {
+        tray.innerHTML = "";
+        const groups = [...new Set(projects.map(project => project.group))];
+
+        groups.forEach(group => {
+          const section = document.createElement("section");
+          section.className = "project-group";
+
+          const heading = document.createElement("h3");
+          heading.className = "group-title";
+          heading.textContent = group;
+          section.appendChild(heading);
+
+          projects.filter(project => project.group === group).forEach(project => {
+            const button = document.createElement("button");
+            button.type = "button";
+            button.className = "project-card";
+            button.dataset.projectId = project.id;
+            button.setAttribute("aria-label", `${project.title}。${project.shortDescription}。按 Enter 放到建議位置。`);
+            button.innerHTML = `
+              <span class="card-title">${escapeHtml(project.title)}</span>
+              <span class="card-mark ${devClass[project.dev]}" aria-hidden="true">${project.dev === "unknown" ? "?" : ""}</span>
+            `;
+            button.addEventListener("pointerdown", event => startDrag(event, project.id, "tray"));
+            button.addEventListener("mouseenter", event => showTooltip(project, event.clientX, event.clientY));
+            button.addEventListener("mousemove", event => moveTooltip(event.clientX, event.clientY));
+            button.addEventListener("mouseleave", hideTooltip);
+            button.addEventListener("focus", () => showTooltipNearElement(project, button));
+            button.addEventListener("blur", hideTooltip);
+            button.addEventListener("click", event => {
+              if (event.detail === 0) return;
+              selectProject(project.id);
+            });
+            button.addEventListener("keydown", event => {
+              if (event.key === "Enter" || event.key === " ") {
+                event.preventDefault();
+                if (!state.placed[project.id]) {
+                  pushHistory();
+                  state.placed[project.id] = { x: project.x, y: project.y };
+                  render();
+                  announce(`${project.title} 已放到建議位置。`);
+                }
+                selectProject(project.id);
+              }
+            });
+            section.appendChild(button);
+          });
+
+          tray.appendChild(section);
+        });
+      }
+
+      function render() {
+        document.querySelectorAll(".project-point:not(.drag-point-preview), .point-label, .target").forEach(node => node.remove());
+
+        projects.forEach(project => {
+          const card = tray.querySelector(`[data-project-id="${project.id}"]`);
+          if (card) card.hidden = Boolean(state.placed[project.id]);
+
+          const target = document.createElement("div");
+          target.className = "target";
+          target.style.left = `${project.x * 100}%`;
+          target.style.top = `${(1 - project.y) * 100}%`;
+          plot.appendChild(target);
+
+          const pointState = state.placed[project.id];
+          if (!pointState) return;
+
+          const point = document.createElement("button");
+          point.type = "button";
+          point.className = `project-point ${devClass[project.dev]} ${sensitivityClass(project)}`;
+          if (state.selectedId === project.id) point.classList.add("is-selected");
+          point.dataset.projectId = project.id;
+          point.style.left = `${pointState.x * 100}%`;
+          point.style.top = `${(1 - pointState.y) * 100}%`;
+          point.style.setProperty("--size", `${pointSize()}px`);
+          point.textContent = project.dev === "unknown" ? "?" : "";
+          point.setAttribute("aria-label", `${project.title}。${project.runtime}。${project.architecture || yText(project.y)}。${project.external}。${project.devText}。`);
+          point.addEventListener("pointerdown", event => startDrag(event, project.id, "plot"));
+          point.addEventListener("mouseenter", event => showTooltip(project, event.clientX, event.clientY));
+          point.addEventListener("mousemove", event => moveTooltip(event.clientX, event.clientY));
+          point.addEventListener("mouseleave", hideTooltip);
+          point.addEventListener("focus", () => showTooltipNearElement(project, point));
+          point.addEventListener("blur", hideTooltip);
+          point.addEventListener("click", () => selectProject(project.id));
+          point.addEventListener("keydown", event => handlePointKeydown(event, project));
+          plot.appendChild(point);
+
+          const label = document.createElement("div");
+          label.className = "point-label";
+          label.dataset.labelFor = project.id;
+          label.style.left = `${pointState.x * 100}%`;
+          label.style.top = `${(1 - pointState.y) * 100}%`;
+          label.textContent = project.title;
+          plot.appendChild(label);
+        });
+
+        renderPlacedList();
+        plotWrap.classList.toggle("show-targets", state.showTargets);
+        targetsBtn.setAttribute("aria-pressed", String(state.showTargets));
+        renderDetails();
+        persistState();
+      }
+
+      function renderPlacedList() {
+        placedItems.innerHTML = "";
+        const ids = projects.filter(project => state.placed[project.id]).map(project => project.id);
+        if (!ids.length) {
+          placedItems.textContent = "尚未放置";
+          return;
+        }
+
+        ids.forEach(id => {
+          const project = getProject(id);
+          const button = document.createElement("button");
+          button.type = "button";
+          button.className = "placed-chip";
+          button.textContent = project.title;
+          button.addEventListener("click", () => selectProject(id));
+          placedItems.appendChild(button);
+        });
+      }
+
+      function selectProject(id) {
+        state.selectedId = id;
+        const label = plot.querySelector(`[data-label-for="${id}"]`);
+        if (label) {
+          label.classList.add("visible");
+          window.setTimeout(() => label.classList.remove("visible"), 1800);
+        }
+        render();
+      }
+
+      function renderDetails() {
+        const project = getProject(state.selectedId);
+        if (!project) {
+          details.innerHTML = `
+            <div class="details-kicker">PROJECT NOTE</div>
+            <h3>選一個專案</h3>
+            <p>Hover 可快速預覽；點擊或按 Enter 查看完整說明。</p>
+          `;
+          return;
+        }
+
+        details.innerHTML = `
+          <div class="details-kicker">PROJECT NOTE</div>
+          <h3>${escapeHtml(project.title)}</h3>
+          <p>${escapeHtml(project.shortDescription)}</p>
+          <dl>
+            <dt>運行時</dt><dd>${escapeHtml(project.runtime)}</dd>
+            <dt>架構層級</dt><dd>${escapeHtml(project.architecture || yText(project.y))}</dd>
+            <dt>外部作用</dt><dd>${escapeHtml(project.external)}</dd>
+            <dt>開發方式</dt><dd>${escapeHtml(project.devText)}</dd>
+            <dt>Tags</dt><dd>${renderTags(project.tags)}</dd>
+            <dt>定位理由</dt><dd>${escapeHtml(project.why)}</dd>
+            <dt>移動條件</dt><dd>${escapeHtml(project.moves)}</dd>
+            ${project.warning ? `<dt>警語</dt><dd>${escapeHtml(project.warning)}</dd>` : ""}
+          </dl>
+          ${project.custom ? `<div class="detail-actions"><button class="danger-button" id="deleteCustomBtn" type="button">刪除此自訂專案</button></div>` : ""}
+        `;
+
+        if (project.custom) {
+          const deleteButton = details.querySelector("#deleteCustomBtn");
+          deleteButton.addEventListener("click", () => deleteCustomProject(project.id));
+        }
+      }
+
+      function tooltipHtml(project) {
+        return `
+          <div class="tooltip-title">${escapeHtml(project.title)}</div>
+          <p>${escapeHtml(project.shortDescription)}</p>
+          <div class="tooltip-row"><span class="tooltip-key">運行時</span><span>${escapeHtml(project.runtime)}</span></div>
+          <div class="tooltip-row"><span class="tooltip-key">架構層級</span><span>${escapeHtml(project.architecture || yText(project.y))}</span></div>
+          <div class="tooltip-row"><span class="tooltip-key">外部作用</span><span>${escapeHtml(project.external)}</span></div>
+          <div class="tooltip-row"><span class="tooltip-key">開發方式</span><span>${escapeHtml(project.devText)}</span></div>
+          ${project.tags && project.tags.length ? `<div class="tag-list">${project.tags.map(tag => `<span class="tag">${escapeHtml(tag)}</span>`).join("")}</div>` : ""}
+        `;
+      }
+
+      function showTooltip(project, clientX, clientY) {
+        tooltip.innerHTML = tooltipHtml(project);
+        tooltip.classList.add("visible");
+        moveTooltip(clientX, clientY);
+      }
+
+      function showTooltipNearElement(project, element) {
+        const rect = element.getBoundingClientRect();
+        showTooltip(project, rect.right, rect.top);
+      }
+
+      function moveTooltip(clientX, clientY) {
+        if (!tooltip.classList.contains("visible")) return;
+        const gap = 14;
+        const rect = tooltip.getBoundingClientRect();
+        let left = clientX + gap;
+        let top = clientY + gap;
+
+        if (left + rect.width > window.innerWidth - 8) left = clientX - rect.width - gap;
+        if (top + rect.height > window.innerHeight - 8) top = clientY - rect.height - gap;
+        left = Math.max(8, left);
+        top = Math.max(8, top);
+
+        tooltip.style.left = `${left}px`;
+        tooltip.style.top = `${top}px`;
+      }
+
+      function hideTooltip() {
+        tooltip.classList.remove("visible");
+      }
+
+      function configureDragPoint(project) {
+        dragPointPreview.className = `project-point drag-point-preview ${devClass[project.dev]} ${sensitivityClass(project)}`;
+        dragPointPreview.style.setProperty("--size", `${pointSize()}px`);
+        dragPointPreview.textContent = project.dev === "unknown" ? "?" : "";
+      }
+
+      function positionDragPoint(x, y) {
+        dragPointPreview.style.left = `${x * 100}%`;
+        dragPointPreview.style.top = `${(1 - y) * 100}%`;
+        dragPointPreview.classList.add("visible");
+      }
+
+      function hideDragPoint() {
+        dragPointPreview.classList.remove("visible");
+      }
+
+      function startDrag(event, id, source) {
+        if (event.button !== undefined && event.button !== 0) return;
+        event.preventDefault();
+        hideTooltip();
+
+        const project = getProject(id);
+        const origin = state.placed[id] ? { ...state.placed[id] } : null;
+        const sourceElement = source === "plot"
+          ? plot.querySelector(`.project-point[data-project-id="${id}"]`)
+          : null;
+
+        state.drag = {
+          id,
+          source,
+          pointerId: event.pointerId,
+          origin,
+          sourceElement,
+          moved: false
+        };
+
+        configureDragPoint(project);
+
+        if (sourceElement) {
+          sourceElement.classList.add("drag-source-hidden");
+        }
+
+        dragGhost.textContent = project.title;
+        dragGhost.classList.add("visible");
+        dragGhost.style.left = `${event.clientX}px`;
+        dragGhost.style.top = `${event.clientY}px`;
+
+        const initialCoords = clientToPlot(event.clientX, event.clientY);
+        if (initialCoords.inside) {
+          const initialPosition = snapCoordinates(initialCoords.x, initialCoords.y);
+          positionDragPoint(initialPosition.x, initialPosition.y);
+          dragGhost.classList.remove("visible");
+        }
+
+        document.addEventListener("pointermove", handleDragMove);
+        document.addEventListener("pointerup", handleDragEnd, { once: true });
+        document.addEventListener("pointercancel", handleDragEnd, { once: true });
+
+        highlightBand(null);
+      }
+
+      function handleDragMove(event) {
+        if (!state.drag) return;
+        state.drag.moved = true;
+
+        const coords = clientToPlot(event.clientX, event.clientY);
+        const overTray = pointInRect(event.clientX, event.clientY, tray.getBoundingClientRect());
+        tray.classList.toggle("drop-active", overTray);
+
+        if (coords.inside) {
+          const snapped = snapCoordinates(coords.x, coords.y);
+          positionDragPoint(snapped.x, snapped.y);
+          dragGhost.classList.remove("visible");
+
+          showGuides(snapped.x, snapped.y);
+          const band = Math.min(3, Math.max(0, Math.floor(snapped.x * 4)));
+          highlightBand(band);
+          candidateLabel.textContent = `${xBandNames[band]} × ${yText(snapped.y)}`;
+          candidateLabel.style.left = `${Math.min(82, snapped.x * 100 + 2)}%`;
+          candidateLabel.style.top = `${Math.max(2, (1 - snapped.y) * 100 - 7)}%`;
+          candidateLabel.style.display = "block";
+        } else {
+          hideDragPoint();
+          dragGhost.classList.add("visible");
+          dragGhost.style.left = `${event.clientX}px`;
+          dragGhost.style.top = `${event.clientY}px`;
+          hideGuides();
+          highlightBand(null);
+        }
+      }
+
+      function handleDragEnd(event) {
+        if (!state.drag) return;
+
+        const drag = state.drag;
+        const project = getProject(drag.id);
+        const coords = clientToPlot(event.clientX, event.clientY);
+        const overTray = pointInRect(event.clientX, event.clientY, tray.getBoundingClientRect());
+
+        if (coords.inside) {
+          pushHistory();
+          const snapped = snapCoordinates(coords.x, coords.y);
+          state.placed[drag.id] = { x: snapped.x, y: snapped.y };
+          state.selectedId = drag.id;
+          announce(`${project.title} 已放入：${xBandNames[Math.min(3, Math.floor(snapped.x * 4))]}，${yText(snapped.y)}。`);
+        } else if (overTray && state.placed[drag.id]) {
+          pushHistory();
+          delete state.placed[drag.id];
+          if (state.selectedId === drag.id) state.selectedId = null;
+          announce(`${project.title} 已移回等待區。`);
+        }
+
+        if (drag.sourceElement) {
+          drag.sourceElement.classList.remove("drag-source-hidden");
+        }
+
+        state.drag = null;
+        hideDragPoint();
+        dragGhost.classList.remove("visible");
+        tray.classList.remove("drop-active");
+        hideGuides();
+        highlightBand(null);
+        document.removeEventListener("pointermove", handleDragMove);
+        render();
+      }
+
+      function clientToPlot(clientX, clientY) {
+        const rect = plot.getBoundingClientRect();
+        const x = (clientX - rect.left) / rect.width;
+        const y = 1 - (clientY - rect.top) / rect.height;
+        return {
+          x: clamp(x, 0, 1),
+          y: clamp(y, 0, 1),
+          inside: clientX >= rect.left && clientX <= rect.right && clientY >= rect.top && clientY <= rect.bottom
+        };
+      }
+
+      function snapCoordinates(x, y) {
+        const freeX = clamp(x, .025, .975);
+        const snappedX = (Math.floor(clamp(x, 0, .9999) * 4) + .5) / 4;
+        return {
+          x: state.snapX ? snappedX : freeX,
+          y: clamp(y, .04, .96)
+        };
+      }
+
+      function showGuides(x, y) {
+        guideV.style.left = `${x * 100}%`;
+        guideH.style.top = `${(1 - y) * 100}%`;
+        guideV.style.display = "block";
+        guideH.style.display = "block";
+      }
+
+      function hideGuides() {
+        guideV.style.display = "none";
+        guideH.style.display = "none";
+        candidateLabel.style.display = "none";
+      }
+
+      function highlightBand(index) {
+        plot.querySelectorAll(".x-band").forEach((band, bandIndex) => {
+          band.classList.toggle("active", bandIndex === index);
+        });
+      }
+
+      function pointInRect(x, y, rect) {
+        return x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom;
+      }
+
+      function renderTags(tags) {
+        if (!Array.isArray(tags) || !tags.length) return "—";
+        return `<span class="tag-list">${tags.map(tag => `<span class="tag">${escapeHtml(tag)}</span>`).join("")}</span>`;
+      }
+
+      function yText(y) {
+        if (y < .25) return "單機／Script／CLI";
+        if (y < .50) return "前端介面";
+        if (y < .75) return "後端服務／Server";
+        return "資料庫／持久化層";
+      }
+
+      function clamp(value, min, max) {
+        return Math.min(max, Math.max(min, value));
+      }
+
+      function deleteCustomProject(id) {
+        const project = getProject(id);
+        if (!project || !project.custom) return;
+        if (!window.confirm(`確定刪除「${project.title}」？`)) return;
+
+        pushHistory();
+        customProjects = customProjects.filter(item => item.id !== id);
+        projects = [...baseProjects, ...customProjects];
+        delete state.placed[id];
+        if (state.selectedId === id) state.selectedId = null;
+        createTray();
+        render();
+        announce(`${project.title} 已刪除。`);
+      }
+
+      function openAddDialog() {
+        addProjectForm.reset();
+        if (typeof addProjectDialog.showModal === "function") {
+          addProjectDialog.showModal();
+        } else {
+          addProjectDialog.setAttribute("open", "");
+        }
+        window.setTimeout(() => {
+          addProjectDialog.scrollTop = 0;
+          dialogBody.scrollTop = 0;
+          document.getElementById("projectTitle").focus();
+        }, 0);
+      }
+
+      function closeAddDialog() {
+        if (typeof addProjectDialog.close === "function") {
+          addProjectDialog.close();
+        } else {
+          addProjectDialog.removeAttribute("open");
+        }
+      }
+
+      function createCustomProject(formData) {
+        const runtimeKey = String(formData.get("runtime") || "rule");
+        const architectureKey = String(formData.get("architecture") || "script");
+        const externalKey = String(formData.get("external") || "closed");
+        const dev = String(formData.get("dev") || "unknown");
+        const sensitivity = String(formData.get("sensitivity") || "low");
+        const tags = formData.getAll("tags").map(String);
+        const runtimeInfo = runtimeOptions[runtimeKey] || runtimeOptions.rule;
+        const architectureInfo = architectureOptions[architectureKey] || architectureOptions.script;
+        const externalInfo = externalOptions[externalKey] || externalOptions.closed;
+        const id = `custom-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
+
+        return {
+          id,
+          custom: true,
+          group: String(formData.get("group") || "現場新增"),
+          title: String(formData.get("title") || "未命名專案").trim(),
+          shortDescription: String(formData.get("description") || "").trim(),
+          runtime: runtimeInfo.label,
+          architectureKey,
+          architecture: architectureInfo.label,
+          architectureNote: "現場新增專案，由使用者選擇架構層級。",
+          external: externalInfo.label,
+          dev,
+          devText: devOptions[dev] || devOptions.unknown,
+          x: runtimeInfo.x,
+          y: architectureInfo.y,
+          sensitivity,
+          tags,
+          why: `這是現場新增的主觀分類：運行時主要屬於「${runtimeInfo.label}」，架構層級為「${architectureInfo.label}」。`,
+          moves: "可直接拖曳圓點修正位置；若實作方式改變，也可調整到新的架構層級。"
+        };
+      }
+
+      function exportKnowledgeJson() {
+        const payload = {
+          exportedAt: new Date().toISOString(),
+          schemaVersion: 2,
+          projects,
+          placed: state.placed
+        };
+        const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = `ai-project-map-${new Date().toISOString().slice(0, 10)}.json`;
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        URL.revokeObjectURL(url);
+        announce("已匯出目前的專案與座標 JSON。");
+      }
+
+      function handlePointKeydown(event, project) {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          selectProject(project.id);
+          return;
+        }
+
+        if (event.key === "Delete" || event.key === "Backspace") {
+          event.preventDefault();
+          pushHistory();
+          delete state.placed[project.id];
+          state.selectedId = null;
+          render();
+          announce(`${project.title} 已移回等待區。`);
+          return;
+        }
+
+        const pointState = state.placed[project.id];
+        if (!pointState) return;
+
+        const step = event.shiftKey ? .05 : .02;
+        let changed = false;
+        let x = pointState.x;
+        let y = pointState.y;
+
+        if (event.key === "ArrowLeft") { x -= step; changed = true; }
+        if (event.key === "ArrowRight") { x += step; changed = true; }
+        if (event.key === "ArrowUp") { y += step; changed = true; }
+        if (event.key === "ArrowDown") { y -= step; changed = true; }
+
+        if (changed) {
+          event.preventDefault();
+          pushHistory();
+          state.placed[project.id] = { x: clamp(x, .03, .97), y: clamp(y, .04, .96) };
+          render();
+          const newPoint = plot.querySelector(`[data-project-id="${project.id}"]`);
+          if (newPoint) newPoint.focus();
+          announce(`${project.title} 位置已微調。`);
+        }
+      }
+
+      addProjectBtn.addEventListener("click", openAddDialog);
+      closeDialogBtn.addEventListener("click", closeAddDialog);
+      cancelAddBtn.addEventListener("click", closeAddDialog);
+
+      addProjectForm.addEventListener("submit", event => {
+        event.preventDefault();
+        const project = createCustomProject(new FormData(addProjectForm));
+        customProjects.push(project);
+        projects = [...baseProjects, ...customProjects];
+        state.selectedId = project.id;
+        createTray();
+        render();
+        closeAddDialog();
+        announce(`${project.title} 已建立，現在可以從右側拖到座標上。`);
+      });
+
+      toggleStorageBtn.addEventListener("click", () => {
+        if (state.storageUnavailable) return;
+        state.persistEnabled = !state.persistEnabled;
+        persistState();
+        announce(state.persistEnabled ? "已開啟本機保存。" : "已關閉本機保存；目前畫面仍保留。");
+      });
+
+      clearStorageBtn.addEventListener("click", () => {
+        if (state.storageUnavailable) return;
+        if (!window.confirm("確定清除本機保存的自訂專案與座標位置？")) return;
+        try {
+          window.localStorage.removeItem(STORAGE_KEY);
+        } catch (error) {
+          state.storageUnavailable = true;
+        }
+        customProjects = [];
+        projects = [...baseProjects];
+        state.placed = {};
+        state.selectedId = null;
+        createTray();
+        render();
+        announce("本機保存資料已清除。");
+      });
+
+      exportBtn.addEventListener("click", exportKnowledgeJson);
+
+      snapBtn.addEventListener("click", () => {
+        state.snapX = !state.snapX;
+        snapBtn.setAttribute("aria-pressed", String(state.snapX));
+        snapBtn.textContent = state.snapX ? "吸附欄位：開" : "吸附欄位：關";
+        announce(state.snapX ? "已開啟橫向欄位吸附。" : "已切換為自由放置。");
+      });
+
+      targetsBtn.addEventListener("click", () => {
+        state.showTargets = !state.showTargets;
+        render();
+        announce(state.showTargets ? "已顯示建議位置。" : "已隱藏建議位置。");
+      });
+
+      resetBtn.addEventListener("click", () => {
+        pushHistory();
+        state.placed = {};
+        state.selectedId = null;
+        render();
+        announce("所有專案已移回等待區。");
+      });
+
+      undoBtn.addEventListener("click", () => {
+        const previous = state.history.pop();
+        if (!previous) {
+          announce("沒有可復原的步驟。");
+          return;
+        }
+        state.placed = previous;
+        if (state.selectedId && !state.placed[state.selectedId]) state.selectedId = null;
+        render();
+        announce("已復原上一個步驟。");
+      });
+
+      placeAllBtn.addEventListener("click", () => {
+        pushHistory();
+        projects.forEach(project => {
+          state.placed[project.id] = { x: project.x, y: project.y };
+        });
+        render();
+        announce("所有專案已放到建議位置。");
+      });
+
+      Object.keys(state.placed).forEach(id => {
+        if (!projects.some(project => project.id === id)) delete state.placed[id];
+      });
+      updateStorageStatus();
+      createTray();
+      render();
+    })();
+  </script>
+</body>
+</html>
