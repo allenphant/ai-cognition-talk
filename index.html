@@ -497,6 +497,13 @@ html.js .fade.is-cur{opacity:1;}
 .bub .who{display:block;font-size:calc(var(--u)*0.7);letter-spacing:.14em;color:var(--muted);margin-bottom:calc(var(--u)*0.12);}
 .bub.sys .who{display:inline;margin:0 calc(var(--u)*0.7) 0 0;}
 .bub.user .who{color:var(--brick-dark);}
+.bub .code{
+  display:block;margin-top:calc(var(--u)*0.45);
+  padding:calc(var(--u)*0.45) calc(var(--u)*0.7);
+  background:var(--paper-deep);border-radius:calc(var(--u)*0.3);
+  font-family:var(--mono-stack);font-size:calc(var(--u)*0.8);line-height:1.65;
+  white-space:pre;overflow-x:auto;color:var(--ink-soft);
+}
 html.js .bub{opacity:0;transform:translateY(calc(var(--u)*0.8));transition:opacity .4s ease,transform .4s ease;}
 html.js .bub.in{opacity:1;transform:none;}
 .break-line{align-self:center;display:flex;align-items:center;gap:calc(var(--u)*0.8);color:var(--brick);font-size:calc(var(--u)*0.95);letter-spacing:.1em;width:100%;}
@@ -1680,7 +1687,7 @@ var LAYER_DATA = [
   {
     bubbles:[
       {who:"使用者", cls:"user", t:"我想下載這支 YouTube 影片，要怎麼做？"},
-      {who:"LLM", cls:"ai", t:"你可以先安裝 yt-dlp，再執行：\nyt-dlp [YouTube URL]"},
+      {who:"LLM", cls:"ai", t:"先安裝，再下載，兩行指令：", code:"pip install -U yt-dlp\nyt-dlp -f \"bv*+ba/b\" -o \"~/Downloads/%(title)s.%(ext)s\" [YouTube URL]"},
       {cls:"break", t:"兩次呼叫之間　沒有任何東西被保留"},
       {who:"使用者", cls:"user", t:"我下載好了。"},
       {who:"LLM", cls:"ai", t:"太好了！你下載的是遊戲、應用程式，還是其他軟體呢？\n如果是軟體，建議先確認下載來源是否可信。"}
@@ -1692,13 +1699,13 @@ var LAYER_DATA = [
   {
     bubbles:[
       {who:"使用者", cls:"user", t:"我想下載這支 YouTube 影片，要怎麼做？"},
-      {who:"LLM", cls:"ai", t:"你可以先安裝 yt-dlp，再執行：\nyt-dlp [YouTube URL]"},
+      {who:"LLM", cls:"ai", t:"先安裝，再下載，兩行指令：", code:"pip install -U yt-dlp\nyt-dlp -f \"bv*+ba/b\" -o \"~/Downloads/%(title)s.%(ext)s\" [YouTube URL]"},
       {who:"使用者", cls:"user", t:"我下載好了。"},
-      {who:"LLM", cls:"ai", t:"很好。接下來確認 yt-dlp 是不是真的產生了影片檔案，\n再看一下檔案放在哪個資料夾。"}
+      {who:"LLM", cls:"ai", t:"很好。接著確認檔案真的產生了，再看它放在哪裡：", code:"yt-dlp --version\nls -lh ~/Downloads/*.mp4"}
     ],
     can:"延續對話、引用前面的需求與命令，順著已經說過的內容調整建議",
     cant:"仍然只能輸出文字：不能執行、不能檢查你的環境、不能確認檔案是否存在",
-    note:"它看起來像記得，是因為外層應用程式把先前的對話保存起來，每次再一起送進 LLM。Context 有長度上限，過長的對話會被裁切或摘要。"
+    note:"它看起來像記得，是因為外層應用程式把先前的對話保存起來，每次再一起送進 LLM。Context 有長度上限，過長的對話會被裁切或摘要。指令寫得再完整也只是文字 —— 每一行都得你自己貼到終端機執行。"
   },
   {
     bubbles:[
@@ -1821,6 +1828,10 @@ function applyS06(n){
       }
       var body = document.createElement("span");
       body.textContent = b.t; el.appendChild(body);
+      if(b.code){
+        var c = document.createElement("span");
+        c.className = "code"; c.textContent = b.code; el.appendChild(c);
+      }
     }
     dlg.appendChild(el);
     if(REDUCE){ el.classList.add("in"); }
