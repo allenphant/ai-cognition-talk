@@ -1085,7 +1085,7 @@ html.js .bub.in{opacity:1;transform:none;}
       <div class="layer" data-layer="2">
         <span class="ln">LAYER 3</span>
         <p class="lt">Agent</p>
-        <p class="ld">外層接上工具與控制迴圈，依 Observation 決定下一步</p>
+        <p class="ld">外層接上工具與控制迴圈，依本機回報決定下一步</p>
       </div>
     </div>
 
@@ -1104,7 +1104,7 @@ html.js .bub.in{opacity:1;transform:none;}
   <div class="seq-wrap" id="s06-seq" hidden>
     <p class="eyebrow">完整流程｜使用者 · agent · LLM · 本機環境 · YouTube</p>
     <svg viewBox="0 0 1000 610" preserveAspectRatio="xMidYMid meet" role="img"
-         aria-label="YouTube 下載任務的時序圖：使用者提出需求，agent 呼叫 LLM 判斷後檢查本機環境，把 Observation 送回 LLM，判斷安裝會改變環境後先詢問使用者，取得批准才安裝並下載，最後驗證檔案並回報。">
+         aria-label="YouTube 下載任務的時序圖：使用者提出需求，agent 呼叫 LLM 判斷後檢查本機環境，把本機回報送回 LLM，判斷安裝會改變環境後先詢問使用者，取得批准才安裝並下載，最後驗證檔案並回報。">
       <g font-family="Noto Sans TC, sans-serif" font-size="13" fill="#191715">
         <!-- 生命線 -->
         <g stroke="#CEC5B8" stroke-dasharray="4 5">
@@ -1166,19 +1166,19 @@ html.js .bub.in{opacity:1;transform:none;}
           <text x="297" y="93">目標、網址</text>
           <text x="297" y="121" fill="#B45F3C">判斷：先檢查環境</text>
           <text x="297" y="149">check_command("yt-dlp")</text>
-          <text x="297" y="177" fill="#B45F3C">Observation：尚未安裝</text>
-          <text x="297" y="205">回報 Observation</text>
+          <text x="297" y="177" fill="#B45F3C">本機回報：尚未安裝</text>
+          <text x="297" y="205">轉述本機回報</text>
           <text x="297" y="233" fill="#B45F3C">判斷：安裝會改變本機環境 → 先取得批准</text>
           <text x="92" y="261" fill="#B45F3C">本機沒有 yt-dlp，要我安裝嗎？</text>
           <text x="92" y="289">同意安裝，並確認有權下載</text>
           <text x="297" y="317">安裝 yt-dlp</text>
-          <text x="297" y="345" fill="#B45F3C">Observation：安裝成功</text>
-          <text x="297" y="373">回報 Observation</text>
+          <text x="297" y="345" fill="#B45F3C">本機回報：安裝成功</text>
+          <text x="297" y="373">轉述本機回報</text>
           <text x="297" y="401" fill="#B45F3C">下一步：執行下載</text>
           <text x="297" y="429">執行下載（預設設定）</text>
           <text x="712" y="457">請求影片資料</text>
           <text x="712" y="485" fill="#B45F3C">影片資料</text>
-          <text x="297" y="513" fill="#B45F3C">Observation：檔案已產生、大小格式正確</text>
+          <text x="297" y="513" fill="#B45F3C">本機回報：檔案已產生、大小格式正確</text>
           <text x="92" y="541" fill="#B45F3C">下載完成，回報檔案位置</text>
         </g>
 
@@ -1652,7 +1652,7 @@ var SCENES = [
   {id:"scene-05-cognition-prompt", n:"05", t:"一段 Prompt 搭配任意模型即可擴展認知", ready:1,
    notes:["先說 Prompt 的價值不是唯一正解，而是看見沒問出的角度。","▶ 切到準備好的 Gemini 對話紀錄，實際走一次輸出。","回來後：對於任何領域，都可以用這個脈絡快速掌握自己的認知階段與盲點。","指出「上手指南」會給可執行的 code —— 由此插入對話式 AI 與 AI Agent 的差別（銜接 S06）。","必講：AI 回傳的是候選清單，不等於事實，也不等於專業判斷。"]},
   {id:"scene-06-llm-agent", n:"06", t:"同一句「幫我下載影片」，AI 到底能做到哪一步？", ready:1,
-   notes:["三層使用同一個任務，不要換案例。","Layer 1：它不是忘記，而是第二次呼叫時上一輪根本沒有被帶進來。","Layer 2：看起來記得，是因為外層應用程式保存對話再重新放進 Context。","Layer 3：LLM 只提出要呼叫什麼；解析、執行、回傳都是外層 harness 的工作。工具命令 ≠ 工具已執行。重點是拿到 Observation 之後再判斷下一步。","第 4 步：Agent ＝ LLM ＋ Context ＋ Tools ＋ Harness。第 5 步：完整時序圖。","延伸（口頭）：ReAct 不是唯一架構，還有固定 Workflow、Plan-and-Execute、Reflection、ToT、Multi-agent。"]},
+   notes:["三層使用同一個任務，不要換案例。","Layer 1：它不是忘記，而是第二次呼叫時上一輪根本沒有被帶進來。","Layer 2：看起來記得，是因為外層應用程式保存對話再重新放進 Context。","Layer 3：LLM 只提出要呼叫什麼；解析、執行、回傳都是外層 harness 的工作。工具命令 ≠ 工具已執行。重點是拿到本機回報之後再判斷下一步（ReAct 用語叫 Observation，畫面上一律寫「本機回報」）。","第 4 步：Agent ＝ LLM ＋ Context ＋ Tools ＋ Harness。第 5 步：完整時序圖。","延伸（口頭）：ReAct 不是唯一架構，還有固定 Workflow、Plan-and-Execute、Reflection、ToT、Multi-agent。"]},
   {id:"scene-07-agent-parts", n:"07", t:"Agent 是怎麼被組裝起來的？", ready:1,
    notes:["用新進員工的比喻快速跳過整面網格，不逐一講解。","一句話收尾：缺哪一個零件，它就少一種真實工作的能力。"]},
   {id:"scene-08-agent-ready-world", n:"08", t:"世界正在替 Agent 開門，也同時加上門禁", ready:1,
@@ -1704,14 +1704,14 @@ var LAYER_DATA = [
     bubbles:[
       {who:"使用者", cls:"user", t:"我想下載這支 YouTube 影片，要怎麼做？"},
       {who:"LLM", cls:"ai", t:"我先看看你的電腦上有沒有 yt-dlp。"},
-      {who:"Tool → Observation", cls:"sys", t:"check_command(\"yt-dlp\") → 尚未安裝"},
+      {who:"工具 → 本機回報", cls:"sys", t:"check_command(\"yt-dlp\") → 尚未安裝"},
       {who:"LLM", cls:"ai", t:"安裝會改變你的電腦，需要你的同意。要我安裝嗎？"},
       {who:"使用者", cls:"user", t:"好，我也確認我有權下載這支影片。"},
-      {who:"Tool → Observation", cls:"sys", t:"安裝 yt-dlp → 成功　｜　執行下載 → 檔案已產生"},
+      {who:"工具 → 本機回報", cls:"sys", t:"安裝 yt-dlp → 成功　｜　執行下載 → 檔案已產生"},
       {who:"LLM", cls:"ai", t:"檔案已產生，大小與格式正常，位置在下載資料夾。"}
     ],
-    can:"呼叫外層提供的工具、拿到 Observation 後再判斷下一步、在會改變環境的步驟停下來要求批准、最後檢查結果並回報，失敗時修正或安全停止",
-    cant:"超出被授予的工具與權限、保證每次判斷都正確；Observation 可能被誤讀，工具可能被濫用或被 Prompt Injection 影響，沒有停止條件就會空轉",
+    can:"呼叫外層提供的工具、拿到本機回報後再判斷下一步、在會改變環境的步驟停下來要求批准、最後檢查結果並回報，失敗時修正或安全停止",
+    cant:"超出被授予的工具與權限、保證每次判斷都正確；本機回報可能被誤讀，工具可能被濫用或被 Prompt Injection 影響，沒有停止條件就會空轉",
     note:"LLM 只提出「要呼叫哪個工具」；解析命令、實際執行、把結果送回來，都是外層 harness 的工作 —— 工具命令 ≠ 工具已執行。harness 裡的控制迴圈可以是 ReAct，也可以是別種寫法。"
   }
 ];
