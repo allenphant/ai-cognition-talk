@@ -554,10 +554,11 @@ html.js .bub.in{opacity:1;transform:none;}
 #scene-08-agent-ready-world .body-area{margin-top:calc(var(--u)*0.6);padding-bottom:calc(var(--u)*0.5);}
 .rail{
   border:1px solid var(--line-light);background:var(--paper-raised);
-  padding:calc(var(--u)*0.6) calc(var(--u)*1.1);overflow:hidden;
-  display:flex;flex-direction:column;gap:calc(var(--u)*0.3);
+  padding:calc(var(--u)*0.6) calc(var(--u)*1.1) calc(var(--u)*0.9);overflow:hidden;
+  display:flex;flex-direction:column;
 }
 .rail-warn{border-color:var(--brick);}
+.rail .bm{flex:1;min-height:0;align-content:center;}
 .rail .rn{
   font-family:var(--serif);font-size:calc(var(--u)*1.25);flex:none;
   display:flex;align-items:baseline;gap:calc(var(--u)*0.9);
@@ -586,20 +587,25 @@ html.js .bub.in{opacity:1;transform:none;}
 }
 
 /* ================= S09 光譜 ================= */
-.spectrum{flex:1;min-height:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:calc(var(--u)*1.1);align-content:center;}
-.sp{border:1px solid var(--line-light);background:var(--paper-raised);padding:calc(var(--u)*1.1);display:flex;flex-direction:column;gap:calc(var(--u)*0.75);}
+.spectrum{flex:1;min-height:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));grid-template-rows:minmax(0,1fr);gap:calc(var(--u)*1.1);}
+.sp{border:1px solid var(--line-light);background:var(--paper-raised);padding:calc(var(--u)*1.1);overflow:hidden;display:flex;flex-direction:column;gap:calc(var(--u)*0.9);}
 .sp.is-cur{border-color:var(--brick);}
-.sp .sf{font-size:calc(var(--u)*0.92);color:var(--ink-soft);line-height:1.5;}
+.sp .sh{
+  font-family:var(--serif);font-size:calc(var(--u)*1.5);color:var(--ink);line-height:1.3;
+  border-bottom:1px solid var(--line-light);padding-bottom:calc(var(--u)*0.55);
+}
+.sp .sf{font-size:calc(var(--u)*1);color:var(--ink-soft);line-height:1.6;}
 .sp .sf .k{
-  display:block;font-size:calc(var(--u)*0.72);letter-spacing:.18em;
-  color:var(--muted);margin-bottom:calc(var(--u)*0.15);
+  display:block;font-size:calc(var(--u)*0.78);letter-spacing:.18em;
+  color:var(--brick);margin-bottom:calc(var(--u)*0.2);
 }
-.sp .sf-a{font-family:var(--serif);font-size:calc(var(--u)*1.25);color:var(--ink);line-height:1.35;}
-.sp .sf-a .k{color:var(--brick);font-family:var(--sans);}
-.sp-axis{
-  flex:none;margin-top:calc(var(--u)*1.4);
-  display:flex;align-items:center;gap:calc(var(--u)*0.8);
+.sp-meme{
+  position:absolute;left:calc(var(--u)*5.5);bottom:calc(var(--u)*3.6);
+  height:calc(var(--u)*7);width:auto;display:block;
+  border:1px solid var(--line-light);
 }
+.sp-axes{flex:none;margin-top:calc(var(--u)*1.2);display:grid;gap:calc(var(--u)*0.7);}
+.sp-axis{display:flex;align-items:center;gap:calc(var(--u)*0.8);}
 .sp-axis .ax-cap{font-size:calc(var(--u)*0.95);color:var(--muted);letter-spacing:.1em;white-space:nowrap;}
 .sp-axis .ax-line{flex:1;height:1px;background:var(--line);position:relative;}
 .sp-axis .ax-line::before{
@@ -1353,45 +1359,51 @@ html.js .bub.in{opacity:1;transform:none;}
 <section class="scene" id="scene-09-agent-or-not" data-steps="0">
   <div class="scene-head">
     <p class="eyebrow">Scene 09</p>
-    <h2 class="scene-title">AI Agent 很強，但你的工作到底需要多少 AI？</h2>
-    <p class="scene-sub">先不問哪個產品最厲害，而是先問：我的工作到底需要什麼？</p>
+    <h2 class="scene-title">AI Agent 很強，但你需要的 AI 到底是什麼？</h2>
+    <p class="scene-sub">先不問哪個產品最厲害，而是先問：我的需求長什麼樣子？</p>
   </div>
 
   <div class="body-area">
     <div class="spectrum">
       <div class="sp fade" data-r="0">
-        <p class="sf"><span class="k">需求</span>條件成立就做一件事</p>
+        <p class="sh">一套自動化程式碼</p>
         <p class="sf"><span class="k">需求描述</span>規則寫得完、例外很少，而且每次都要得到一模一樣的結果。</p>
-        <p class="sf sf-a"><span class="k">解法</span>固定規則（if／then）</p>
-        <p class="sf"><span class="k">案例</span>檔案改名、表單轉寄、期限到了自動通知</p>
+        <p class="sf"><span class="k">案例</span>檔案改名、表單轉寄、自動排程、資料視覺化</p>
       </div>
       <div class="sp fade" data-r="1">
-        <p class="sf"><span class="k">需求</span>在很多可行解裡找出比較好的一個</p>
+        <p class="sh">一套最佳化演算法</p>
         <p class="sf"><span class="k">需求描述</span>條件明確、好壞可以計分，但組合太多，人排不完也排不好。</p>
-        <p class="sf sf-a"><span class="k">解法</span>搜尋與最佳化演算法</p>
-        <p class="sf"><span class="k">案例</span>機場人員排班（CP-SAT）、菌落影像的計數與分割</p>
+        <p class="sf"><span class="k">案例</span>機場人員排班（CP-SAT）、菌落影像的計數與分割、路線規劃</p>
       </div>
       <div class="sp fade" data-r="2">
-        <p class="sf"><span class="k">需求</span>處理沒有固定格式的內容</p>
+        <p class="sh">一個訓練好的模型</p>
         <p class="sf"><span class="k">需求描述</span>輸入是自然語言、影像或聲音，規則寫不完，而且可以接受一定程度的誤差。</p>
-        <p class="sf sf-a"><span class="k">解法</span>機器學習／語言模型</p>
         <p class="sf"><span class="k">案例</span>摘要、分類、翻譯、問答、從文件擷取欄位</p>
       </div>
       <div class="sp fade" data-r="3">
-        <p class="sf"><span class="k">需求</span>要分好幾步，而且下一步得看上一步的結果</p>
-        <p class="sf"><span class="k">需求描述</span>步驟無法事先寫死，中途需要查資料、呼叫工具、看回報再決定。</p>
-        <p class="sf sf-a"><span class="k">解法</span>LLM ＋ 工具 ＋ 控制迴圈</p>
+        <p class="sh">一個 Agent</p>
+        <p class="sf"><span class="k">需求描述</span>步驟無法事先寫死，中途需要查資料、呼叫工具、看回報再決定下一步。</p>
         <p class="sf"><span class="k">案例</span>查資料、呼叫工具、觀察結果、重新規劃，直到完成或安全停止</p>
       </div>
     </div>
 
-    <div class="sp-axis">
-      <span class="ax-cap">結果重複性</span>
-      <div class="ax-line"><i style="left:12.5%"></i><i style="left:37.5%"></i><i style="left:62.5%"></i><i style="left:87.5%"></i></div>
-      <span class="ax-cap">結果隨機</span>
+    <div class="sp-axes">
+      <div class="sp-axis">
+        <span class="ax-cap">結果可重複</span>
+        <div class="ax-line"><i style="left:12.5%"></i><i style="left:37.5%"></i><i style="left:62.5%"></i><i style="left:87.5%"></i></div>
+        <span class="ax-cap">結果隨機</span>
+      </div>
+      <div class="sp-axis">
+        <span class="ax-cap">只處理預期內的狀況</span>
+        <div class="ax-line"><i style="left:12.5%"></i><i style="left:37.5%"></i><i style="left:62.5%"></i><i style="left:87.5%"></i></div>
+        <span class="ax-cap">能應付沒預期到的狀況</span>
+      </div>
     </div>
 
     <p class="closing rv" data-q="4">架構永遠<span class="brick">服務於業務</span></p>
+    <img class="sp-meme" src="assets/images/scene-09-mechanisms/scene-09-ai-unmask-meme.jpg"
+         alt="揭面具梗圖：被稱為 AI 的東西，掀開後其實是 if／then 流程圖。"
+         loading="lazy" onerror="this.style.display='none'" />
   </div>
 </section>
 
