@@ -19,6 +19,7 @@
   --line-faint:#E2DBD0;
   --serif:"Noto Serif CJK TC","Noto Serif TC","Source Han Serif TC",Georgia,serif;
   --sans:"Noto Sans CJK TC","Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;
+  --mono-stack:ui-monospace,"SFMono-Regular",Menlo,Consolas,"Noto Sans Mono CJK TC",monospace;
   --u:min(1vw,1.7778vh);
 }
 *{box-sizing:border-box;}
@@ -314,7 +315,7 @@ html.no-js .helpbar{display:none;}
 .dim{color:var(--muted);}
 .small{font-size:calc(var(--u)*1.02);line-height:1.6;}
 .tiny{font-size:calc(var(--u)*0.9);line-height:1.55;color:var(--muted);}
-.mono{font-family:ui-monospace,"SFMono-Regular",Menlo,Consolas,"Noto Sans Mono CJK TC",monospace;}
+.mono{font-family:var(--mono-stack);}
 .center{text-align:center;}
 
 /* 逐步揭露的通用類別 */
@@ -468,24 +469,34 @@ html.js .fade.is-cur{opacity:1;}
 }
 .copy-btn:hover,.copy-btn:focus-visible{background:var(--ink);color:var(--paper);outline:none;}
 
-/* ================= S06 四層 ================= */
-.layer-row{display:grid;grid-template-columns:repeat(4,1fr);gap:calc(var(--u)*1.1);flex:none;}
-.layer{background:var(--paper-raised);border:1px solid var(--line-light);padding:calc(var(--u)*0.9) calc(var(--u)*1.1);cursor:pointer;}
+/* ================= S06 三層 ================= */
+.layer-row{display:grid;grid-template-columns:repeat(3,1fr);gap:calc(var(--u)*1.4);flex:none;}
+.layer{background:var(--paper-raised);border:1px solid var(--line-light);padding:calc(var(--u)*0.7) calc(var(--u)*1.1);cursor:pointer;}
 .layer.is-cur{border-color:var(--brick);background:#fff;}
 .layer .ln{font-size:calc(var(--u)*0.85);letter-spacing:.2em;color:var(--brick);}
 .layer .lt{font-family:var(--serif);font-size:calc(var(--u)*1.35);margin:calc(var(--u)*0.3) 0;}
 .layer .ld{font-size:calc(var(--u)*0.95);color:var(--muted);line-height:1.5;}
-.dialog-area{flex:1;min-height:0;overflow:hidden;margin-top:calc(var(--u)*1.4);display:flex;gap:calc(var(--u)*2);}
-.dialog{flex:1;min-width:0;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-start;gap:calc(var(--u)*0.5);}
+.dialog-area{flex:1;min-height:0;overflow:hidden;margin-top:calc(var(--u)*1);display:flex;gap:calc(var(--u)*2);}
+.dialog{flex:1;min-width:0;overflow:hidden;display:flex;flex-direction:column;justify-content:center;gap:calc(var(--u)*0.45);}
 .bub{
-  flex:0 0 auto;max-width:78%;padding:calc(var(--u)*0.5) calc(var(--u)*0.9);
-  font-size:calc(var(--u)*0.9);line-height:1.5;border:1px solid var(--line-light);
+  flex:0 0 auto;max-width:76%;padding:calc(var(--u)*0.5) calc(var(--u)*1);
+  font-size:calc(var(--u)*0.88);line-height:1.5;border:1px solid var(--line-light);
   background:var(--paper-raised);white-space:pre-line;
+  border-radius:calc(var(--u)*1.1);
 }
-.bub.user{align-self:flex-start;border-left:calc(var(--u)*0.26) solid var(--ink);}
-.bub.ai{align-self:flex-end;border-left:calc(var(--u)*0.26) solid var(--brick);}
-.bub.sys{align-self:center;max-width:94%;background:var(--paper-deep);border-style:dashed;color:var(--muted);font-size:calc(var(--u)*0.88);}
-.bub .who{display:block;font-size:calc(var(--u)*0.76);letter-spacing:.16em;color:var(--muted);margin-bottom:calc(var(--u)*0.25);}
+.bub.ai{align-self:flex-start;border-bottom-left-radius:calc(var(--u)*0.25);}
+.bub.user{
+  align-self:flex-end;border-bottom-right-radius:calc(var(--u)*0.25);
+  background:rgba(180,95,60,.1);border-color:rgba(180,95,60,.35);
+}
+.bub.sys{
+  align-self:center;max-width:88%;text-align:center;border-radius:calc(var(--u)*0.4);
+  background:var(--paper-deep);border-style:dashed;color:var(--muted);
+  font-size:calc(var(--u)*0.82);font-family:var(--mono-stack);
+}
+.bub .who{display:block;font-size:calc(var(--u)*0.7);letter-spacing:.14em;color:var(--muted);margin-bottom:calc(var(--u)*0.12);}
+.bub.sys .who{display:inline;margin:0 calc(var(--u)*0.7) 0 0;}
+.bub.user .who{color:var(--brick-dark);}
 html.js .bub{opacity:0;transform:translateY(calc(var(--u)*0.8));transition:opacity .4s ease,transform .4s ease;}
 html.js .bub.in{opacity:1;transform:none;}
 .break-line{align-self:center;display:flex;align-items:center;gap:calc(var(--u)*0.8);color:var(--brick);font-size:calc(var(--u)*0.95);letter-spacing:.1em;width:100%;}
@@ -1052,7 +1063,7 @@ html.js .bub.in{opacity:1;transform:none;}
 </section>
 
 <!-- ===================== Scene 06 ===================== -->
-<section class="scene" id="scene-06-llm-agent" data-steps="6">
+<section class="scene" id="scene-06-llm-agent" data-steps="5">
   <div class="scene-head">
     <p class="eyebrow">Scene 06</p>
     <h2 class="scene-title">同一句「幫我下載影片」，AI 到底能做到哪一步？</h2>
@@ -1073,13 +1084,8 @@ html.js .bub.in{opacity:1;transform:none;}
       </div>
       <div class="layer" data-layer="2">
         <span class="ln">LAYER 3</span>
-        <p class="lt">Tool Call</p>
-        <p class="ld">LLM 提出結構化命令，外層執行器呼叫工具</p>
-      </div>
-      <div class="layer" data-layer="3">
-        <span class="ln">LAYER 4</span>
-        <p class="lt">ReAct</p>
-        <p class="ld">根據每次 Observation 持續決定下一步</p>
+        <p class="lt">Agent</p>
+        <p class="ld">外層接上工具與控制迴圈，依 Observation 決定下一步</p>
       </div>
     </div>
 
@@ -1088,10 +1094,10 @@ html.js .bub.in{opacity:1;transform:none;}
       <aside class="layer-side" id="s06-side"></aside>
     </div>
 
-    <div class="agent-sum rv" data-q="4">
+    <div class="agent-sum rv" data-q="3">
       <b>Agent</b>
-      <span>＝ LLM ＋ Context／狀態 ＋ 工具介面與外層執行器 ＋ ReAct 或其他控制迴圈 ＋ 權限／人工批准 ＋ 結果驗證／停止條件<br />
-      <span class="tiny">Agent 不是另一個神奇模型，而是把 LLM 接上狀態、工具、環境與控制迴圈後形成的系統。</span></span>
+      <span>＝ LLM ＋ Context ＋ Tools ＋ Harness<br />
+      <span class="tiny">harness 是外層那一圈：執行工具、把結果回送、決定下一步、要求批准、判斷何時停止。Agent 不是另一個更聰明的模型。</span></span>
     </div>
   </div>
 
@@ -1642,7 +1648,7 @@ var SCENES = [
   {id:"scene-05-cognition-prompt", n:"05", t:"一段 Prompt 搭配任意模型即可擴展認知", ready:1,
    notes:["先說 Prompt 的價值不是唯一正解，而是看見沒問出的角度。","▶ 切到準備好的 Gemini 對話紀錄，實際走一次輸出。","回來後：對於任何領域，都可以用這個脈絡快速掌握自己的認知階段與盲點。","指出「上手指南」會給可執行的 code —— 由此插入對話式 AI 與 AI Agent 的差別（銜接 S06）。","必講：AI 回傳的是候選清單，不等於事實，也不等於專業判斷。"]},
   {id:"scene-06-llm-agent", n:"06", t:"同一句「幫我下載影片」，AI 到底能做到哪一步？", ready:1,
-   notes:["四層使用同一個任務，不要換案例。","Layer 1：它不是忘記，而是第二次呼叫時上一輪根本沒有被帶進來。","Layer 2：看起來記得，是因為外層應用程式保存對話再重新放進 Context。","Layer 3：LLM 只提出結構化意圖；解析、執行、回傳都是外層執行器的工作。工具命令 ≠ 工具已執行。","Layer 4：重點是根據 Observation 再次判斷下一步，不是把文字分成命令與回答。","第 5 步：Agent 的組成結論。第 6 步：完整時序圖。","延伸（口頭）：ReAct 不是唯一架構，還有固定 Workflow、Plan-and-Execute、Reflection、ToT、Multi-agent。"]},
+   notes:["三層使用同一個任務，不要換案例。","Layer 1：它不是忘記，而是第二次呼叫時上一輪根本沒有被帶進來。","Layer 2：看起來記得，是因為外層應用程式保存對話再重新放進 Context。","Layer 3：LLM 只提出要呼叫什麼；解析、執行、回傳都是外層 harness 的工作。工具命令 ≠ 工具已執行。重點是拿到 Observation 之後再判斷下一步。","第 4 步：Agent ＝ LLM ＋ Context ＋ Tools ＋ Harness。第 5 步：完整時序圖。","延伸（口頭）：ReAct 不是唯一架構，還有固定 Workflow、Plan-and-Execute、Reflection、ToT、Multi-agent。"]},
   {id:"scene-07-agent-parts", n:"07", t:"Agent 是怎麼被組裝起來的？", ready:1,
    notes:["用新進員工的比喻快速跳過整面網格，不逐一講解。","一句話收尾：缺哪一個零件，它就少一種真實工作的能力。"]},
   {id:"scene-08-agent-ready-world", n:"08", t:"世界正在替 Agent 開門，也同時加上門禁", ready:1,
@@ -1671,45 +1677,38 @@ var LAYER_DATA = [
     bubbles:[
       {who:"使用者", cls:"user", t:"我想下載這支 YouTube 影片，要怎麼做？"},
       {who:"LLM", cls:"ai", t:"你可以先安裝 yt-dlp，再執行：\nyt-dlp [YouTube URL]"},
-      {cls:"break", t:"第一次的輸入／輸出　沒有被帶入　第二次的呼叫"},
+      {cls:"break", t:"兩次呼叫之間　沒有任何東西被保留"},
       {who:"使用者", cls:"user", t:"我下載好了。"},
-      {who:"LLM", cls:"ai", t:"太好了！你下載的是遊戲、應用程式，還是其他軟體呢？\n如果是軟體，建議先確認下載來源是否可信，再進行安裝。"}
+      {who:"LLM", cls:"ai", t:"太好了！你下載的是遊戲、應用程式，還是其他軟體呢？\n如果是軟體，建議先確認下載來源是否可信。"}
     ],
-    can:"根據單次輸入產生說明或命令文字",
-    cant:"保留上一輪對話、執行 yt-dlp、知道檔案是否真的產生",
-    note:"它不是突然忘記，而是第二次呼叫時，上一輪的需求根本沒有進入輸入。"
+    can:"依這一次的輸入產生文字：說明、步驟，或一段可以自己貼上去執行的命令",
+    cant:"記得上一輪、執行任何命令、看到你的電腦與檔案、確認結果是否成功",
+    note:"它不是突然忘記，而是第二次呼叫時，上一輪的內容根本沒有被放進輸入。"
   },
   {
     bubbles:[
-      {cls:"sys", t:"［系統指示］你是下載流程的協助者。\n［上一輪使用者］我想下載這支 YouTube 影片，要怎麼做？\n［上一輪 LLM］你可以先安裝 yt-dlp，再執行：yt-dlp [YouTube URL]\n［這一輪使用者］我下載好了。\n↓ 一起送入 LLM"},
-      {who:"LLM", cls:"ai", t:"很好，接下來可以確認 yt-dlp 是否成功產生影片檔案，並回報檔案位置。"}
+      {who:"使用者", cls:"user", t:"我想下載這支 YouTube 影片，要怎麼做？"},
+      {who:"LLM", cls:"ai", t:"你可以先安裝 yt-dlp，再執行：\nyt-dlp [YouTube URL]"},
+      {who:"使用者", cls:"user", t:"我下載好了。"},
+      {who:"LLM", cls:"ai", t:"很好。接下來確認 yt-dlp 是不是真的產生了影片檔案，\n再看一下檔案放在哪個資料夾。"}
     ],
-    can:"延續對話、引用先前的任務與命令",
-    cant:"真的執行命令、檢查本機環境、確認檔案是否存在",
-    note:"它看起來像記得，是因為外層應用程式把上一輪對話保存起來，再一起送進 LLM。Context 有容量限制，過長對話可能被裁切或摘要。"
+    can:"延續對話、引用前面的需求與命令，順著已經說過的內容調整建議",
+    cant:"仍然只能輸出文字：不能執行、不能檢查你的環境、不能確認檔案是否存在",
+    note:"它看起來像記得，是因為外層應用程式把先前的對話保存起來，每次再一起送進 LLM。Context 有長度上限，過長的對話會被裁切或摘要。"
   },
   {
     bubbles:[
-      {cls:"sys", t:"LLM 輸出\n ├─ 一般回答 → 顯示給使用者\n └─ 工具命令 → 外層執行器 → 本機工具"},
-      {who:"LLM", cls:"ai", t:"→ tool: check_command\n   arguments: { command: \"yt-dlp\" }"},
-      {who:"外層執行器 → 本機環境", cls:"user", t:"實際執行檢查"},
-      {who:"Observation", cls:"sys", t:"yt-dlp 尚未安裝"}
+      {who:"使用者", cls:"user", t:"我想下載這支 YouTube 影片，要怎麼做？"},
+      {who:"LLM", cls:"ai", t:"我先看看你的電腦上有沒有 yt-dlp。"},
+      {who:"Tool → Observation", cls:"sys", t:"check_command(\"yt-dlp\") → 尚未安裝"},
+      {who:"LLM", cls:"ai", t:"安裝會改變你的電腦，需要你的同意。要我安裝嗎？"},
+      {who:"使用者", cls:"user", t:"好，我也確認我有權下載這支影片。"},
+      {who:"Tool → Observation", cls:"sys", t:"安裝 yt-dlp → 成功　｜　執行下載 → 檔案已產生"},
+      {who:"LLM", cls:"ai", t:"檔案已產生，大小與格式正常，位置在下載資料夾。"}
     ],
-    can:"請外層執行一次檢查或操作",
-    cant:"根據 Observation 持續規劃、遇到批准節點停下、確認任務完成",
-    note:"關鍵不是 LLM 突然會操作電腦，而是外層程式先定義了它可以呼叫哪些工具。工具命令 ≠ 工具已執行。"
-  },
-  {
-    bubbles:[
-      {who:"判斷／規劃", cls:"ai", t:"先檢查下載工具"},
-      {who:"Action → Observation", cls:"user", t:"check_command(\"yt-dlp\") → 尚未安裝"},
-      {who:"判斷／規劃 → Action", cls:"ai", t:"安裝會改變本機環境，需要使用者批准 → 詢問使用者"},
-      {who:"Observation → Action", cls:"user", t:"同意安裝，且確認有權下載 → 安裝 yt-dlp → 執行下載"},
-      {who:"Observation → Final Answer", cls:"ai", t:"檔案已產生 → 檢查存在、大小與格式 → 回報檔案位置"}
-    ],
-    can:"根據每次 Observation 決定下一步、在高影響步驟停下來詢問、驗證結果",
-    cant:"—— 這一層已形成迴圈；安裝或下載失敗時，讀取錯誤、修正指令，或安全停止並回報",
-    note:"ReAct 是 Reasoning 與 Acting 交錯的行為模式。簡報只呈現判斷／規劃摘要，不聲稱看見模型完整的內部思考。"
+    can:"呼叫外層提供的工具、拿到 Observation 後再判斷下一步、在會改變環境的步驟停下來要求批准、最後檢查結果並回報，失敗時修正或安全停止",
+    cant:"超出被授予的工具與權限、保證每次判斷都正確；Observation 可能被誤讀，工具可能被濫用或被 Prompt Injection 影響，沒有停止條件就會空轉",
+    note:"LLM 只提出「要呼叫哪個工具」；解析命令、實際執行、把結果送回來，都是外層 harness 的工作 —— 工具命令 ≠ 工具已執行。harness 裡的控制迴圈可以是 ReAct，也可以是別種寫法。"
   }
 ];
 
@@ -1782,15 +1781,17 @@ var s06Rendered = -1;
 function applyS06(n){
   var main = document.getElementById("s06-main");
   var seq  = document.getElementById("s06-seq");
-  var showSeq = (n >= 6);
+  var showSeq = (n >= 5);
   seq.hidden = !showSeq;
   main.style.visibility = showSeq ? "hidden" : "visible";
 
   document.querySelectorAll("#scene-06-llm-agent .layer").forEach(function(el,i){
-    el.classList.toggle("is-cur", i === n - 1 && n <= 4);
+    el.classList.toggle("is-cur", i === n - 1 && n <= 3);
   });
 
-  var li = (n >= 1 && n <= 4) ? n - 1 : -1;
+  var li = (n >= 1 && n <= 3) ? n - 1 : -1;
+  var da = document.querySelector("#scene-06-llm-agent .dialog-area");
+  if(da) da.style.visibility = (li < 0) ? "hidden" : "visible";
   if(li === s06Rendered) return;
   s06Rendered = li;
 
@@ -1800,6 +1801,7 @@ function applyS06(n){
   if(li < 0) return;
 
   var d = LAYER_DATA[li];
+  var seen = {};
   d.bubbles.forEach(function(b, i){
     var el = document.createElement("div");
     if(b.cls === "break"){
@@ -1807,7 +1809,9 @@ function applyS06(n){
       el.textContent = b.t;
     } else {
       el.className = "bub " + b.cls;
-      if(b.who){
+      var showWho = b.who && (b.cls === "sys" || !seen[b.cls]);
+      seen[b.cls] = 1;
+      if(showWho){
         var w = document.createElement("span");
         w.className = "who"; w.textContent = b.who; el.appendChild(w);
       }
