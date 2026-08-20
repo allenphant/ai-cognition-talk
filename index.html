@@ -552,6 +552,8 @@ html.js .bub.in{opacity:1;transform:none;}
 }
 #scene-08-agent-ready-world .scene-title{font-size:calc(var(--u)*2.6);}
 #scene-08-agent-ready-world .body-area{margin-top:calc(var(--u)*0.6);padding-bottom:calc(var(--u)*0.5);}
+#scene-09-agent-or-not .scene-title{font-size:calc(var(--u)*2.7);}
+#scene-09-agent-or-not .body-area{margin-top:calc(var(--u)*0.6);padding-bottom:calc(var(--u)*0.4);}
 .rail{
   border:1px solid var(--line-light);background:var(--paper-raised);
   padding:calc(var(--u)*0.6) calc(var(--u)*1.1) calc(var(--u)*0.9);overflow:hidden;
@@ -587,24 +589,35 @@ html.js .bub.in{opacity:1;transform:none;}
 }
 
 /* ================= S09 光譜 ================= */
-.spectrum{flex:1;min-height:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));grid-template-rows:minmax(0,1fr);gap:calc(var(--u)*1.1);}
-.sp{border:1px solid var(--line-light);background:var(--paper-raised);padding:calc(var(--u)*1.1);overflow:hidden;display:flex;flex-direction:column;gap:calc(var(--u)*0.9);}
+.spectrum{position:relative;flex:1;min-height:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));grid-template-rows:minmax(0,1fr);gap:calc(var(--u)*1.1);}
+.sp{border:1px solid var(--line-light);background:var(--paper-raised);padding:calc(var(--u)*0.85) calc(var(--u)*1.05);overflow:hidden;display:flex;flex-direction:column;gap:calc(var(--u)*0.5);}
 .sp.is-cur{border-color:var(--brick);}
 .sp .sh{
   font-family:var(--serif);font-size:calc(var(--u)*1.5);color:var(--ink);line-height:1.3;
-  border-bottom:1px solid var(--line-light);padding-bottom:calc(var(--u)*0.55);
+  border-bottom:1px solid var(--line-light);padding-bottom:calc(var(--u)*0.4);
 }
-.sp .sf{font-size:calc(var(--u)*1);color:var(--ink-soft);line-height:1.6;}
+.sp .sf{font-size:calc(var(--u)*0.98);color:var(--ink-soft);line-height:1.5;}
 .sp .sf .k{
   display:block;font-size:calc(var(--u)*0.78);letter-spacing:.18em;
   color:var(--brick);margin-bottom:calc(var(--u)*0.2);
 }
-.sp-meme{
-  position:absolute;left:calc(var(--u)*5.5);bottom:calc(var(--u)*3.6);
-  height:calc(var(--u)*7);width:auto;display:block;
-  border:1px solid var(--line-light);
+.sp .sl{list-style:none;margin:calc(var(--u)*-0.35) 0 0;padding:0;display:grid;gap:calc(var(--u)*0.3);}
+.sp .sl li{font-size:calc(var(--u)*0.88);color:var(--muted);line-height:1.5;}
+.sp .sl b{
+  font-weight:400;font-family:var(--serif);
+  font-size:calc(var(--u)*0.98);color:var(--ink);
+  margin-right:calc(var(--u)*0.5);
 }
-.sp-axes{flex:none;margin-top:calc(var(--u)*1.2);display:grid;gap:calc(var(--u)*0.7);}
+.sp-meme{
+  position:absolute;left:calc(25% + var(--u)*1);top:50%;
+  transform:translateY(-50%) scale(.96);
+  height:calc(var(--u)*22);width:auto;z-index:5;
+  border:1px solid var(--ink);box-shadow:0 calc(var(--u)*0.5) calc(var(--u)*1.6) rgba(25,23,21,.22);
+  opacity:0;pointer-events:none;transition:opacity .25s ease,transform .25s ease;
+}
+.sp[data-r="0"]:hover ~ .sp-meme,
+.sp[data-r="0"]:focus-within ~ .sp-meme{opacity:1;transform:translateY(-50%) scale(1);}
+.sp-axes{flex:none;margin-top:calc(var(--u)*1);display:grid;gap:calc(var(--u)*0.6);}
 .sp-axis{display:flex;align-items:center;gap:calc(var(--u)*0.8);}
 .sp-axis .ax-cap{font-size:calc(var(--u)*0.95);color:var(--muted);letter-spacing:.1em;white-space:nowrap;}
 .sp-axis .ax-line{flex:1;height:1px;background:var(--line);position:relative;}
@@ -620,8 +633,8 @@ html.js .bub.in{opacity:1;transform:none;}
 }
 .sp-axis .ax-line i{position:absolute;top:calc(var(--u)*-0.4);width:1px;height:calc(var(--u)*0.9);background:var(--line);}
 .closing{
-  margin-top:calc(var(--u)*1.4);flex:none;text-align:center;
-  font-family:var(--serif);font-size:calc(var(--u)*1.9);letter-spacing:.04em;
+  margin-top:calc(var(--u)*1);flex:none;text-align:center;
+  font-family:var(--serif);font-size:calc(var(--u)*1.75);letter-spacing:.04em;
 }
 
 /* ================= S10 內嵌互動版 ================= */
@@ -1368,42 +1381,65 @@ html.js .bub.in{opacity:1;transform:none;}
       <div class="sp fade" data-r="0">
         <p class="sh">一套自動化程式碼</p>
         <p class="sf"><span class="k">需求描述</span>規則寫得完、例外很少，而且每次都要得到一模一樣的結果。</p>
-        <p class="sf"><span class="k">案例</span>檔案改名、表單轉寄、自動排程、資料視覺化</p>
+        <p class="sf"><span class="k">案例</span></p>
+        <ul class="sl">
+          <li><b>規則腳本</b>檔案改名、表單轉寄</li>
+          <li><b>排程器</b>定時執行、到期通知</li>
+          <li><b>資料處理</b>清洗、彙整、視覺化</li>
+        </ul>
       </div>
+      <img class="sp-meme" src="assets/images/scene-09-mechanisms/scene-09-ai-unmask-meme.jpg"
+           alt="揭面具梗圖：被稱為 AI 的東西，掀開後其實是 if／then 流程圖。"
+           loading="lazy" onerror="this.style.display='none'" />
       <div class="sp fade" data-r="1">
         <p class="sh">一套最佳化演算法</p>
         <p class="sf"><span class="k">需求描述</span>條件明確、好壞可以計分，但組合太多，人排不完也排不好。</p>
-        <p class="sf"><span class="k">案例</span>機場人員排班（CP-SAT）、菌落影像的計數與分割、路線規劃</p>
+        <p class="sf"><span class="k">案例</span></p>
+        <ul class="sl">
+          <li><b>混合整數規劃求解器</b>機場人員排班</li>
+          <li><b>邊緣偵測／影像分割</b>菌落計數器</li>
+          <li><b>最短路徑演算法</b>路線與車道建議</li>
+        </ul>
       </div>
       <div class="sp fade" data-r="2">
         <p class="sh">一個訓練好的模型</p>
         <p class="sf"><span class="k">需求描述</span>輸入是自然語言、影像或聲音，規則寫不完，而且可以接受一定程度的誤差。</p>
-        <p class="sf"><span class="k">案例</span>摘要、分類、翻譯、問答、從文件擷取欄位</p>
+        <p class="sf"><span class="k">案例</span></p>
+        <ul class="sl">
+          <li><b>文字辨識 OCR</b>發票、證照、紙本表單</li>
+          <li><b>語音辨識 ASR</b>會議紀錄、影片字幕</li>
+          <li><b>物件偵測 OD</b>口罩辨識、AI 電梯</li>
+          <li><b>語言模型 LLM</b>摘要、分類、翻譯</li>
+          <li><b>時間序列 TSM</b>傳染病預測、氣象預測</li>
+        </ul>
       </div>
       <div class="sp fade" data-r="3">
         <p class="sh">一個 Agent</p>
         <p class="sf"><span class="k">需求描述</span>步驟無法事先寫死，中途需要查資料、呼叫工具、看回報再決定下一步。</p>
-        <p class="sf"><span class="k">案例</span>查資料、呼叫工具、觀察結果、重新規劃，直到完成或安全停止</p>
+        <p class="sf"><span class="k">案例</span></p>
+        <ul class="sl">
+          <li><b>工具呼叫迴圈</b>查資料、呼叫工具、看回報</li>
+          <li><b>受控自動化</b>改變環境前先要求批准</li>
+          <li><b>端到端交辦</b>整理 → 比對 → 產出 → 自我檢查</li>
+        </ul>
       </div>
     </div>
 
     <div class="sp-axes">
       <div class="sp-axis">
         <span class="ax-cap">結果可重複</span>
-        <div class="ax-line"><i style="left:12.5%"></i><i style="left:37.5%"></i><i style="left:62.5%"></i><i style="left:87.5%"></i></div>
+        <div class="ax-line"><i style="left:50%"></i></div>
         <span class="ax-cap">結果隨機</span>
       </div>
       <div class="sp-axis">
         <span class="ax-cap">只處理預期內的狀況</span>
-        <div class="ax-line"><i style="left:12.5%"></i><i style="left:37.5%"></i><i style="left:62.5%"></i><i style="left:87.5%"></i></div>
+        <div class="ax-line"><i style="left:50%"></i></div>
         <span class="ax-cap">能應付沒預期到的狀況</span>
       </div>
     </div>
 
-    <p class="closing rv" data-q="4">架構永遠<span class="brick">服務於業務</span></p>
-    <img class="sp-meme" src="assets/images/scene-09-mechanisms/scene-09-ai-unmask-meme.jpg"
-         alt="揭面具梗圖：被稱為 AI 的東西，掀開後其實是 if／then 流程圖。"
-         loading="lazy" onerror="this.style.display='none'" />
+    <p class="closing rv" data-q="4">架構永遠<span class="brick">服務於業務</span>，試著說出「我要的 AI 是什麼」</p>
+
   </div>
 </section>
 

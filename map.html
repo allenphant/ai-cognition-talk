@@ -151,9 +151,14 @@
     .map-header {
       display: flex;
       align-items: center;
-      justify-content: space-between;
       gap: 16px;
       min-height: 38px;
+    }
+
+    .legend-inline {
+      margin-right: auto;
+      font-size: 12px;
+      color: var(--ink-soft);
     }
 
     .map-header h2,
@@ -1006,9 +1011,15 @@
     .drag-ghost.visible { display: block; }
 
     .status {
-      min-height: 18px;
-      color: var(--muted);
-      font-size: 12px;
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      margin: -1px;
+      padding: 0;
+      overflow: hidden;
+      clip: rect(0 0 0 0);
+      white-space: nowrap;
+      border: 0;
     }
 
     @media (max-width: 900px) {
@@ -1089,11 +1100,8 @@ html{scrollbar-width:none;} html::-webkit-scrollbar{width:0;height:0;}</style>
     <header class="topbar">
       <div>
         <div class="eyebrow"><span class="eyebrow-dot"></span>AI PROJECT MAP / INTERACTIVE DEMO</div>
-        <h1>你想要的「AI」，到底是哪一種？</h1>
-        <p class="tagline">一套收容新東西的座標空間</p>
-        <p class="subtitle">
-          把右側專案拖進圖上：橫向表示成品運行時的主要決策機制；縱向表示這個專案需要維護到哪一層技術架構。
-        </p>
+        <h1>一套收容新資訊的認知空間</h1>
+        <p class="subtitle">把右側專案拖進圖中。</p>
       </div>
       <div class="page-number">12 / 16</div>
     </header>
@@ -1102,6 +1110,7 @@ html{scrollbar-width:none;} html::-webkit-scrollbar{width:0;height:0;}</style>
       <section class="map-panel" aria-labelledby="map-title">
         <div class="map-header">
           <h2 id="map-title">專案分類工作台</h2>
+          <span class="legend-item legend-inline"><span class="legend-risk"></span>紅色外環＝敏感資料</span>
           <div class="toolbar" aria-label="座標控制">
             <button class="tool-button" id="undoBtn" type="button">復原</button>
             <button class="tool-button" id="resetBtn" type="button">重設</button>
@@ -1113,7 +1122,7 @@ html{scrollbar-width:none;} html::-webkit-scrollbar{width:0;height:0;}</style>
 
         <div class="plot-wrap" id="plotWrap">
           <div class="axis-title-y">系統需要維護到哪一層技術架構？</div>
-          <div class="axis-title-x">系統在運行時如何決定下一步？</div>
+          <div class="axis-title-x">所使用的 AI 具體是哪一種？</div>
 
           <div class="plot" id="plot" role="application" aria-label="AI 專案二維座標">
             <div class="axis-x"></div>
@@ -1171,10 +1180,6 @@ html{scrollbar-width:none;} html::-webkit-scrollbar{width:0;height:0;}</style>
           </div>
         </div>
 
-        <div class="legend" aria-label="圖例">
-          <span class="legend-title">橫軸＝運行時的決策機制；縱軸＝架構層級</span>
-          <span class="legend-item"><span class="legend-risk"></span>紅色外環＝敏感資料</span>
-        </div>
         <div class="status" id="status" aria-live="polite"></div>
       </section>
 
