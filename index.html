@@ -88,16 +88,18 @@ html.no-js .progress{display:none;}
 
 /* ---------- Scene 01 ---------- */
 #scene-01-title{justify-content:center;}
-.cognition-rings{
+.scope-sketch{
   position:absolute;top:calc(var(--u)*4.6);right:calc(var(--u)*5.5);
   width:calc(var(--u)*27);height:calc(var(--u)*27);
   fill:none;pointer-events:none;
 }
-.cognition-rings .r-core{fill:var(--ink);stroke:none;}
-.cognition-rings .r-in{stroke:var(--line-light);stroke-width:1;}
-.cognition-rings .r-mid{stroke:var(--line);stroke-width:1;opacity:.75;}
-.cognition-rings .r-edge{stroke:var(--line);stroke-width:1;stroke-dasharray:5 7;opacity:.8;}
-.cognition-rings .r-mark{stroke:var(--brick);stroke-width:2;}
+.scope-sketch .sk-line{stroke:var(--line);stroke-width:1.4;stroke-linejoin:round;stroke-linecap:round;}
+.scope-sketch .sk-hair{stroke:var(--line-light);stroke-width:1;}
+.scope-sketch .sk-cloud{stroke:var(--line);stroke-width:1.2;stroke-dasharray:5 6;opacity:.85;}
+.scope-sketch .sk-q{
+  fill:var(--brick);stroke:none;font-family:var(--serif);
+  font-size:34px;text-anchor:middle;
+}
 .title-main{font-size:calc(var(--u)*6.4);line-height:1.16;letter-spacing:.02em;}
 .title-sub{font-size:calc(var(--u)*1.75);color:var(--ink-soft);margin-top:calc(var(--u)*1.6);font-weight:400;font-family:var(--sans);letter-spacing:.04em;}
 .takeaway-head{
@@ -619,14 +621,21 @@ html.js .bub.in{opacity:1;transform:none;}
 
 <!-- ===================== Scene 01 ===================== -->
 <section class="scene" id="scene-01-title" data-steps="0">
-  <svg class="cognition-rings" viewBox="0 0 240 240" aria-hidden="true" focusable="false">
-    <circle cx="120" cy="120" r="3" class="r-core" />
-    <circle cx="119" cy="121" r="20" class="r-in" />
-    <circle cx="121" cy="119" r="42" class="r-in" />
-    <circle cx="119" cy="120" r="64" class="r-mid" />
-    <circle cx="121" cy="121" r="87" class="r-mid" />
-    <circle cx="120" cy="120" r="111" class="r-edge" />
-    <circle cx="198" cy="42" r="6" class="r-mark" />
+  <svg class="scope-sketch" viewBox="0 0 240 240" aria-hidden="true" focusable="false">
+    <!-- 虛線雲朵：尚未看見的區域 -->
+    <path class="sk-cloud" d="M134,88 A15,15 0 0 1 128,62 A18,18 0 0 1 150,46 A20,20 0 0 1 182,44 A16,16 0 0 1 202,62 A14,14 0 0 1 200,88 Z" />
+    <text class="sk-q" x="166" y="79">?</text>
+    <!-- 望遠鏡 -->
+    <g transform="translate(86,132) rotate(-45)">
+      <path class="sk-line" d="M-52,-7 L52,-12 L52,12 L-52,7 Z" />
+      <path class="sk-line" d="M-64,-4.5 L-52,-5.6 L-52,5.6 L-64,4.5 Z" />
+      <line class="sk-hair" x1="-22" y1="-8.9" x2="-22" y2="8.9" />
+      <line class="sk-hair" x1="12" y1="-10.5" x2="12" y2="10.5" />
+    </g>
+    <line class="sk-line" x1="94.5" y1="140.5" x2="95" y2="153" />
+    <line class="sk-line" x1="95" y1="153" x2="74" y2="196" />
+    <line class="sk-line" x1="95" y1="153" x2="97" y2="198" />
+    <line class="sk-line" x1="95" y1="153" x2="118" y2="192" />
   </svg>
   <p class="eyebrow">AI 超充站　技術分享</p>
   <h1 class="title-main">拓展認知邊界<br />解除 AI 焦慮</h1>
