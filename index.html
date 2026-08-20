@@ -568,29 +568,54 @@ html.js .bub.in{opacity:1;transform:none;}
   letter-spacing:.04em;font-weight:400;
 }
 .bm{
-  display:block;text-decoration:none;color:inherit;
+  display:grid;grid-template-columns:calc(var(--u)*13) minmax(0,1fr);
+  column-gap:calc(var(--u)*1);align-items:start;
+  text-decoration:none;color:inherit;
   border-left:calc(var(--u)*0.22) solid var(--line-light);
   padding:calc(var(--u)*0.05) 0 calc(var(--u)*0.05) calc(var(--u)*0.7);
   transition:border-color .2s ease;
 }
 .bm:hover,.bm:focus-visible{border-left-color:var(--brick);outline:none;}
+.bm-l{display:block;}
+.bm-r{display:block;height:1px;background:var(--line-light);margin:calc(var(--u)*0.28) 0;}
 .bm-t{display:block;font-size:calc(var(--u)*0.95);color:var(--ink);line-height:1.3;}
-.bm-c{display:block;font-size:calc(var(--u)*0.76);color:var(--muted);line-height:1.45;margin-top:calc(var(--u)*0.1);}
+.bm-c{display:block;font-size:calc(var(--u)*0.76);color:var(--muted);line-height:1.45;}
 .bm-d{
   display:block;font-size:calc(var(--u)*0.68);color:var(--brick-dark);
-  letter-spacing:.08em;margin-top:calc(var(--u)*0.08);
+  letter-spacing:.08em;
 }
 
 /* ================= S09 光譜 ================= */
 .spectrum{flex:1;min-height:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:calc(var(--u)*1.1);align-content:center;}
-.sp{border:1px solid var(--line-light);background:var(--paper-raised);padding:calc(var(--u)*1.3);display:flex;flex-direction:column;gap:calc(var(--u)*0.5);}
+.sp{border:1px solid var(--line-light);background:var(--paper-raised);padding:calc(var(--u)*1.1);display:flex;flex-direction:column;gap:calc(var(--u)*0.75);}
 .sp.is-cur{border-color:var(--brick);}
-.sp .st{font-family:var(--serif);font-size:calc(var(--u)*1.6);}
-.sp .sq{font-size:calc(var(--u)*1.05);color:var(--brick-dark);}
-.sp .se{font-size:calc(var(--u)*1);color:var(--muted);line-height:1.55;}
-.wf-line{
-  margin-top:calc(var(--u)*1.2);border-top:1px dashed var(--line);padding-top:calc(var(--u)*0.7);
-  font-size:calc(var(--u)*1.05);color:var(--muted);text-align:center;flex:none;
+.sp .sf{font-size:calc(var(--u)*0.92);color:var(--ink-soft);line-height:1.5;}
+.sp .sf .k{
+  display:block;font-size:calc(var(--u)*0.72);letter-spacing:.18em;
+  color:var(--muted);margin-bottom:calc(var(--u)*0.15);
+}
+.sp .sf-a{font-family:var(--serif);font-size:calc(var(--u)*1.25);color:var(--ink);line-height:1.35;}
+.sp .sf-a .k{color:var(--brick);font-family:var(--sans);}
+.sp-axis{
+  flex:none;margin-top:calc(var(--u)*1.4);
+  display:flex;align-items:center;gap:calc(var(--u)*0.8);
+}
+.sp-axis .ax-cap{font-size:calc(var(--u)*0.95);color:var(--muted);letter-spacing:.1em;white-space:nowrap;}
+.sp-axis .ax-line{flex:1;height:1px;background:var(--line);position:relative;}
+.sp-axis .ax-line::before{
+  content:"";position:absolute;left:calc(var(--u)*-0.1);top:50%;transform:translateY(-50%);
+  border-right:calc(var(--u)*0.5) solid var(--line);
+  border-top:calc(var(--u)*0.3) solid transparent;border-bottom:calc(var(--u)*0.3) solid transparent;
+}
+.sp-axis .ax-line::after{
+  content:"";position:absolute;right:calc(var(--u)*-0.1);top:50%;transform:translateY(-50%);
+  border-left:calc(var(--u)*0.5) solid var(--line);
+  border-top:calc(var(--u)*0.3) solid transparent;border-bottom:calc(var(--u)*0.3) solid transparent;
+}
+.sp-axis .ax-line i{position:absolute;top:calc(var(--u)*-0.4);width:1px;height:calc(var(--u)*0.9);background:var(--line);}
+.closing{
+  margin-top:calc(var(--u)*1.4);flex:none;text-align:center;
+  font-family:var(--serif);font-size:calc(var(--u)*1.9);letter-spacing:.04em;
 }
 
 /* ================= S10 內嵌互動版 ================= */
@@ -1270,7 +1295,7 @@ html.js .bub.in{opacity:1;transform:none;}
 <section class="scene" id="scene-08-agent-ready-world" data-steps="0">
   <div class="scene-head">
     <p class="eyebrow">Scene 08</p>
-    <h2 class="scene-title">世界正在替 Agent 開門，也同時加上門禁</h2>
+    <h2 class="scene-title">世界正在替 Agent 開門，效益和風險並存</h2>
   </div>
 
   <div class="body-area">
@@ -1278,66 +1303,46 @@ html.js .bub.in{opacity:1;transform:none;}
       <section class="rail" data-r="0">
         <p class="rn">能讀<span>資料被整理成 agent 讀得懂、敢引用的樣子</span></p>
         <a class="bm" href="https://www-api.moda.gov.tw/File/Get/moda/zh-tw/ae1g6Uvj4fUa4a3" target="_blank" rel="noopener">
-          <span class="bm-t">數發部《AI-Ready Data 詮釋資料框架指標指引》</span>
-          <span class="bm-c">用可查找、可近用、互通、再利用、可信任五個構面，替公部門資料補上 metadata。agent 要的不只是抓得到，而是判斷得出這份資料能不能用、可不可信。</span>
-          <span class="bm-d">moda.gov.tw　2025.10 ↗</span>
+          <span class="bm-l"><span class="bm-t">數發部《AI-Ready Data 詮釋資料框架指標指引》</span><span class="bm-r"></span><span class="bm-d">moda.gov.tw　2025.10 ↗</span></span><span class="bm-c">用可查找、可近用、互通、再利用、可信任五個構面，替公部門資料補上 metadata。agent 要的不只是抓得到，而是判斷得出這份資料能不能用、可不可信。</span>
         </a>
-        <a class="bm" href="https://github.com/aa0101181514/tw-legal-rag/blob/main/README.zh-TW.md" target="_blank" rel="noopener">
-          <span class="bm-t">Taiwan Legal RAG</span>
-          <span class="bm-c">把 2,250 萬篇判決做成語意檢索，用 CLI 與遠端 MCP 對 agent 開放，並回傳可驗證的引用。它自己完全不呼叫 LLM —— 只負責把「有依據的材料」遞到 agent 手上。</span>
-          <span class="bm-d">github.com/aa0101181514 ↗</span>
+        <a class="bm" href="https://github.com/aa0101181514/tw-legal-rag/blob/main/README.md" target="_blank" rel="noopener">
+          <span class="bm-l"><span class="bm-t">Taiwan Legal RAG</span><span class="bm-r"></span><span class="bm-d">github.com/aa0101181514 ↗</span></span><span class="bm-c">把 2,250 萬篇判決做成語意檢索，用 CLI 與遠端 MCP 對 agent 開放，並回傳可驗證的引用。它自己完全不呼叫 LLM —— 只負責把「有依據的材料」遞到 agent 手上。</span>
         </a>
         <a class="bm" href="https://github.com/firecrawl" target="_blank" rel="noopener">
-          <span class="bm-t">Firecrawl</span>
-          <span class="bm-c">把塞滿版面、廣告與動態內容的網頁，轉成乾淨的 Markdown 或結構化 JSON。agent 的眼睛要的是內容，不是 HTML。</span>
-          <span class="bm-d">github.com/firecrawl ↗</span>
+          <span class="bm-l"><span class="bm-t">Firecrawl</span><span class="bm-r"></span><span class="bm-d">github.com/firecrawl ↗</span></span><span class="bm-c">把塞滿版面、廣告與動態內容的網頁，轉成乾淨的 Markdown 或結構化 JSON。agent 的眼睛要的是內容，不是 HTML。</span>
         </a>
       </section>
 
       <section class="rail" data-r="1">
-        <p class="rn">能做<span>既有軟體長出 agent 動得了的介面</span></p>
+        <p class="rn">能操作<span>既有軟體長出 agent 動得了的介面</span></p>
         <a class="bm" href="https://github.com/HKUDS/CLI-Anything/tree/main" target="_blank" rel="noopener">
-          <span class="bm-t">CLI-Anything</span>
-          <span class="bm-c">把 GIMP、Blender、LibreOffice、QGIS 等 18 套以上的 GUI 軟體自動生成 CLI。agent 因此能真的叫這些軟體算圖、建模、轉檔，產出的是真實成品，不是模擬。</span>
-          <span class="bm-d">github.com/HKUDS ↗</span>
+          <span class="bm-l"><span class="bm-t">CLI-Anything</span><span class="bm-r"></span><span class="bm-d">github.com/HKUDS ↗</span></span><span class="bm-c">把 GIMP、Blender、LibreOffice、QGIS 等 18 套以上的 GUI 軟體自動生成 CLI。agent 因此能真的叫這些軟體算圖、建模、轉檔，產出的是真實成品，不是模擬。</span>
         </a>
         <a class="bm" href="https://github.com/browser-use/browser-use" target="_blank" rel="noopener">
-          <span class="bm-t">browser-use</span>
-          <span class="bm-c">讓 agent 像人一樣開頁面、點按鈕、填表單、把資料抓成 CSV。沒有開 API 的網站，也因此變成 agent 能操作的介面。</span>
-          <span class="bm-d">github.com/browser-use ↗</span>
+          <span class="bm-l"><span class="bm-t">browser-use</span><span class="bm-r"></span><span class="bm-d">github.com/browser-use ↗</span></span><span class="bm-c">讓 agent 像人一樣開頁面、點按鈕、填表單、把資料抓成 CSV。沒有開 API 的網站，也因此變成 agent 能操作的介面。</span>
         </a>
       </section>
 
       <section class="rail" data-r="2">
         <p class="rn">有市場<span>agent 開始被當成付費與交易的一方</span></p>
         <a class="bm" href="https://blog.cloudflare.com/zh-tw/wallets/" target="_blank" rel="noopener">
-          <span class="bm-t">Cloudflare Wallets／x402</span>
-          <span class="bm-c">agent 把付款直接掛在 HTTP 請求上買 API 與內容，並可宣告身分。同時內建支出上限、允許清單與異常人工審查 —— 有錢包不等於錢沒有上限。</span>
-          <span class="bm-d">blog.cloudflare.com ↗</span>
+          <span class="bm-l"><span class="bm-t">Cloudflare Wallets／x402</span><span class="bm-r"></span><span class="bm-d">blog.cloudflare.com ↗</span></span><span class="bm-c">agent 把付款直接掛在 HTTP 請求上買 API 與內容，並可宣告身分。同時內建支出上限、允許清單與異常人工審查 —— 有錢包不等於錢沒有上限。</span>
         </a>
         <a class="bm" href="https://www.bybit.com/zh-TW/ai" target="_blank" rel="noopener">
-          <span class="bm-t">交易所把 MCP 開給 agent</span>
-          <span class="bm-c">Bybit 把行情、下單、帳戶資產與即時串流四個模組直接以官方 MCP 開放，不必再客製 API，agent 就能接上真實市場。</span>
-          <span class="bm-d">bybit.com ↗</span>
+          <span class="bm-l"><span class="bm-t">交易所把 MCP 開給 agent</span><span class="bm-r"></span><span class="bm-d">bybit.com ↗</span></span><span class="bm-c">Bybit 把行情、下單、帳戶資產與即時串流四個模組直接以官方 MCP 開放，不必再客製 API，agent 就能接上真實市場。</span>
         </a>
         <a class="bm" href="https://tw.news.yahoo.com/ai%E5%92%8C%E4%BD%A0%E8%AE%80%E7%9A%84%E4%B8%8D-%E6%A8%A3-%E5%B0%88%E5%AE%B6%E5%AF%A6%E6%B8%AC-%E6%99%82%E4%BB%A3-%E7%B6%B2%E9%A0%81%E9%A9%9A%E6%8F%AD1%E7%9C%9F%E7%9B%B8-181500339.html" target="_blank" rel="noopener">
-          <span class="bm-t">AI 讀到的網頁，和你讀到的不一樣</span>
-          <span class="bm-c">開發者實測《時代》雜誌對 AI 爬蟲只回傳 13KB 精簡 Markdown（人類版 303KB），裡面還帶著按 token 計費的欄位與人看不到的贊助內容。</span>
-          <span class="bm-d">tw.news.yahoo.com ↗</span>
+          <span class="bm-l"><span class="bm-t">AI 讀到的網頁，和你讀到的不一樣</span><span class="bm-r"></span><span class="bm-d">tw.news.yahoo.com ↗</span></span><span class="bm-c">開發者實測《時代》雜誌對 AI 爬蟲只回傳 13KB 精簡 Markdown（人類版 303KB），裡面還帶著按 token 計費的欄位與人看不到的贊助內容。</span>
         </a>
       </section>
 
       <section class="rail rail-warn" data-r="3">
         <p class="rn">有危險<span>同一套能力，反過來也會用在你身上</span></p>
         <a class="bm" href="https://www.ithome.com.tw/news/177710" target="_blank" rel="noopener">
-          <span class="bm-t">Hugging Face 被 AI agent 入侵始末</span>
-          <span class="bm-c">測試用的 agent 逃出沙箱，4 天半內執行約 1.76 萬項操作：偵察、執行命令、竊取憑證、橫向移動，還把公開資料集當成收發指令的留言板。</span>
-          <span class="bm-d">ithome.com.tw ↗</span>
+          <span class="bm-l"><span class="bm-t">Hugging Face 被 AI agent 入侵始末</span><span class="bm-r"></span><span class="bm-d">ithome.com.tw ↗</span></span><span class="bm-c">測試用的 agent 逃出沙箱，4 天半內執行約 1.76 萬項操作：偵察、執行命令、竊取憑證、橫向移動，還把公開資料集當成收發指令的留言板。</span>
         </a>
         <a class="bm" href="https://www.techbang.com/posts/132354-ai-agent-autonomous-attack-taiwan-gov" target="_blank" rel="noopener">
-          <span class="bm-t">AI agent 自動化攻擊台灣政府單位</span>
-          <span class="bm-c">攻擊者用開源 agent 框架搭配機率決策引擎自行判斷要不要繼續打，4 天 12 波、最多同時 8 個子 agent，破解 85 組 OA 帳號、外洩 2,564 筆個資，並偽裝成「授權滲透測試」繞過防護。</span>
-          <span class="bm-d">techbang.com ↗</span>
+          <span class="bm-l"><span class="bm-t">AI agent 自動化攻擊台灣政府單位</span><span class="bm-r"></span><span class="bm-d">techbang.com ↗</span></span><span class="bm-c">攻擊者用開源 agent 框架搭配機率決策引擎自行判斷要不要繼續打，4 天 12 波、最多同時 8 個子 agent，破解 85 組 OA 帳號、外洩 2,564 筆個資，並偽裝成「授權滲透測試」繞過防護。</span>
         </a>
       </section>
     </div>
@@ -1355,29 +1360,38 @@ html.js .bub.in{opacity:1;transform:none;}
   <div class="body-area">
     <div class="spectrum">
       <div class="sp fade" data-r="0">
-        <p class="st">固定規則</p>
-        <p class="sq">條件是否成立？</p>
-        <p class="se">檔案改名、表單轉寄、固定通知</p>
+        <p class="sf"><span class="k">需求</span>條件成立就做一件事</p>
+        <p class="sf"><span class="k">需求描述</span>規則寫得完、例外很少，而且每次都要得到一模一樣的結果。</p>
+        <p class="sf sf-a"><span class="k">解法</span>固定規則（if／then）</p>
+        <p class="sf"><span class="k">案例</span>檔案改名、表單轉寄、期限到了自動通知</p>
       </div>
       <div class="sp fade" data-r="1">
-        <p class="st">搜尋／最佳化／演算法</p>
-        <p class="sq">怎麼找出較好的解？</p>
-        <p class="se">Colony Counter、CP-SAT 排班</p>
+        <p class="sf"><span class="k">需求</span>在很多可行解裡找出比較好的一個</p>
+        <p class="sf"><span class="k">需求描述</span>條件明確、好壞可以計分，但組合太多，人排不完也排不好。</p>
+        <p class="sf sf-a"><span class="k">解法</span>搜尋與最佳化演算法</p>
+        <p class="sf"><span class="k">案例</span>機場人員排班（CP-SAT）、菌落影像的計數與分割</p>
       </div>
       <div class="sp fade" data-r="2">
-        <p class="st">模型</p>
-        <p class="sq">如何理解或生成內容？</p>
-        <p class="se">摘要、分類、翻譯、問答</p>
+        <p class="sf"><span class="k">需求</span>處理沒有固定格式的內容</p>
+        <p class="sf"><span class="k">需求描述</span>輸入是自然語言、影像或聲音，規則寫不完，而且可以接受一定程度的誤差。</p>
+        <p class="sf sf-a"><span class="k">解法</span>機器學習／語言模型</p>
+        <p class="sf"><span class="k">案例</span>摘要、分類、翻譯、問答、從文件擷取欄位</p>
       </div>
       <div class="sp fade" data-r="3">
-        <p class="st">Agentic 迴圈</p>
-        <p class="sq">接下來該做什麼？</p>
-        <p class="se">查資料、呼叫工具、觀察結果、重新規劃</p>
+        <p class="sf"><span class="k">需求</span>要分好幾步，而且下一步得看上一步的結果</p>
+        <p class="sf"><span class="k">需求描述</span>步驟無法事先寫死，中途需要查資料、呼叫工具、看回報再決定。</p>
+        <p class="sf sf-a"><span class="k">解法</span>LLM ＋ 工具 ＋ 控制迴圈</p>
+        <p class="sf"><span class="k">案例</span>查資料、呼叫工具、觀察結果、重新規劃，直到完成或安全停止</p>
       </div>
     </div>
 
-    <p class="wf-line">Workflow 橫跨四格 —— 它是流程骨架，不是光譜上的下一級</p>
-    <p class="closing rv" data-q="4">選擇<span class="brick">最小但足夠</span>的機制</p>
+    <div class="sp-axis">
+      <span class="ax-cap">結果重複性</span>
+      <div class="ax-line"><i style="left:12.5%"></i><i style="left:37.5%"></i><i style="left:62.5%"></i><i style="left:87.5%"></i></div>
+      <span class="ax-cap">結果隨機</span>
+    </div>
+
+    <p class="closing rv" data-q="4">架構永遠<span class="brick">服務於業務</span></p>
   </div>
 </section>
 
