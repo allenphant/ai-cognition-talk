@@ -350,36 +350,40 @@ html.js .fade.is-cur{opacity:1;}
   flex:1;min-height:0;display:grid;
   grid-template-columns:auto minmax(0,1fr);
   grid-template-rows:minmax(0,1fr) auto;
-  column-gap:calc(var(--u)*1.1);
+  column-gap:calc(var(--u)*0.8);
 }
-/* 縱軸數線 */
-.axis-y{grid-column:1;grid-row:1;display:flex;align-items:stretch;gap:calc(var(--u)*0.5);}
-.ay-title{writing-mode:vertical-rl;align-self:center;font-size:calc(var(--u)*0.98);color:var(--muted);letter-spacing:.14em;}
-.ay-col{display:flex;flex-direction:column;align-items:center;gap:calc(var(--u)*0.45);}
-.ay-cap{font-size:calc(var(--u)*0.92);color:var(--muted);line-height:1;}
-.ay-line{flex:1;width:1px;background:var(--line);position:relative;}
-.ay-line::before{
-  content:"";position:absolute;top:calc(var(--u)*-0.5);left:50%;transform:translateX(-50%);
-  border-bottom:calc(var(--u)*0.5) solid var(--line);
-  border-left:calc(var(--u)*0.3) solid transparent;border-right:calc(var(--u)*0.3) solid transparent;
+.ay-title{
+  grid-column:1;grid-row:1;align-self:center;
+  writing-mode:vertical-rl;font-size:calc(var(--u)*0.98);color:var(--muted);letter-spacing:.14em;
 }
-.ay-line i{position:absolute;left:calc(var(--u)*-0.4);width:calc(var(--u)*0.9);height:1px;background:var(--line);}
-/* 橫軸數線 */
-.axis-x{grid-column:2;grid-row:2;margin-top:calc(var(--u)*1);}
-.ax-row{display:flex;align-items:center;gap:calc(var(--u)*0.6);}
-.ax-cap{font-size:calc(var(--u)*0.92);color:var(--muted);line-height:1;}
-.ax-line{flex:1;height:1px;background:var(--line);position:relative;}
-.ax-line::after{
-  content:"";position:absolute;right:calc(var(--u)*-0.5);top:50%;transform:translateY(-50%);
-  border-left:calc(var(--u)*0.5) solid var(--line);
-  border-top:calc(var(--u)*0.3) solid transparent;border-bottom:calc(var(--u)*0.3) solid transparent;
+.ax-title{grid-column:2;grid-row:2;text-align:center;font-size:calc(var(--u)*0.98);color:var(--muted);letter-spacing:.14em;margin-top:calc(var(--u)*0.6);}
+/* 直角座標：中央十字 */
+.plane{grid-column:2;grid-row:1;position:relative;padding:calc(var(--u)*1.7) calc(var(--u)*2.8);}
+.plane > .quad{height:100%;}
+.cross-x,.cross-y{position:absolute;background:var(--line);}
+.cross-x{left:0;right:0;top:50%;height:1px;}
+.cross-y{top:0;bottom:0;left:50%;width:1px;}
+.cross-x::after{
+  content:"";position:absolute;right:calc(var(--u)*-0.1);top:50%;transform:translateY(-50%);
+  border-left:calc(var(--u)*0.55) solid var(--line);
+  border-top:calc(var(--u)*0.34) solid transparent;border-bottom:calc(var(--u)*0.34) solid transparent;
 }
-.ax-line i{position:absolute;top:calc(var(--u)*-0.4);width:1px;height:calc(var(--u)*0.9);background:var(--line);}
-.ax-title{text-align:center;font-size:calc(var(--u)*0.98);color:var(--muted);letter-spacing:.14em;margin-top:calc(var(--u)*0.55);}
+.cross-y::after{
+  content:"";position:absolute;top:calc(var(--u)*-0.1);left:50%;transform:translateX(-50%);
+  border-bottom:calc(var(--u)*0.55) solid var(--line);
+  border-left:calc(var(--u)*0.34) solid transparent;border-right:calc(var(--u)*0.34) solid transparent;
+}
+.cross-x i{position:absolute;top:calc(var(--u)*-0.45);width:1px;height:calc(var(--u)*1);background:var(--line);}
+.cross-y i{position:absolute;left:calc(var(--u)*-0.45);height:1px;width:calc(var(--u)*1);background:var(--line);}
+.plane .cap{position:absolute;font-size:calc(var(--u)*0.92);color:var(--muted);line-height:1;}
+.cap-x0{left:calc(var(--u)*0.2);top:calc(50% - var(--u)*1.5);}
+.cap-x1{right:calc(var(--u)*1.5);top:calc(50% - var(--u)*1.5);}
+.cap-y1{top:calc(var(--u)*0.1);left:calc(50% + var(--u)*0.8);}
+.cap-y0{bottom:calc(var(--u)*0.2);left:calc(50% + var(--u)*0.8);}
 /* 四象限 */
 .quad{
-  grid-column:2;grid-row:1;position:relative;
-  --cg:calc(var(--u)*10.5); --rg:calc(var(--u)*5.6);
+  position:relative;z-index:1;
+  --cg:calc(var(--u)*10.5); --rg:calc(var(--u)*5);
   display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);
   grid-template-rows:minmax(0,1fr) minmax(0,1fr);
   column-gap:var(--cg);row-gap:var(--rg);
@@ -387,13 +391,13 @@ html.js .fade.is-cur{opacity:1;}
 .quad .q{background:var(--paper-raised);border:1px solid var(--line-light);padding:calc(var(--u)*0.85) calc(var(--u)*1.2);overflow:hidden;display:flex;flex-direction:column;}
 .quad .q.is-vague{border-style:dashed;border-color:var(--line);background:transparent;}
 .q .qn{font-size:calc(var(--u)*1);letter-spacing:.2em;color:var(--brick);}
-.q .qt{font-family:var(--serif);font-size:calc(var(--u)*1.55);line-height:1.3;margin:calc(var(--u)*0.3) 0 calc(var(--u)*0.42);}
-.q .qd{font-size:calc(var(--u)*1.05);color:var(--ink-soft);line-height:1.5;}
-.q .qe{font-size:calc(var(--u)*0.95);color:var(--muted);line-height:1.5;margin-top:auto;padding:calc(var(--u)*0.3) 0 0 calc(var(--u)*0.85);border-left:1px solid var(--line-light);}
+.q .qt{font-family:var(--serif);font-size:calc(var(--u)*1.5);line-height:1.25;margin:calc(var(--u)*0.25) 0 calc(var(--u)*0.35);}
+.q .qd{font-size:calc(var(--u)*1);color:var(--ink-soft);line-height:1.5;}
+.q .qe{font-size:calc(var(--u)*0.9);color:var(--muted);line-height:1.45;margin-top:auto;padding:calc(var(--u)*0.3) 0 0 calc(var(--u)*0.85);border-left:1px solid var(--line-light);}
 /* 象限之間的轉換箭頭 */
 .qarrow{position:absolute;display:flex;pointer-events:none;}
-.qarrow .ar-t{font-size:calc(var(--u)*0.88);color:var(--brick-dark);line-height:1.35;}
-.qarrow .ar-b{font-size:calc(var(--u)*0.84);color:var(--muted);line-height:1.35;}
+.qarrow .ar-t{font-size:calc(var(--u)*0.88);color:var(--brick-dark);line-height:1.35;background:var(--paper);}
+.qarrow .ar-b{font-size:calc(var(--u)*0.84);color:var(--muted);line-height:1.35;background:var(--paper);}
 .qarrow .ar-line{background:var(--brick);position:relative;flex:none;}
 .qa-h{
   left:calc(50% - var(--cg)/2);width:var(--cg);
@@ -426,20 +430,41 @@ html.js .fade.is-cur{opacity:1;}
 .prompt-box{
   background:var(--paper-raised);border:1px solid var(--line-light);
   padding:calc(var(--u)*1.6) calc(var(--u)*2);overflow:auto;
-  font-size:calc(var(--u)*1.02);line-height:1.72;white-space:pre-wrap;color:var(--ink-soft);
+  font-size:calc(var(--u)*0.95);line-height:1.62;white-space:pre-wrap;color:var(--ink-soft);
+  tab-size:2;
 }
 .prompt-box::-webkit-scrollbar{width:calc(var(--u)*0.5);}
 .prompt-box::-webkit-scrollbar-thumb{background:var(--line-light);}
+.pflow{list-style:none;margin:calc(var(--u)*2) 0 0;padding:0;}
+.pflow li{
+  position:relative;padding-left:calc(var(--u)*2.2);padding-bottom:calc(var(--u)*1.15);
+  font-family:var(--serif);font-size:calc(var(--u)*1.3);color:var(--ink-soft);
+}
+.pflow li:last-child{padding-bottom:0;}
+.pflow li::before{
+  content:"";position:absolute;left:calc(var(--u)*0.3);top:calc(var(--u)*0.5);
+  width:calc(var(--u)*0.75);height:calc(var(--u)*0.75);
+  border:1px solid var(--brick);border-radius:50%;background:var(--paper);
+}
+.pflow li:not(:last-child)::after{
+  content:"";position:absolute;left:calc(var(--u)*0.67);top:calc(var(--u)*1.45);
+  bottom:calc(var(--u)*0.15);width:1px;background:var(--line-light);
+}
 .demo-cue{
   border-left:calc(var(--u)*0.3) solid var(--brick);background:rgba(180,95,60,.08);
-  padding:calc(var(--u)*1) calc(var(--u)*1.2);margin-top:calc(var(--u)*1.4);
-  font-size:calc(var(--u)*1.1);line-height:1.6;
+  padding:calc(var(--u)*1.1) calc(var(--u)*1.3);margin-top:calc(var(--u)*2.2);
+  font-size:calc(var(--u)*1.35);line-height:1.4;letter-spacing:.06em;
 }
-.demo-cue b{color:var(--brick);}
+.demo-cue b{color:var(--brick);font-weight:400;}
 .copy-btn{
-  all:unset;cursor:pointer;margin-top:calc(var(--u)*1.2);
+  all:unset;cursor:pointer;margin-top:calc(var(--u)*1.6);
+  display:inline-flex;align-items:center;gap:calc(var(--u)*0.7);
   border:1px solid var(--ink);padding:calc(var(--u)*0.55) calc(var(--u)*1.2);
   font-size:calc(var(--u)*1);letter-spacing:.1em;
+}
+.copy-btn .cp-ico{
+  width:calc(var(--u)*1.15);height:calc(var(--u)*1.15);flex:none;
+  fill:none;stroke:currentColor;stroke-width:1.5;stroke-linejoin:round;stroke-linecap:round;
 }
 .copy-btn:hover,.copy-btn:focus-visible{background:var(--ink);color:var(--paper);outline:none;}
 
@@ -882,16 +907,17 @@ html.js .bub.in{opacity:1;transform:none;}
 
   <div class="body-area">
     <div class="quad-wrap">
-      <div class="axis-y">
-        <span class="ay-title">我是否知道自己掌握或缺少？</span>
-        <div class="ay-col">
-          <span class="ay-cap">是</span>
-          <div class="ay-line"><i style="top:25%"></i><i style="top:75%"></i></div>
-          <span class="ay-cap">否</span>
-        </div>
-      </div>
+      <span class="ay-title">我是否知道自己掌握或缺少？</span>
 
-      <div class="quad">
+      <div class="plane">
+        <span class="cross-x"><i style="left:25%"></i><i style="left:75%"></i></span>
+        <span class="cross-y"><i style="top:25%"></i><i style="top:75%"></i></span>
+        <span class="cap cap-x0">否</span>
+        <span class="cap cap-x1">是</span>
+        <span class="cap cap-y1">是</span>
+        <span class="cap cap-y0">否</span>
+
+        <div class="quad">
         <div class="q">
           <span class="qn">KNOWN UNKNOWNS</span>
           <p class="qt">我知道我不知道</p>
@@ -936,16 +962,10 @@ html.js .bub.in{opacity:1;transform:none;}
             <p class="ar-b">人要判斷是否合理再查證</p>
           </div>
         </div>
+        </div>
       </div>
 
-      <div class="axis-x">
-        <div class="ax-row">
-          <span class="ax-cap">否</span>
-          <div class="ax-line"><i style="left:25%"></i><i style="left:75%"></i></div>
-          <span class="ax-cap">是</span>
-        </div>
-        <p class="ax-title">我是否真的掌握這項知識？</p>
-      </div>
+      <p class="ax-title">我是否真的掌握這項知識？</p>
     </div>
   </div>
 </section>
@@ -960,63 +980,74 @@ html.js .bub.in{opacity:1;transform:none;}
   <div class="body-area prompt-wrap">
     <div>
       <p class="small">這段 Prompt 的價值不是替我們產生唯一正解，<br />而是協助我們看見原本沒有問出的角度與問題。</p>
-      <p class="small dim" style="margin-top:calc(var(--u)*1)">它會把回答拆成「已確認／推測／未知」，<br />再用四種認知狀態整理，最後給出可照著做的低風險步驟與資安檢查。</p>
+      <ol class="pflow">
+        <li>確認背景</li>
+        <li>拆解問題</li>
+        <li>打破盲點</li>
+        <li>列出啟動步驟</li>
+      </ol>
 
-      <div class="demo-cue">
-        <b>▶ 示範提示</b><br />切到準備好的 Gemini 對話紀錄，走一次實際輸出。<br />
-        <span class="tiny">回來後接：輸出裡的「上手指南」會給可執行的 code —— 這裡插入對話式 AI 與 AI Agent 的差別。</span>
-      </div>
+      <div class="demo-cue"><b>▶ 網頁示範</b></div>
 
-      <button class="copy-btn" type="button" id="copy-prompt">複製整段 Prompt</button>
+      <button class="copy-btn" type="button" id="copy-prompt">
+        <svg class="cp-ico" viewBox="0 0 20 20" aria-hidden="true" focusable="false">
+          <rect x="7.2" y="2.2" width="10.6" height="13" rx="2" />
+          <path d="M13.4 5.4H4.2a2 2 0 0 0-2 2v8.4a2 2 0 0 0 2 2h7.2a2 2 0 0 0 2-2v-1.2" />
+        </svg>
+        <span class="cp-txt">複製整段 Prompt</span>
+      </button>
       <p class="tiny" style="margin-top:calc(var(--u)*0.8)">↑ ↓ 可捲動右側 Prompt</p>
     </div>
 
-    <div class="prompt-box" id="prompt-box" tabindex="0">你是我的老師與實作教練 請把我當15歲的初學者。
-請分析我提供的圖片、專案、Git repository、網站、工具或服務。
-我的領域背景是OOO。
-每個專有名詞第一次出現時，請用白話解釋：中文意思、英文／縮寫、用途，以及一個簡單例子。不要只丟專業名詞。
-請依序回答：
-1.它是什麼、解決什麼問題、如何運作？
-   請分開標示：已從提供的資料確認、你的推測、未知的部份。
-2.請用以下四類整理：
-	a.已知的已知
-	- 只列出我已明確提供，或資料可以直接確認的資訊。
-	- 每項附上判斷依據。
-  b.已知的未知
-  - 列出我已經表示不知道，或目前明確缺少的資訊。
-  - 說明為什麼重要，以及如何查證。
-  c.未知的已知
-  - 只列出從我的描述中推測，可能存在但尚未說清楚的經驗、需求或判斷。
-  - 每項都必須使用「可能」或「需要確認」的說法，
-  - 並改寫成可以問我的問題。
-  - 不能直接說我已經知道它。
-  d.未知的未知
-  - 列出目前沒有被提出，但可能影響目標、操作、成本、維護或資安的候選問題。
-  - 這些只是待檢查的盲點，不是事實。
-  - 請說明為什麼值得注意，以及如何驗證。
-  如果沒有足夠證據，請寫「目前無法判定」，不要自行補完。
-3.如果我要開始上手，請從最簡單、低風險的方式開始，
-  列出可以照著做的階段步驟。每一步請說明：
-  - 要開啟或下載什麼
-  - 要點擊或輸入什麼
-  - 預期看到什麼
-  - 如何判斷成功
-  - 失敗時如何處理
-  - 可以做什麼小型練習專案
-4.每個階段都必須特別說明資安：
-  - 資料是否敏感
-  - 是否會上傳雲端
-  - 需要哪些權限、帳號或憑證
-  - 是否有惡意檔案、Prompt Injection 或工具濫權風險
-  - 如何去識別化、人工批准、停止與回復
-  - 不要把本地、免費或開源直接當成安全。
-5.最後告訴我：
-  - 現在可以立刻做的第一步
-  - 完成後應該得到什麼成果
-  - 開始前最需要注意的資安事項
+    <div class="prompt-box mono" id="prompt-box" tabindex="0">你是我的新領域老師與學習引導教練，請分析我接下來提供的圖片、專案、Git repository、
+網站、工具或服務，盡可能打破我的訊息繭房，提供該領域內的完整視野。禁止阿諛奉承。
 
-如果缺少作業系統、資料來源、權限或目標，
-只詢問必要問題；不要自行猜測，也不要一開始就推薦複雜的 API、Agent 或自動化。</div>
+我的領域背景：&lt;輸入你的背景&gt;
+我在這個領域的程度和現有認知：&lt;輸入你對這個領域已知的觀察&gt;
+
+你的任務是透過白話解釋、提問、反問與候選問題，
+幫助我察覺「我知道什麼、我不知道什麼，以及我可能沒有想到什麼」。
+
+每個專有名詞第一次出現時，請解釋中文意思、英文／縮寫、用途與簡單例子。
+
+請依照以下流程進行：
+
+1. 先用白話說明這個對象可能是什麼、解決什麼問題、如何運作。
+   分開標示：已確認、推測、未知。
+
+2. 請先問我幾個問題搭配可能的實際案例，引導我自己辨認：
+   - 我能直接說出哪些觀察？
+   - 哪些地方我知道自己不了解？
+   - 哪些判斷可能來自我的經驗或直覺，但我還說不清楚？
+   - 如果要使用、修改或維護它，還有哪些問題是我完全沒想到的？
+
+3. 根據我的回答，再依照我的視角幫我整理我可能的四種認知狀態：
+   - 已知的已知：我能說明，也能提出依據的內容。
+   - 已知的未知：我知道自己不懂，或明確知道還缺少的資訊。
+   - 未知的已知：我可能已有經驗或直覺，但尚未說成清楚的規則。
+   - 未知的未知：目前尚未想到，但可能影響目標、操作、成本、維護或資安的候選問題。
+
+   後兩類只能使用「可能」「候選」「需要確認」，
+   不可以直接宣稱我已經知道，或宣稱你已經發現真相。
+
+4. 請指出目前最適合的認知狀態轉換：
+   - 如果我以為自己知道：請挑戰假設、找反例。
+   - 如果我知道自己不知道：請教學、示範並提供檢查表。
+   - 如果我有直覺但說不清楚：請用反問把經驗整理出來。
+   - 如果我根本沒想到這個問題：請提出候選盲點，讓我判斷是否相關。
+
+   每次都請分開說明：
+   - AI 可以協助什麼
+   - 我需要自己確認或完成什麼
+
+5. 如果我要開始上手，請從低風險的小練習開始，
+   告訴我具體要開什麼、點哪裡、下載什麼、輸入什麼，
+   以及如何判斷成功，怎樣算做失敗。
+
+   每個階段都必須說明資安：
+   資料是否敏感、是否上傳雲端、需要哪些權限或憑證，
+   是否有惡意檔案、Prompt Injection 或工具濫權風險，
+   以及如何人工批准、停止與回復。</div>
   </div>
 </section>
 
@@ -1836,8 +1867,9 @@ var copyBtn = document.getElementById("copy-prompt");
 if(copyBtn){
   copyBtn.addEventListener("click", function(){
     var t = document.getElementById("prompt-box").textContent;
-    var done = function(){ copyBtn.textContent = "已複製 ✓";
-      setTimeout(function(){ copyBtn.textContent = "複製整段 Prompt"; }, 1800); };
+    var lab = copyBtn.querySelector(".cp-txt");
+    var done = function(){ lab.textContent = "已複製 ✓";
+      setTimeout(function(){ lab.textContent = "複製整段 Prompt"; }, 1800); };
     if(navigator.clipboard) navigator.clipboard.writeText(t).then(done, done);
     else done();
   });
