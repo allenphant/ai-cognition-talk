@@ -156,13 +156,16 @@
     }
 
     .axis-title-x-bottom {
-      flex: 0 0 auto;
+      position: absolute;
+      left: 126px;
+      right: 18px;
+      bottom: 10px;
       text-align: center;
       font-family: var(--display);
       font-size: 14px;
       color: var(--ink-soft);
       letter-spacing: .06em;
-      margin-top: 2px;
+      pointer-events: none;
     }
 
     .legend-inline {
@@ -219,7 +222,7 @@
 
     .plot {
       position: absolute;
-      inset: 42px 28px 82px 190px;
+      inset: 42px 28px 106px 190px;
       user-select: none;
       touch-action: none;
     }
@@ -1217,9 +1220,9 @@ html{scrollbar-width:none;} html::-webkit-scrollbar{width:0;height:0;}</style>
             <div class="candidate-label" id="candidateLabel"></div>
             <div class="project-point drag-point-preview" id="dragPointPreview" aria-hidden="true"></div>
           </div>
+          <div class="axis-title-x-bottom">所使用的 AI 具體是哪一種？</div>
         </div>
 
-        <div class="axis-title-x-bottom">所使用的 AI 具體是哪一種？</div>
         <div class="status" id="status" aria-live="polite"></div>
       </section>
 
@@ -1516,7 +1519,7 @@ html{scrollbar-width:none;} html::-webkit-scrollbar{width:0;height:0;}</style>
         {
           id: "miyamoto",
           group: "Agent／外部案例",
-          title: "宮本佳林診斷網站",
+          title: "日本偶像也在 vibecoding",
           shortDescription: "以 Claude 與 Cursor 進行 Vibe Coding 的網站案例。",
           runtime: "固定網頁邏輯",
           external: "封閉式互動網站",
@@ -1829,10 +1832,6 @@ html{scrollbar-width:none;} html::-webkit-scrollbar{width:0;height:0;}</style>
           const section = document.createElement("section");
           section.className = "project-group";
 
-          const heading = document.createElement("h3");
-          heading.className = "group-title";
-          heading.textContent = group;
-          section.appendChild(heading);
 
           projects.filter(project => project.group === group).forEach(project => {
             const button = document.createElement("button");
@@ -1852,6 +1851,10 @@ html{scrollbar-width:none;} html::-webkit-scrollbar{width:0;height:0;}</style>
             button.addEventListener("blur", hideTooltip);
             button.addEventListener("click", event => {
               if (event.detail === 0) return;
+              if (project.link) {
+                window.open(project.link, "_blank", "noopener");
+                return;
+              }
               selectProject(project.id);
             });
             button.addEventListener("keydown", event => {
@@ -1989,14 +1992,13 @@ html{scrollbar-width:none;} html::-webkit-scrollbar{width:0;height:0;}</style>
       }
 
       function tooltipHtml(project) {
+        const shotPath = project.shot || project.shotTodo || `assets/images/scene-10-projects/${project.id}.jpg`;
         const shot = project.shot
           ? `<img class="tooltip-shot" src="${escapeHtml(project.shot)}" alt="${escapeHtml(project.title)} 畫面" onerror="this.style.display='none'" />`
-          : (project.shotTodo
-              ? `<div class="tooltip-shot-todo">待補 demo 圖<br />${escapeHtml(project.shotTodo)}</div>`
-              : "");
+          : `<div class="tooltip-shot-todo">待補 demo 圖<br />${escapeHtml(shotPath)}</div>`;
         const link = project.link
-          ? `<span class="tooltip-link">${escapeHtml(project.link)} ↗</span>`
-          : (project.linkTodo ? `<span class="tooltip-link">待補連結</span>` : "");
+          ? `<span class="tooltip-link">${escapeHtml(project.link)} ↗　點一下標籤即可開啟</span>`
+          : `<span class="tooltip-link">待補連結</span>`;
         return `
           <div class="tooltip-title">${escapeHtml(project.title)}</div>
           <p>${escapeHtml(project.shortDescription)}</p>
