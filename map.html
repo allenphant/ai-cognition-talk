@@ -155,6 +155,16 @@
       min-height: 38px;
     }
 
+    .axis-title-x-bottom {
+      flex: 0 0 auto;
+      text-align: center;
+      font-family: var(--display);
+      font-size: 14px;
+      color: var(--ink-soft);
+      letter-spacing: .06em;
+      margin-top: 2px;
+    }
+
     .legend-inline {
       margin-right: auto;
       font-size: 12px;
@@ -961,13 +971,43 @@
     .tooltip {
       position: fixed;
       z-index: 1000;
-      width: min(300px, calc(100vw - 24px));
+      width: min(430px, calc(100vw - 24px));
       background: var(--paper-raised);
       color: var(--ink);
-      border: 1px solid var(--taupe-line);
-      padding: 11px 12px;
+      border: 1px solid var(--ink);
+      box-shadow: 0 10px 28px rgba(25, 23, 21, .18);
+      padding: 14px 16px;
       display: none;
       pointer-events: none;
+    }
+
+    .tooltip-shot {
+      width: 100%;
+      max-height: 190px;
+      object-fit: contain;
+      object-position: center;
+      display: block;
+      margin: 10px 0 4px;
+      border: 1px solid var(--taupe-line);
+      background: var(--paper);
+    }
+
+    .tooltip-shot-todo {
+      margin: 10px 0 4px;
+      padding: 18px 10px;
+      border: 1px dashed var(--taupe-line);
+      text-align: center;
+      color: var(--muted);
+      font-size: 11.5px;
+      line-height: 1.6;
+    }
+
+    .tooltip-link {
+      display: block;
+      margin-top: 6px;
+      font-size: 12px;
+      color: var(--brick-dark);
+      word-break: break-all;
     }
 
     .tooltip.visible { display: block; }
@@ -1101,9 +1141,9 @@ html{scrollbar-width:none;} html::-webkit-scrollbar{width:0;height:0;}</style>
       <div>
         <div class="eyebrow"><span class="eyebrow-dot"></span>AI PROJECT MAP / INTERACTIVE DEMO</div>
         <h1>一套收容新資訊的認知空間</h1>
-        <p class="subtitle">把右側專案拖進圖中。</p>
+        <p class="subtitle">找出你在意的價值，當作座標軸。</p>
       </div>
-      <div class="page-number">12 / 16</div>
+      <div class="page-number">10 / 13</div>
     </header>
 
     <section class="workspace">
@@ -1122,7 +1162,6 @@ html{scrollbar-width:none;} html::-webkit-scrollbar{width:0;height:0;}</style>
 
         <div class="plot-wrap" id="plotWrap">
           <div class="axis-title-y">系統需要維護到哪一層技術架構？</div>
-          <div class="axis-title-x">所使用的 AI 具體是哪一種？</div>
 
           <div class="plot" id="plot" role="application" aria-label="AI 專案二維座標">
             <div class="axis-x"></div>
@@ -1180,6 +1219,7 @@ html{scrollbar-width:none;} html::-webkit-scrollbar{width:0;height:0;}</style>
           </div>
         </div>
 
+        <div class="axis-title-x-bottom">所使用的 AI 具體是哪一種？</div>
         <div class="status" id="status" aria-live="polite"></div>
       </section>
 
@@ -1197,16 +1237,12 @@ html{scrollbar-width:none;} html::-webkit-scrollbar{width:0;height:0;}</style>
         </div>
         <div class="tray" id="tray"></div>
 
-        <div class="placed-list">
+        <div class="placed-list" hidden>
           <div class="placed-title">已放置</div>
           <div class="placed-items" id="placedItems"></div>
         </div>
 
-        <section class="details" id="details" aria-live="polite">
-          <div class="details-kicker">PROJECT NOTE</div>
-          <h3>選一個專案</h3>
-          <p>Hover 可快速預覽；點擊或按 Enter 查看完整說明。</p>
-        </section>
+        <section class="details" id="details" aria-live="polite" hidden></section>
       </aside>
     </section>
   </main>
@@ -1442,7 +1478,7 @@ html{scrollbar-width:none;} html::-webkit-scrollbar{width:0;height:0;}</style>
         {
           id: "speech-to-text",
           group: "生活／公部門",
-          title: "語音轉文字",
+          title: "會議紀錄小幫手",
           shortDescription: "錄音輸入，輸出逐字稿。",
           runtime: "從資料學習的模型",
           external: "封閉式輸入輸出",
@@ -1535,23 +1571,67 @@ html{scrollbar-width:none;} html::-webkit-scrollbar{width:0;height:0;}</style>
           moves: "若只做固定摘要，X 軸會向左；若改成本地腳本或單一 Browser App，Y 軸也可下降。"
         },
         {
-          id: "payment-agent",
-          group: "Agent／外部案例",
-          title: "支付 Agent",
-          shortDescription: "在授權額度與核准商家範圍內完成程式化付款。",
-          runtime: "Agentic 控制迴圈",
-          external: "付款並改變財務狀態",
-          dev: "unknown",
-          devText: "依服務而定",
-          x: 0.94, y: 0.875,
-          architectureKey: "database",
-          architecture: "資料庫／持久化層",
-          architectureNote: "身份、支付政策、交易紀錄與稽核狀態需要持久化資料。",
-          sensitivity: "very-high",
-          complexity: 4,
-          tags: ["支付", "API", "高權限"],
-          why: "同時具備自主決策、身分、錢包與不可逆的外部動作，因此治理需求最高。",
-          moves: "若只做付款建議，X 軸可能仍可維持模型／Agent，但若不再保存政策、交易與稽核狀態，Y 軸可下降。"
+          id: "weaving-palette",
+          group: "我的專案",
+          title: "編織配色小工具",
+          shortDescription: "待補：一句話說明這個工具做什麼。",
+          runtime: "條件規則／固定流程",
+          external: "只處理本機輸入並顯示結果",
+          dev: "chat",
+          devText: "對話式 AI 協助開發",
+          x: 0.12, y: 0.375,
+          architectureKey: "frontend",
+          architecture: "前端介面",
+          architectureNote: "待補。",
+          sensitivity: "low",
+          complexity: 2,
+          tags: ["待補"],
+          shotTodo: "assets/images/scene-10-projects/weaving-palette.jpg",
+          linkTodo: true,
+          why: "待補：為什麼放在這個位置。",
+          moves: "待補：什麼情況會讓它移動。"
+        },
+        {
+          id: "satellite-agri",
+          group: "我的專案",
+          title: "衛星遙測農業監測",
+          shortDescription: "待補：一句話說明這個工具做什麼。",
+          runtime: "從資料學習的模型",
+          external: "讀取外部資料",
+          dev: "chat",
+          devText: "對話式 AI 協助開發",
+          x: 0.64, y: 0.625,
+          architectureKey: "backend",
+          architecture: "後端服務／Server",
+          architectureNote: "待補。",
+          sensitivity: "low",
+          complexity: 3,
+          tags: ["待補"],
+          shotTodo: "assets/images/scene-10-projects/satellite-agri.jpg",
+          linkTodo: true,
+          why: "待補：為什麼放在這個位置。",
+          moves: "待補：什麼情況會讓它移動。"
+        },
+        {
+          id: "calligraphy-sheet",
+          group: "我的專案",
+          title: "書法字帖生成器",
+          shortDescription: "待補：一句話說明這個工具做什麼。",
+          runtime: "條件規則／固定流程",
+          external: "只處理本機輸入並輸出檔案",
+          dev: "chat",
+          devText: "對話式 AI 協助開發",
+          x: 0.14, y: 0.125,
+          architectureKey: "script",
+          architecture: "單機／Script／CLI",
+          architectureNote: "待補。",
+          sensitivity: "low",
+          complexity: 2,
+          tags: ["待補"],
+          shotTodo: "assets/images/scene-10-projects/calligraphy-sheet.jpg",
+          linkTodo: true,
+          why: "待補：為什麼放在這個位置。",
+          moves: "待補：什麼情況會讓它移動。"
         }
       ];
 
@@ -1909,9 +1989,18 @@ html{scrollbar-width:none;} html::-webkit-scrollbar{width:0;height:0;}</style>
       }
 
       function tooltipHtml(project) {
+        const shot = project.shot
+          ? `<img class="tooltip-shot" src="${escapeHtml(project.shot)}" alt="${escapeHtml(project.title)} 畫面" onerror="this.style.display='none'" />`
+          : (project.shotTodo
+              ? `<div class="tooltip-shot-todo">待補 demo 圖<br />${escapeHtml(project.shotTodo)}</div>`
+              : "");
+        const link = project.link
+          ? `<span class="tooltip-link">${escapeHtml(project.link)} ↗</span>`
+          : (project.linkTodo ? `<span class="tooltip-link">待補連結</span>` : "");
         return `
           <div class="tooltip-title">${escapeHtml(project.title)}</div>
           <p>${escapeHtml(project.shortDescription)}</p>
+          ${shot}${link}
           <div class="tooltip-row"><span class="tooltip-key">運行時</span><span>${escapeHtml(project.runtime)}</span></div>
           <div class="tooltip-row"><span class="tooltip-key">架構層級</span><span>${escapeHtml(project.architecture || yText(project.y))}</span></div>
           <div class="tooltip-row"><span class="tooltip-key">外部作用</span><span>${escapeHtml(project.external)}</span></div>
