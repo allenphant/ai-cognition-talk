@@ -131,7 +131,7 @@ html.no-js .progress{display:none;}
 
 /* ---------- Scene 02 ---------- */
 .mouse-photo{
-  position:absolute;top:calc(var(--u)*1.1);right:calc(var(--u)*5.5);
+  position:absolute;top:calc(var(--u)*1.1);left:50%;transform:translateX(-50%);
   height:calc(var(--u)*11);width:auto;pointer-events:none;
 }
 .two-col{
@@ -237,7 +237,16 @@ html.js .role.is-on{opacity:1;transform:none;}
   margin-top:calc(var(--u)*0.4);
   max-height:0;overflow:hidden;transition:max-height .45s ease,margin .45s ease,color .3s ease;
 }
-html.js .role.is-cur .say{max-height:calc(var(--u)*14);}
+html.js .role.is-cur .say{max-height:calc(var(--u)*24);}
+.role .say .b{
+  display:block;position:relative;padding-left:calc(var(--u)*1.1);
+  margin-top:calc(var(--u)*0.3);
+}
+.role .say .b:first-child{margin-top:0;}
+.role .say .b::before{
+  content:"";position:absolute;left:0;top:calc(var(--u)*0.82);
+  width:calc(var(--u)*0.55);height:1px;background:var(--line);
+}
 html.no-js .role .say{max-height:none;}
 .role.is-cur .who{color:var(--brick);}
 .flower-close{
@@ -767,48 +776,36 @@ html.js .bub.in{opacity:1;transform:none;}
 </section>
 
 <!-- ===================== Scene 03 ===================== -->
-<section class="scene" id="scene-03-flower" data-steps="7">
+<section class="scene" id="scene-03-flower" data-steps="5">
   <div class="flower-wrap">
     <div class="flower-img">
       <img src="assets/images/scene-03-flower/scene-03-flower-hero.jpg"
            alt="花店櫃檯上的仙人掌封閉生態瓶展示，旁邊有黃底黑字標價牌與成堆的東北田園黑土包裝。" />
-      <p class="flower-ask">你第一個注意到什麼？</p>
-      <span class="hot" data-hot="0" style="left:17%;top:36%"></span>
-      <span class="hot" data-hot="1" style="left:80%;top:14%"></span>
-      <span class="hot" data-hot="2" style="left:40%;top:86%"></span>
-      <span class="hot" data-hot="3" style="left:46%;top:50%"></span>
-      <span class="hot" data-hot="4" style="left:56%;top:88%"></span>
-      <span class="hot" data-hot="5" style="left:74%;top:73%"></span>
+      <span class="hot" data-hot="0" style="left:44%;top:52%"></span>
+      <span class="hot" data-hot="1" style="left:84%;top:68%"></span>
+      <span class="hot" data-hot="2" style="left:55%;top:85%"></span>
     </div>
 
     <aside class="flower-side">
       <p class="eyebrow">Scene 03</p>
-      <h2 class="scene-title" style="font-size:calc(var(--u)*2.3)">同一束花，<br />為什麼每個人<br />看見的不一樣？</h2>
+      <h2 class="scene-title" style="font-size:calc(var(--u)*2.3)">這張圖好糟⋯<br />但是糟在哪裡？</h2>
 
       <ul class="roles">
         <li class="role" data-role="0"><button type="button">
-          <span class="who">視覺 <i>DESIGN</i></span>
-          <span class="say">先看配色、構圖、留白與焦點落在哪裡。</span>
-        </button></li>
-        <li class="role" data-role="1"><button type="button">
-          <span class="who">攝影 <i>PHOTO</i></span>
-          <span class="say">先看光線方向、景深、白平衡與玻璃上的反光。</span>
-        </button></li>
-        <li class="role" data-role="2"><button type="button">
-          <span class="who">設計 <i>SIGNAGE</i></span>
-          <span class="say">黃底黑字通常是警示用途的配色，出現在標價牌上其實很違和。</span>
-        </button></li>
-        <li class="role" data-role="3"><button type="button">
-          <span class="who">生命科學 <i>BOTANY</i></span>
+          <span class="who">生化科技系</span>
           <span class="say">仙人掌不該被關在密閉潮濕的瓶子裡，它需要通風乾燥的開放式環境。</span>
         </button></li>
-        <li class="role" data-role="4"><button type="button">
-          <span class="who">商業行銷 <i>PRICING</i></span>
-          <span class="say">直接寫 299 沒有吸引力，要先寫 1299 再劃掉改成 299。</span>
-        </button></li>
-        <li class="role" data-role="5"><button type="button">
-          <span class="who">檢疫與法務 <i>QUARANTINE</i></span>
+        <li class="role" data-role="1"><button type="button">
+          <span class="who">法律系</span>
           <span class="say">依植物防疫檢疫法第 15 條，土壤禁止輸入，以免病蟲害藉由土壤跨境傳播。</span>
+        </button></li>
+        <li class="role" data-role="2"><button type="button">
+          <span class="who">經濟系</span>
+          <span class="say">直接寫 299 沒有吸引力，要先寫 499 再劃掉改成 299。</span>
+        </button></li>
+        <li class="role" data-role="3"><button type="button">
+          <span class="who">設計系</span>
+          <span class="say"><span class="b">黃底黑字是警示用的配色，出現在標價牌上很違和</span><span class="b">畫面比例錯得離譜，一個生態瓶比旁邊的黑土還大</span><span class="b">印刷前要把色彩模式從 RGB 轉 CMYK</span><span class="b">畫面上有 ChatGPT 重複生成很多次的那種斑駁鱗片</span><span class="b">要怎麼留出血</span></span>
         </button></li>
       </ul>
 
@@ -1533,8 +1530,8 @@ var SCENES = [
    notes:["自我介紹：今年六月新加入的研發替代役，原本念生化科技系。","回看過往超充站題目：大家在各領域都有很深入的見解。","提出觀察：AI 領域變化太快，今天的 comment 下禮拜可能就不適用。","說明選題：想講比較不會變動的觀念，分享跨領域學習經驗。","帶出三個 TAKEAWAY（細節口頭展開）。"]},
   {id:"scene-02-intro", n:"02", t:"從抓老鼠到抓滑鼠⋯", ready:1,
    notes:["背景：生化科技系，做免疫與單細胞定序，實驗桌上拿 pipet 的人。","問題意識：看到重複、耗時的事情就想 SOP 化、自動化。","學習入口：遇到不會的就問 AI，先問怎麼拆問題、怎麼驗證。","Vibe Coding：一邊描述、一邊試、一邊修正。","跨領域學習最重要的環節是認知邊界的擴張。","Hook：小說家寫不出認知之外的劇情；畫家畫不出認知之外的畫面；投資人賺不到認知之外的錢。","轉場：接下來從一個很簡單的例子開始 —— 同一束花。"]},
-  {id:"scene-03-flower", n:"03", t:"同一束花，為什麼每個人看見的不一樣？", ready:1,
-   notes:["先只問「你第一個注意到什麼？」，讓觀眾自己看 10 秒。","按 → 逐一揭露六個專業視角，每個視角對應圖上一個亮點。","必講：圖片沒有改變，改變的是觀看圖片的人所擁有的框架。","結尾提醒：這些是候選視角，不等於專業判斷，仍要查證。","轉場：那我們怎麼知道自己漏看了什麼？"]},
+  {id:"scene-03-flower", n:"03", t:"這張圖好糟⋯但是糟在哪裡？", ready:1,
+   notes:["先讓觀眾自己看 10 秒，不急著揭露。","按 → 依序揭露生化科技系、法律系、經濟系、設計系四個視角。","前三個視角各對應圖上一個紅圈；設計系不圈，因為在設計人眼中整張圖都是問題。","必講：圖片沒有改變，改變的是觀看圖片的人所擁有的框架。","結尾提醒：這些是候選視角，不等於專業判斷，仍要查證。","轉場：那我們怎麼知道自己漏看了什麼？"]},
   {id:"scene-04-known-unknown", n:"04", t:"你知道自己不知道什麼嗎？", ready:1,
    notes:["承接 S03：同一張圖，不同背景看見不同問題；這也和我們是否知道自己的知識邊界有關。","白話說明兩條軸，不要只念英文名詞。","四格用花束例句快速帶過，不講成能力高低或心理測驗。","帶出 AI：它可以教已經問出口的問題，可以反問把經驗整理出來，更重要的是從其他專業提醒我還有哪些問題沒想到。","守住邊界：AI 提出的盲點只是候選視角，Unknown Unknowns 只被變成 Known Unknowns。","第五步才揭露三種轉換方式。","轉入 S05：下一頁我們就用一段 Prompt 實際做一次。"]},
   {id:"scene-05-cognition-prompt", n:"05", t:"一段 Prompt 搭配任意模型即可擴展認知", ready:1,
