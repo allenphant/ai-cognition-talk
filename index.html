@@ -498,12 +498,29 @@ html.js .fade.is-cur{opacity:1;}
 .layer .ld{font-size:calc(var(--u)*0.95);color:var(--muted);line-height:1.5;}
 .dialog-area{flex:1;min-height:0;overflow:hidden;margin-top:calc(var(--u)*1);display:flex;gap:calc(var(--u)*2);}
 .dialog{
-  flex:1;min-width:0;min-height:0;overflow-y:auto;overflow-x:hidden;
+  flex:1;min-width:0;min-height:0;width:100%;overflow-y:auto;overflow-x:hidden;
   display:flex;flex-direction:column;justify-content:flex-start;
   gap:calc(var(--u)*0.45);padding-right:calc(var(--u)*0.6);
 }
-.dialog::-webkit-scrollbar{width:calc(var(--u)*0.45);}
-.dialog::-webkit-scrollbar-thumb{background:var(--line-light);}
+.dialog::-webkit-scrollbar{width:calc(var(--u)*0.55);}
+.dialog::-webkit-scrollbar-track{background:var(--line-faint);}
+.dialog::-webkit-scrollbar-thumb{background:var(--line);border-radius:calc(var(--u)*0.3);}
+.dialog{scrollbar-width:thin;scrollbar-color:var(--line) var(--line-faint);}
+.dialog-col{position:relative;flex:1;min-width:0;min-height:0;display:flex;}
+.dialog-col::after{
+  content:"";position:absolute;left:0;right:calc(var(--u)*0.6);bottom:0;
+  height:calc(var(--u)*3.2);pointer-events:none;opacity:0;transition:opacity .2s ease;
+  background:linear-gradient(to bottom,rgba(243,239,230,0),rgba(243,239,230,.95));
+}
+.dialog-col.has-more::after{opacity:1;}
+.dlg-more{
+  position:absolute;left:50%;bottom:calc(var(--u)*0.3);transform:translateX(-50%);
+  font-size:calc(var(--u)*0.82);letter-spacing:.12em;color:var(--brick-dark);
+  background:var(--paper);border:1px solid var(--brick);
+  padding:calc(var(--u)*0.2) calc(var(--u)*0.8);
+  pointer-events:none;white-space:nowrap;z-index:3;
+}
+.dlg-more[hidden]{display:none;}
 .bub{
   flex:0 0 auto;max-width:76%;padding:calc(var(--u)*0.5) calc(var(--u)*1);
   font-size:calc(var(--u)*0.88);line-height:1.5;border:1px solid var(--line-light);
@@ -1305,7 +1322,10 @@ html.no-js .curve-wrap{overflow:auto;}
     </div>
 
     <div class="dialog-area">
-      <div class="dialog" id="s06-dialog"></div>
+      <div class="dialog-col">
+        <div class="dialog" id="s06-dialog"></div>
+        <span class="dlg-more" id="s06-more" hidden>↓ 還有更多對話　滾輪或 ↑↓</span>
+      </div>
       <aside class="layer-side" id="s06-side"></aside>
     </div>
 
@@ -2020,6 +2040,7 @@ function applyS06(n){
 
   var d = LAYER_DATA[li];
   var seen = {};
+  setTimeout(updateS06More, 60);
   d.bubbles.forEach(function(b, i){
     var el = document.createElement("div");
     if(b.cls === "break"){
@@ -2053,6 +2074,29 @@ function applyS06(n){
 }
 
 /* ---------- Scene 16 ---------- */
+/* Scene 06：對話區捲動提示與滾輪支援 */
+function updateS06More(){
+  var dlg = document.getElementById("s06-dialog");
+  var tip = document.getElementById("s06-more");
+  if(!dlg || !tip) return;
+  var more = dlg.scrollHeight - dlg.scrollTop - dlg.clientHeight > 8;
+  tip.hidden = !more;
+  dlg.parentNode.classList.toggle("has-more", more);
+}
+(function(){
+  var sc = document.getElementById("scene-06-llm-agent");
+  var dlg = document.getElementById("s06-dialog");
+  if(!sc || !dlg) return;
+  dlg.addEventListener("scroll", updateS06More);
+  window.addEventListener("resize", updateS06More);
+  sc.addEventListener("wheel", function(e){
+    if(dlg.scrollHeight <= dlg.clientHeight + 4) return;
+    if(dlg.contains(e.target)) return;      /* 游標已在對話區，交給瀏覽器原生捲動 */
+    e.preventDefault();
+    dlg.scrollTop += e.deltaY;
+  }, {passive:false});
+})();
+
 /* Scene 16：達克效應曲線的 hover 卡片 */
 (function(){
   var sc = document.getElementById("scene-16-maturity");
