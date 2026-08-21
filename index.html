@@ -565,6 +565,7 @@ html.js .bub.in{opacity:1;transform:none;}
 #scene-08-agent-ready-world .body-area{margin-top:calc(var(--u)*0.6);padding-bottom:calc(var(--u)*0.5);}
 #scene-09-agent-or-not .scene-title{font-size:calc(var(--u)*2.7);}
 #scene-09-agent-or-not .body-area{margin-top:calc(var(--u)*0.6);padding-bottom:0;}
+#scene-17-start-today .body-area{margin-top:calc(var(--u)*4.6);}
 .rail{
   border:1px solid var(--line-light);background:var(--paper-raised);
   padding:calc(var(--u)*0.6) calc(var(--u)*1.1) calc(var(--u)*0.9);overflow:hidden;
@@ -834,7 +835,7 @@ html.no-js .curve-wrap{overflow:auto;}
 }
 .start-card{
   border:1px solid var(--line-light);background:var(--paper-raised);
-  padding:calc(var(--u)*1.2) calc(var(--u)*1.5);overflow:hidden;
+  padding:calc(var(--u)*1.2) calc(var(--u)*1.5);
   display:flex;flex-direction:column;gap:calc(var(--u)*0.9);
 }
 .start-card h3{
@@ -851,13 +852,13 @@ html.no-js .curve-wrap{overflow:auto;}
   width:calc(var(--u)*0.6);height:1px;background:var(--brick);
 }
 .sc-note{font-size:calc(var(--u)*0.98);color:var(--muted);line-height:1.6;margin-top:auto;}
-.tool-row{display:flex;align-items:center;gap:calc(var(--u)*1.6);}
+.tool-row{position:relative;display:flex;align-items:center;gap:calc(var(--u)*1.6);}
 .tool-row .price{margin-left:calc(var(--u)*1.6);}
 .tool{
   width:calc(var(--u)*4.6);text-align:center;display:flex;flex-direction:column;
   align-items:center;gap:calc(var(--u)*0.35);
 }
-.tool img{width:calc(var(--u)*3.2);height:calc(var(--u)*3.2);object-fit:contain;display:block;}
+.tool > img{width:calc(var(--u)*3.2);height:calc(var(--u)*3.2);object-fit:contain;display:block;}
 .tool .ph{display:none;}
 .tool.missing img{display:none;}
 .tool.missing .ph{
@@ -866,7 +867,15 @@ html.no-js .curve-wrap{overflow:auto;}
   font-size:calc(var(--u)*0.55);line-height:1.25;padding:calc(var(--u)*0.3);
   word-break:break-all;
 }
-.tool .tn{font-size:calc(var(--u)*0.88);color:var(--ink-soft);}
+.tool .tn{font-size:calc(var(--u)*0.88);color:var(--ink-soft);line-height:1.35;}
+.tool-meme{position:relative;cursor:help;}
+.tool-pop{
+  position:absolute;right:0;top:calc(var(--u)*-1.4);transform:scale(.96);transform-origin:top right;
+  width:calc(var(--u)*22);height:auto;max-width:none;
+  border:1px solid var(--ink);box-shadow:0 calc(var(--u)*0.5) calc(var(--u)*1.6) rgba(25,23,21,.24);
+  opacity:0;pointer-events:none;transition:opacity .22s ease,transform .22s ease;z-index:20;
+}
+.tool-meme:hover ~ .tool-pop,.tool-meme:focus-within ~ .tool-pop{opacity:1;transform:scale(1);}
 .price{
   font-family:var(--serif);font-size:calc(var(--u)*2);color:var(--brick);white-space:nowrap;
 }
@@ -874,11 +883,18 @@ html.no-js .curve-wrap{overflow:auto;}
 .yt-row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:calc(var(--u)*1.2);flex:1;min-height:0;}
 .yt{display:flex;flex-direction:column;gap:calc(var(--u)*0.5);text-decoration:none;color:inherit;min-height:0;}
 .yt .thumb{
-  flex:1;min-height:calc(var(--u)*7);border:1px dashed var(--line);background:var(--paper);
-  display:flex;align-items:center;justify-content:center;
+  flex:1;min-height:calc(var(--u)*7);border:1px solid var(--line-light);background:var(--paper);
+  display:flex;align-items:center;justify-content:center;overflow:hidden;
 }
-.yt .ph{font-size:calc(var(--u)*0.8);color:var(--muted);}
-.yt .yt-t{font-size:calc(var(--u)*0.95);color:var(--brick-dark);}
+.yt .thumb img{width:100%;height:100%;object-fit:cover;display:block;}
+.yt .thumb .ph{display:none;}
+.yt .thumb.missing{border-style:dashed;}
+.yt .thumb.missing img{display:none;}
+.yt .thumb.missing .ph{display:block;font-size:calc(var(--u)*0.8);color:var(--muted);}
+.yt .yt-t{font-size:calc(var(--u)*0.9);color:var(--brick-dark);line-height:1.5;}
+.yt:hover .thumb,.yt:focus-visible .thumb{border-color:var(--brick);}
+.sc-link{color:var(--brick-dark);text-decoration:none;border-bottom:1px solid var(--line-light);}
+.sc-link:hover,.sc-link:focus-visible{border-color:var(--brick);outline:none;}
 
 .pt.flip{flex-direction:row-reverse;transform:translate(-50%,50%);}
 .bub.break-line{border:0;background:none;padding:calc(var(--u)*0.4) 0;max-width:100%;}
@@ -1554,25 +1570,25 @@ html.no-js .curve-wrap{overflow:auto;}
     <div class="wall-top">
       <div class="wall-item">
         <div class="shot">
-          <img src="assets/images/scene-14-cases/scene-14-famesites-home.jpg"
+          <img src="assets/images/scene-11-cases/scene-11-famesites-home.jpg"
                alt="famesites 網站首頁" onerror="this.closest('.shot').classList.add('missing')" />
-          <div class="placeholder"><span>待補截圖</span><span class="pf">scene-14-famesites-home.jpg</span></div>
+          <div class="placeholder"><span>待補截圖</span><span class="pf">scene-11-famesites-home.jpg</span></div>
         </div>
         <a href="https://famesites.netlify.app/" target="_blank" rel="noopener">famesites.netlify.app ↗</a>
       </div>
       <div class="wall-item">
         <div class="shot">
-          <img src="assets/images/scene-14-cases/scene-14-threads-catherina.jpg"
+          <img src="assets/images/scene-11-cases/scene-11-threads-catherina.jpg"
                alt="Threads 討論串一" onerror="this.closest('.shot').classList.add('missing')" />
-          <div class="placeholder"><span>待補截圖</span><span class="pf">scene-14-threads-catherina.jpg</span></div>
+          <div class="placeholder"><span>待補截圖</span><span class="pf">scene-11-threads-catherina.jpg</span></div>
         </div>
         <a href="https://www.threads.com/@catherina_9051/post/DWophhsk-Vm" target="_blank" rel="noopener">Threads ＠catherina_9051 ↗</a>
       </div>
       <div class="wall-item">
         <div class="shot">
-          <img src="assets/images/scene-14-cases/scene-14-threads-eagle.jpg"
+          <img src="assets/images/scene-11-cases/scene-11-threads-eagle.jpg"
                alt="Threads 討論串二" onerror="this.closest('.shot').classList.add('missing')" />
-          <div class="placeholder"><span>待補截圖</span><span class="pf">scene-14-threads-eagle.jpg</span></div>
+          <div class="placeholder"><span>待補截圖</span><span class="pf">scene-11-threads-eagle.jpg</span></div>
         </div>
         <a href="https://www.threads.com/@eagle.tingyi/post/Dasc9WzE7RV" target="_blank" rel="noopener">Threads ＠eagle.tingyi ↗</a>
       </div>
@@ -1645,14 +1661,14 @@ html.no-js .curve-wrap{overflow:auto;}
       <h5>愚昧之巔</h5>
       <p class="df">第一次成功帶來大量信心，但還沒看見背後的複雜度與限制。</p>
       「AI 可以超快做出我想像中的東西。」<br />「我是不是可以取代工程師？」<br />「我是不是可以取代設計師？」
-      <img src="assets/images/scene-16-maturity/scene-16-peak-ai-agent-meme.png" alt="AI 初期成功經驗帶來過度自信的諷刺圖" />
+      <img src="assets/images/scene-12-maturity/scene-12-peak-ai-agent-meme.png" alt="AI 初期成功經驗帶來過度自信的諷刺圖" />
     </div>
 
     <div class="voice" data-q="2" style="left:46%;top:2%">
       <h5>絕望之谷</h5>
       <p class="df">開始遇到真實世界的錯誤、比較、維護與責任。</p>
       「我想做的東西早就有人做過，而且做得比我好。」<br />「原來還有部署、資安、權限、測試和維護。」<br />「AI 做出來的東西有點不對，但我不知道怎麼修。」
-      <img src="assets/images/scene-16-maturity/scene-16-valley-ai-agent-meme.png" alt="遇到 AI 專案複雜度與現實限制後的挫折諷刺圖" />
+      <img src="assets/images/scene-12-maturity/scene-12-valley-ai-agent-meme.png" alt="遇到 AI 專案複雜度與現實限制後的挫折諷刺圖" />
     </div>
 
     <div class="voice" data-q="3" style="left:40%;top:54%">
@@ -1690,25 +1706,27 @@ html.no-js .curve-wrap{overflow:auto;}
     <section class="start-card">
       <h3>阻力最小的起點</h3>
       <div class="tool-row">
-        <div class="tool">
-          <img src="assets/images/scene-17-start/icon-gemini.png" alt="Gemini"
+        <div class="tool tool-meme">
+          <img src="assets/images/scene-13-start/scene-13-icon-gemini.png" alt="Gemini／Antigravity"
                onerror="this.closest('.tool').classList.add('missing')" />
-          <span class="ph">icon-gemini.png</span>
-          <span class="tn">Gemini</span>
+          <span class="ph">scene-13-icon-gemini.png</span>
+          <span class="tn">Gemini<br />Antigravity</span>
         </div>
         <div class="tool">
-          <img src="assets/images/scene-17-start/icon-codex.png" alt="Codex"
+          <img src="assets/images/scene-13-start/scene-13-icon-codex.png" alt="ChatGPT／Codex"
                onerror="this.closest('.tool').classList.add('missing')" />
-          <span class="ph">icon-codex.png</span>
-          <span class="tn">Codex</span>
+          <span class="ph">scene-13-icon-codex.png</span>
+          <span class="tn">ChatGPT<br />Codex</span>
         </div>
         <div class="tool">
-          <img src="assets/images/scene-17-start/icon-claude-code.png" alt="Claude Code"
+          <img src="assets/images/scene-13-start/scene-13-icon-claude.png" alt="Claude／Claude Code"
                onerror="this.closest('.tool').classList.add('missing')" />
-          <span class="ph">icon-claude-code.png</span>
-          <span class="tn">Claude Code</span>
+          <span class="ph">scene-13-icon-claude.png</span>
+          <span class="tn">Claude<br />Claude Code</span>
         </div>
         <p class="price">US$20<span>／月</span></p>
+        <img class="tool-pop" src="assets/images/scene-13-start/scene-13-benchmark-meme.jpg"
+             alt="各家模型在起跑線上追 benchmark 的諷刺圖" onerror="this.style.display='none'" />
       </div>
       <p class="sc-note">機關已提供的 Gemini Pro ＋ Canvas，是完全不用花錢的第一步。</p>
     </section>
@@ -1716,13 +1734,21 @@ html.no-js .curve-wrap{overflow:auto;}
     <section class="start-card">
       <h3>免費的學習資源</h3>
       <div class="yt-row">
-        <a class="yt" href="#" data-todo="1">
-          <span class="thumb"><span class="ph">yt-1-cover.jpg</span></span>
-          <span class="yt-t">待補影片標題與連結</span>
+        <a class="yt" href="https://youtu.be/2pM-7fBXc_M" target="_blank" rel="noopener">
+          <span class="thumb">
+            <img src="assets/images/scene-13-start/scene-13-yt-1-cover.jpg" alt=""
+                 onerror="this.closest('.thumb').classList.add('missing')" />
+            <span class="ph">scene-13-yt-1-cover.jpg</span>
+          </span>
+          <span class="yt-t">一個 AI 助手打趴整套 Office 軟體！超強 Codex 從表格簡報、合併列印、架設網站全部一手包辦！ ↗</span>
         </a>
-        <a class="yt" href="#" data-todo="1">
-          <span class="thumb"><span class="ph">yt-2-cover.jpg</span></span>
-          <span class="yt-t">待補影片標題與連結</span>
+        <a class="yt" href="https://youtu.be/2pM-7fBXc_M" target="_blank" rel="noopener">
+          <span class="thumb">
+            <img src="assets/images/scene-13-start/scene-13-yt-2-cover.jpg" alt=""
+                 onerror="this.closest('.thumb').classList.add('missing')" />
+            <span class="ph">scene-13-yt-2-cover.jpg</span>
+          </span>
+          <span class="yt-t">還在羨慕別人用 AI 開發酷產品？Claude Code 保姆級教學讓你輕鬆體驗 Vibe Coding，動動嘴就能做出 Anything！ ↗</span>
         </a>
       </div>
     </section>
@@ -1741,7 +1767,7 @@ html.no-js .curve-wrap{overflow:auto;}
       <ul class="sc-list">
         <li>你最愛的 LLM（Gemini、ChatGPT、Claude）＋ 第 5 頁那段 Prompt</li>
         <li>AI 推動辦公室</li>
-        <li>AI 創客社</li>
+        <li><a class="sc-link" href="https://docs.google.com/document/d/1J-W6xZQwukE_zZ5jtNmfkryZe2uVukpI66kZZCGIcFU/edit?tab=t.0#heading=h.npibb03ewstv" target="_blank" rel="noopener">AI 創客社 ↗</a></li>
       </ul>
     </section>
   </div>
