@@ -479,7 +479,7 @@ html.js .fade.is-cur{opacity:1;}
 .layer .ld{font-size:calc(var(--u)*0.95);color:var(--muted);line-height:1.5;}
 .dialog-area{flex:1;min-height:0;overflow:hidden;margin-top:calc(var(--u)*1);display:flex;gap:calc(var(--u)*2);}
 .dialog{
-  flex:1;min-width:0;overflow-y:auto;overflow-x:hidden;
+  flex:1;min-width:0;min-height:0;overflow-y:auto;overflow-x:hidden;
   display:flex;flex-direction:column;justify-content:flex-start;
   gap:calc(var(--u)*0.45);padding-right:calc(var(--u)*0.6);
 }
@@ -529,10 +529,10 @@ html.js .bub.in{opacity:1;transform:none;}
 }
 .as-title{font-family:var(--serif);font-size:calc(var(--u)*2);color:var(--brick);display:flex;align-items:baseline;gap:calc(var(--u)*1.2);}
 .as-title span{font-family:var(--sans);font-size:calc(var(--u)*1.02);color:var(--muted);letter-spacing:.22em;}
-.as-list{list-style:none;margin:calc(var(--u)*1) 0 0;padding:0;flex:1;min-height:0;display:grid;grid-template-rows:repeat(4,minmax(0,1fr));}
+.as-list{list-style:none;margin:calc(var(--u)*0.5) 0 0;padding:0;flex:1;min-height:0;display:grid;grid-template-rows:repeat(4,minmax(0,1fr));}
 .as-list li{
   display:flex;align-items:center;gap:calc(var(--u)*1.8);
-  border-top:1px solid var(--line-light);padding:calc(var(--u)*0.55) 0;
+  border-top:1px solid var(--line-light);padding:calc(var(--u)*1.15) 0;
 }
 .as-list li:first-child{border-top:0;}
 .as-ico{
@@ -791,6 +791,12 @@ html.js .bub.in{opacity:1;transform:none;}
 .stage-dot:hover,.stage-dot.on{fill:var(--brick);stroke:var(--brick);}
 .stage-dot:focus-visible{outline:2px solid var(--brick);outline-offset:3px;}
 .stage-label{cursor:pointer;}
+.dk-axis line{stroke:var(--line);stroke-width:1.4;}
+.dk-axis .dk-head{fill:var(--line);stroke:none;}
+.dk-axis .dk-t{
+  font-family:"Noto Sans TC",sans-serif;font-size:15px;fill:var(--muted);
+  letter-spacing:.12em;stroke:none;
+}
 .voice{
   position:absolute;background:rgba(248,245,238,.97);
   border-left:calc(var(--u)*0.3) solid var(--brick);
@@ -820,7 +826,7 @@ html.no-js .curve-wrap{overflow:auto;}
   font-family:var(--serif);font-size:calc(var(--u)*1.15);color:var(--brick);
   letter-spacing:.14em;margin-bottom:calc(var(--u)*0.35);
 }
-.redbox ul{list-style:none;margin:0;padding:0;display:grid;gap:calc(var(--u)*0.28);}
+.redbox ul{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(2,auto);gap:calc(var(--u)*0.3) calc(var(--u)*1.6);}
 .redbox li{position:relative;padding-left:calc(var(--u)*1);white-space:nowrap;}
 .redbox li::before{
   content:"";position:absolute;left:0;top:calc(var(--u)*0.68);
@@ -852,10 +858,10 @@ html.no-js .curve-wrap{overflow:auto;}
   width:calc(var(--u)*0.6);height:1px;background:var(--brick);
 }
 .sc-note{font-size:calc(var(--u)*0.98);color:var(--muted);line-height:1.6;margin-top:auto;}
-.tool-row{position:relative;display:flex;align-items:center;gap:calc(var(--u)*1.6);}
+.tool-row{position:relative;display:flex;align-items:center;gap:calc(var(--u)*1.9);}
 .tool-row .price{margin-left:calc(var(--u)*1.6);}
 .tool{
-  width:calc(var(--u)*4.6);text-align:center;display:flex;flex-direction:column;
+  text-align:center;display:flex;flex-direction:column;flex:none;
   align-items:center;gap:calc(var(--u)*0.35);
 }
 .tool > img{width:calc(var(--u)*3.2);height:calc(var(--u)*3.2);object-fit:contain;display:block;}
@@ -867,13 +873,16 @@ html.no-js .curve-wrap{overflow:auto;}
   font-size:calc(var(--u)*0.55);line-height:1.25;padding:calc(var(--u)*0.3);
   word-break:break-all;
 }
-.tool .tn{font-size:calc(var(--u)*0.88);color:var(--ink-soft);line-height:1.35;}
+.tool .tn{font-size:calc(var(--u)*0.88);color:var(--ink-soft);line-height:1.35;white-space:nowrap;}
 .tool-meme{position:relative;cursor:help;}
 .tool-pop{
   position:absolute;right:0;top:calc(var(--u)*-1.4);transform:scale(.96);transform-origin:top right;
-  width:calc(var(--u)*22);height:auto;max-width:none;
-  border:1px solid var(--ink);box-shadow:0 calc(var(--u)*0.5) calc(var(--u)*1.6) rgba(25,23,21,.24);
+  display:flex;gap:calc(var(--u)*0.8);
   opacity:0;pointer-events:none;transition:opacity .22s ease,transform .22s ease;z-index:20;
+}
+.tool-pop img{
+  width:calc(var(--u)*19);height:auto;display:block;background:var(--paper);
+  border:1px solid var(--ink);box-shadow:0 calc(var(--u)*0.5) calc(var(--u)*1.6) rgba(25,23,21,.24);
 }
 .tool-meme:hover ~ .tool-pop,.tool-meme:focus-within ~ .tool-pop{opacity:1;transform:scale(1);}
 .price{
@@ -934,9 +943,9 @@ html.no-js .curve-wrap{overflow:auto;}
 
   <p class="takeaway-head">TAKEAWAY</p>
   <ol class="takeaways">
-    <li><span class="num">01</span><span class="txt">一段用來吸收 AI 相關新知識的 Prompt</span></li>
-    <li><span class="num">02</span><span class="txt">AI Agent 和網頁裡的 AI 到底差在哪？</span></li>
-    <li><span class="num">03</span><span class="txt">用 Gemini 搭配 Canvas 開始第一個專案</span></li>
+    <li><span class="num">01</span><span class="txt">一段用來吸收新知識的 Prompt</span></li>
+    <li><span class="num">02</span><span class="txt">認知自己的學習階段</span></li>
+    <li><span class="num">03</span><span class="txt">Gemini ＋ Canvas 開始第一個專案</span></li>
   </ol>
 </section>
 
@@ -1188,9 +1197,9 @@ html.no-js .curve-wrap{overflow:auto;}
       <div class="demo-cue"><b>▶ 網頁示範</b></div>
 
       <button class="copy-btn" type="button" id="copy-prompt">
-        <svg class="cp-ico" viewBox="0 0 20 20" aria-hidden="true" focusable="false">
-          <rect x="7.2" y="2.2" width="10.6" height="13" rx="2" />
-          <path d="M13.4 5.4H4.2a2 2 0 0 0-2 2v8.4a2 2 0 0 0 2 2h7.2a2 2 0 0 0 2-2v-1.2" />
+        <svg class="cp-ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <rect width="14" height="14" x="8" y="8" rx="2" ry="2" />
+          <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" />
         </svg>
         <span class="cp-txt">複製整段 Prompt</span>
       </button>
@@ -1297,8 +1306,8 @@ html.no-js .curve-wrap{overflow:auto;}
           <div><b>Tools</b><p>眼睛與手。負責看見與操作外部世界：讀檔、寫檔、改檔、執行終端機指令。</p></div>
         </li>
         <li>
-          <svg class="as-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M17 19a1 1 0 0 1-1-1v-2a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2a1 1 0 0 1-1 1z"/><path d="M17 21v-2"/><path d="M19 14V6.5a1 1 0 0 0-7 0v11a1 1 0 0 1-7 0V10"/><path d="M21 21v-2"/><path d="M3 5V3"/><path d="M4 10a2 2 0 0 1-2-2V6a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2a2 2 0 0 1-2 2z"/><path d="M7 5V3"/></svg>
-          <div><b>Harness</b><p>接線與韁繩。把大腦接到工具上：執行工具、把結果送回去、決定下一步，並在該停的地方要求你批准或直接停止。</p></div>
+          <svg class="as-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5,13.4C3.5,10.1 5.5,8 7.6,7.4C8.7,7.1 9.4,8.1 12,8.1C14.6,8.1 15.3,7.1 16.4,7.4C18.5,8 20.5,10.1 20.5,13.4C20.5,15.3 19.1,16.4 17.2,16.4H6.8C4.9,16.4 3.5,15.3 3.5,13.4Z"/><path d="M6.6,10.6C9.2,12.6 14.8,12.6 17.4,10.6"/><path d="M12,16.4v2.5"/><ellipse cx="12" cy="20.6" rx="1.8" ry="1.6"/></svg>
+          <div><b>Harness</b><p>馬鞍與韁繩。把大腦接到工具上：執行工具、把結果送回去、決定下一步，並在該停的地方要求你批准或直接停止。</p></div>
         </li>
       </ul>
     </div>
@@ -1622,17 +1631,25 @@ html.no-js .curve-wrap{overflow:auto;}
   </div>
 
   <div class="redbox">
-    <p class="rb-h">底線</p>
+    <p class="rb-h">資安底線　時刻注意：</p>
     <ul>
       <li>不要上傳個資</li>
       <li>不要上傳機關機密資料</li>
       <li>不要把 API key／密碼／憑證貼進對話</li>
-      <li>真實資料先去識別化，用機關核准的帳號與工具</li>
+      <li>不要用未經核准的帳號或工具處理真實資料</li>
     </ul>
   </div>
 
   <div class="body-area curve-wrap" id="curve-wrap">
     <svg viewBox="0 0 1000 400" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+      <g class="dk-axis">
+        <line x1="34" y1="384" x2="978" y2="384"/>
+        <path d="M978,384 l-9,-4 v8 z" class="dk-head"/>
+        <line x1="34" y1="384" x2="34" y2="26"/>
+        <path d="M34,26 l-4,9 h8 z" class="dk-head"/>
+        <text class="dk-t" x="506" y="399" text-anchor="middle">知識 ＋ 經驗</text>
+        <text class="dk-t dk-ty" x="0" y="0" transform="translate(22,205) rotate(-90)" text-anchor="middle">自信程度</text>
+      </g>
       <path d="M60,340 C130,340 180,70 250,70 C300,70 405,320 470,320 C560,320 620,215 700,170 C790,120 880,113 940,110"
             fill="none" stroke="#9A9083" stroke-width="2.2"/>
       <g id="curve-dots">
@@ -1693,12 +1710,12 @@ html.no-js .curve-wrap{overflow:auto;}
   </div>
 
   <div class="redbox">
-    <p class="rb-h">底線</p>
+    <p class="rb-h">資安底線　時刻注意：</p>
     <ul>
       <li>不要上傳個資</li>
       <li>不要上傳機關機密資料</li>
       <li>不要把 API key／密碼／憑證貼進對話</li>
-      <li>真實資料先去識別化，用機關核准的帳號與工具</li>
+      <li>不要用未經核准的帳號或工具處理真實資料</li>
     </ul>
   </div>
 
@@ -1725,8 +1742,12 @@ html.no-js .curve-wrap{overflow:auto;}
           <span class="tn">Claude<br />Claude Code</span>
         </div>
         <p class="price">US$20<span>／月</span></p>
-        <img class="tool-pop" src="assets/images/scene-13-start/scene-13-benchmark-meme.jpg"
-             alt="各家模型在起跑線上追 benchmark 的諷刺圖" onerror="this.style.display='none'" />
+        <div class="tool-pop">
+          <img src="assets/images/scene-13-start/scene-13-benchmark-meme.jpg"
+               alt="各家模型在起跑線上追 benchmark 的諷刺圖" onerror="this.style.display='none'" />
+          <img src="assets/images/scene-13-start/scene-13-dragons-meme.jpg"
+               alt="三頭龍梗圖：Claude Code、Codex 與 Gemini" onerror="this.style.display='none'" />
+        </div>
       </div>
       <p class="sc-note">機關已提供的 Gemini Pro ＋ Canvas，是完全不用花錢的第一步。</p>
     </section>
@@ -1734,7 +1755,7 @@ html.no-js .curve-wrap{overflow:auto;}
     <section class="start-card">
       <h3>免費的學習資源</h3>
       <div class="yt-row">
-        <a class="yt" href="https://youtu.be/2pM-7fBXc_M" target="_blank" rel="noopener">
+        <a class="yt" href="https://www.youtube.com/watch?v=W5ymBPi53Tw" target="_blank" rel="noopener">
           <span class="thumb">
             <img src="assets/images/scene-13-start/scene-13-yt-1-cover.jpg" alt=""
                  onerror="this.closest('.thumb').classList.add('missing')" />
@@ -1742,7 +1763,7 @@ html.no-js .curve-wrap{overflow:auto;}
           </span>
           <span class="yt-t">一個 AI 助手打趴整套 Office 軟體！超強 Codex 從表格簡報、合併列印、架設網站全部一手包辦！ ↗</span>
         </a>
-        <a class="yt" href="https://youtu.be/2pM-7fBXc_M" target="_blank" rel="noopener">
+        <a class="yt" href="https://www.youtube.com/watch?v=2pM-7fBXc_M" target="_blank" rel="noopener">
           <span class="thumb">
             <img src="assets/images/scene-13-start/scene-13-yt-2-cover.jpg" alt=""
                  onerror="this.closest('.thumb').classList.add('missing')" />
@@ -1814,19 +1835,19 @@ var SCENES = [
    notes:["先讓觀眾自己看 10 秒，不急著揭露。","按 → 依序揭露生化科技系、法律系、商管系、設計系四個視角。","前三個視角各對應圖上一個紅圈；設計系不圈，因為在設計人眼中整張圖都是問題。","必講：圖片是同一張圖片，但有特定認知的人才讀得出特定的資訊。","口頭補一句：這些仍然是候選視角，不等於專業判斷（畫面上不再放這行字）。","轉場：那我們怎麼知道自己漏看了什麼？"]},
   {id:"scene-04-known-unknown", n:"04", t:"你知道自己不知道什麼嗎？", ready:1,
    notes:["承接 S03：同一張圖，不同背景看見不同問題；這也和我們是否知道自己的知識邊界有關。","白話說明兩條軸，不要只念英文名詞。","四格用花束例句快速帶過，不講成能力高低或心理測驗。","帶出 AI：它可以教已經問出口的問題，可以反問把經驗整理出來，更重要的是從其他專業提醒我還有哪些問題沒想到。","守住邊界：AI 提出的盲點只是候選視角，Unknown Unknowns 只被變成 Known Unknowns。","四格一次全部顯示，讓觀眾自己比較；再按 → 逐一畫出三條轉換箭頭。","轉入 S05：下一頁我們就用一段 Prompt 實際做一次。"]},
-  {id:"scene-05-cognition-prompt", n:"05", t:"一段 Prompt 搭配任意模型即可擴展認知", ready:1,
+  {id:"scene-05-cognition-prompt", n:"05", t:"一段 Prompt 搭配任意模型，即可擴展認知", ready:1,
    notes:["先說 Prompt 的價值不是唯一正解，而是看見沒問出的角度。","▶ 切到準備好的 Gemini 對話紀錄，實際走一次輸出。","回來後：對於任何領域，都可以用這個脈絡快速掌握自己的認知階段與盲點。","指出「上手指南」會給可執行的 code —— 由此插入對話式 AI 與 AI Agent 的差別（銜接 S06）。","必講：AI 回傳的是候選清單，不等於事實，也不等於專業判斷。"]},
   {id:"scene-06-llm-agent", n:"06", t:"同一句「幫我下載影片」，AI 到底能做到哪一步？", ready:1,
    notes:["三層使用同一個任務，不要換案例。","Layer 1：它不是忘記，而是第二次呼叫時上一輪根本沒有被帶進來。","Layer 2：看起來記得，是因為外層應用程式保存對話再重新放進 Context。","Layer 3：LLM 只提出要呼叫什麼；解析、執行、回傳都是外層 harness 的工作。工具命令 ≠ 工具已執行。重點是拿到本機回報之後再判斷下一步（ReAct 用語叫 Observation，畫面上一律寫「本機回報」）。","第 4 步：Agent ＝ LLM ＋ Context ＋ Tools ＋ Harness。第 5 步：完整時序圖。","延伸（口頭）：ReAct 不是唯一架構，還有固定 Workflow、Plan-and-Execute、Reflection、ToT、Multi-agent。"]},
   {id:"scene-07-agent-parts", n:"07", t:"Agent 是怎麼被組裝起來的？", ready:1,
    notes:["用新進員工的比喻快速跳過整面網格，不逐一講解。","一句話收尾：缺哪一個零件，它就少一種真實工作的能力。"]},
-  {id:"scene-08-agent-ready-world", n:"08", t:"世界正在替 Agent 開門，也同時加上門禁", ready:1,
+  {id:"scene-08-agent-ready-world", n:"08", t:"世界正在替 Agent 開門，效益和風險並存", ready:1,
    notes:["開場：把視野拉遠，世界本身正在補上讓 Agent 可以工作的接口。","能讀：資料被整理成機器可理解、可搜尋、可引用的格式。","能做：既有軟體出現給 Agent 用的 CLI 與橋接層。","能交易：Agent 代表人或組織呼叫服務、支付費用。","能治理：成熟做法不是把鑰匙交給 Agent，而是讓 Agent 提案，由獨立規則與人決定能不能執行。","措辭：57% 說成自動化／非人類流量，不說成 AI Agent 流量。","收束：Agent-ready ≠ Agent-safe。","Endgame（口頭）：機關內自架足夠強力的模型 ＋ 足夠安全的 Agent 框架。"]},
-  {id:"scene-09-agent-or-not", n:"09", t:"AI Agent 很強，但你的工作到底需要多少 AI？", ready:1,
+  {id:"scene-09-agent-or-not", n:"09", t:"AI Agent 很強，但你需要的 AI 到底是什麼？", ready:1,
    notes:["承接 S08：世界為 Agent 開門，不代表每個流程都需要 Agent。","踩煞車：有些用固定規則就好，有些需要演算法，有些需要模型。","只有當系統需要根據環境持續判斷下一步時，才真的需要 Agent。","Workflow 是橫跨的流程骨架，不是光譜的下一級。","引向 S10：如果每遇到新產品都只能背名稱，永遠追不完。"]},
-  {id:"scene-10-ai-cognition-map", n:"10", t:"建立一張自己的 AI 認知地圖", ready:1,
+  {id:"scene-10-ai-cognition-map", n:"10", t:"一套收容新資訊的認知空間", ready:1,
    notes:["Hook：語言就是認知的邊界，就是世界的邊界。","橫軸：它運行時靠什麼做決定？","縱軸：它能不能碰到外部世界？只是輸入輸出、讀資料，還是會改變真實狀態？","第三個問題：AI 是幫我們做出來，還是真的存在於運行過程裡。","必講：這不是能力排行榜，而是選擇最小但足夠的機制。","第 4 步會放上更多案例點；需要細看時開啟完整互動版。","帶入案例：接下來用三個案例測試這張地圖。"]},
-  {id:"scene-14-case-wall", n:"11", t:"看看大家的創意，找找認知之外的解法", ready:1,
+  {id:"scene-14-case-wall", n:"11", t:"看看大家的創意，找找認知之外的題目解法", ready:1,
    notes:["三張都是事先截圖；想深入再點連結開新分頁，不在簡報內即時載入。","下半：棘手問題的解答往往在另一個維度。","THAS 要自然人憑證 → 去上游 DW 下載。","NCBI 手動比對複製 → 改用 API。","輿情偵測燒模型額度 → 改吃 RSS feed。"]},
   {id:"scene-16-maturity", n:"12", t:"我在達克效應的哪個階段？", ready:1,
    notes:["曲線上的五個點都可以 hover（或 Tab 聚焦）叫出該階段的說明卡，沒有固定播放順序。","起點／愚昧之巔／絕望之谷／開悟之坡／平穩高原：講的是同一個人在一個領域裡的變化，不是分人格。","不要說某些人永遠停在愚昧之巔；這是每個新領域都會重跑一次的過程。","右上角紅字底線全程都在：不要上傳個資、不要上傳機關機密資料、不要上傳 API key 給雲端模型。","講者自己指出「我在哪裡」，畫面上不再標 Me。"]},
