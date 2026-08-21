@@ -1386,6 +1386,8 @@ html{scrollbar-width:none;} html::-webkit-scrollbar{width:0;height:0;}</style>
         },
         {
           id: "cp-sat",
+          noShot: true,
+          noLink: true,
           group: "我的專案",
           title: "CP-SAT 排班",
           shortDescription: "把規則寫成限制，再搜尋可行且較好的班表。",
@@ -1999,10 +2001,10 @@ html{scrollbar-width:none;} html::-webkit-scrollbar{width:0;height:0;}</style>
         const shotPath = project.shot || project.shotTodo || `assets/images/scene-10-projects/${project.id}.jpg`;
         const shot = project.shot
           ? `<img class="tooltip-shot" src="${escapeHtml(project.shot)}" alt="${escapeHtml(project.title)} 畫面" onerror="this.style.display='none'" />`
-          : `<div class="tooltip-shot-todo">待補 demo 圖<br />${escapeHtml(shotPath)}</div>`;
+          : (project.noShot ? "" : `<div class="tooltip-shot-todo">待補 demo 圖<br />${escapeHtml(shotPath)}</div>`);
         const link = project.link
           ? `<span class="tooltip-link">${escapeHtml(project.link)} ↗　點一下標籤即可開啟</span>`
-          : `<span class="tooltip-link">待補連結</span>`;
+          : (project.noLink ? "" : `<span class="tooltip-link">待補連結</span>`);
         return `
           <div class="tooltip-title">${escapeHtml(project.title)}</div>
           <p>${escapeHtml(project.shortDescription)}</p>

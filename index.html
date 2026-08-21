@@ -303,7 +303,26 @@ html.js .flower-close.is-on{opacity:1;}
 }
 .helpbar button svg{width:1.8vh;height:1.8vh;fill:none;stroke:#F3EFE6;stroke-width:1.6;}
 .helpbar button:hover,.helpbar button:focus-visible{background:var(--brick);opacity:1;outline:none;}
+.helpbar button[aria-pressed="true"]{background:var(--brick);opacity:1;}
 html.no-js .helpbar{display:none;}
+
+/* ---------- 雷射筆 ---------- */
+.laser{
+  position:fixed;left:0;top:0;width:2.6vh;height:2.6vh;margin:-1.3vh 0 0 -1.3vh;
+  border-radius:50%;pointer-events:none;z-index:120;display:none;
+  background:radial-gradient(circle at 50% 50%,
+    rgba(255,255,255,.95) 0%,
+    rgba(255,70,50,.95) 26%,
+    rgba(255,40,20,.55) 52%,
+    rgba(255,40,20,0) 74%);
+  box-shadow:0 0 1.4vh .5vh rgba(255,50,30,.5);
+}
+html.laser-on .laser{display:block;}
+html.laser-on,html.laser-on *{cursor:none !important;}
+html.laser-on .helpbar,html.laser-on .helpbar *{cursor:pointer !important;}
+@media (prefers-reduced-motion:no-preference){
+  html.laser-on .laser{transition:transform .04s linear;}
+}
 
 /* ================= 共用元件 ================= */
 .scene-head{flex:none;}
@@ -1800,6 +1819,14 @@ html.no-js .curve-wrap{overflow:auto;}
 </div><!-- /deck -->
 
 <div class="helpbar">
+  <button type="button" data-cmd="laser" id="laser-btn" aria-pressed="false"
+          aria-label="雷射筆" title="雷射筆（L）">
+    <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false">
+      <circle cx="10" cy="10" r="2.6"/>
+      <path d="M10 1.4v2.6M10 16v2.6M1.4 10h2.6M16 10h2.6"/>
+      <path d="M4.1 4.1l1.9 1.9M14 14l1.9 1.9M15.9 4.1L14 6M6 14l-1.9 1.9"/>
+    </svg>
+  </button>
   <button type="button" data-cmd="overview" aria-label="Scene 總覽" title="Scene 總覽（O）">
     <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false">
       <rect x="1"  y="1"  width="7.5" height="7.5"/>
@@ -1809,6 +1836,8 @@ html.no-js .curve-wrap{overflow:auto;}
     </svg>
   </button>
 </div>
+
+<div class="laser" id="laser" aria-hidden="true"></div>
 
 <div class="overlay" id="overview" hidden>
   <h2>SCENE 總覽</h2>
@@ -2089,7 +2118,15 @@ if(mapFrame){
         if(e.key === "ArrowRight" || e.key === "PageDown"){ e.preventDefault(); next(); }
         else if(e.key === "ArrowLeft" || e.key === "PageUp"){ e.preventDefault(); prev(); }
         else if(e.key === "o" || e.key === "O"){ toggleOverview(); }
+        else if(e.key === "l" || e.key === "L"){ toggleLaser(); }
       });
+      bindFrameLaser(mapFrame.contentDocument);
+      var fs = mapFrame.contentDocument.createElement("style");
+      fs.textContent = "html.laser-on,html.laser-on *{cursor:none !important;}";
+      mapFrame.contentDocument.head.appendChild(fs);
+      new MutationObserver(function(){
+        mapFrame.contentDocument.documentElement.classList.toggle("laser-on", laserOn);
+      }).observe(document.documentElement, {attributes:true, attributeFilter:["class"]});
     }catch(err){ /* 跨來源時略過 */ }
   });
 }
@@ -2128,9 +2165,36 @@ function renderNotes(){
   }
 }
 
+/* 雷射筆 */
+var laserEl = document.getElementById("laser");
+var laserBtn = document.getElementById("laser-btn");
+var laserOn = false;
+
+function moveLaser(x, y){
+  laserEl.style.transform = "translate(" + x + "px," + y + "px)";
+}
+function toggleLaser(force){
+  laserOn = (typeof force === "boolean") ? force : !laserOn;
+  document.documentElement.classList.toggle("laser-on", laserOn);
+  if(laserBtn) laserBtn.setAttribute("aria-pressed", laserOn ? "true" : "false");
+}
+document.addEventListener("mousemove", function(e){
+  if(laserOn) moveLaser(e.clientX, e.clientY);
+});
+/* Scene 10 的內嵌 iframe：把游標座標換算回外層（iframe 以 0.9 縮放） */
+function bindFrameLaser(doc){
+  doc.addEventListener("mousemove", function(e){
+    if(!laserOn) return;
+    var r = mapFrame.getBoundingClientRect();
+    var k = r.width / (doc.documentElement.clientWidth || 1);
+    moveLaser(r.left + e.clientX * k, r.top + e.clientY * k);
+  });
+}
+
 document.querySelectorAll(".helpbar button").forEach(function(b){
   b.addEventListener("click", function(){
     var c = b.getAttribute("data-cmd");
+    if(c === "laser"){ toggleLaser(); b.blur(); }
     if(c === "overview") toggleOverview();
     if(c === "notes") notesEl.hidden = !notesEl.hidden;
     if(c === "reset"){ step = 0; s06Rendered = -1; applySteps(); }
@@ -2164,6 +2228,7 @@ document.addEventListener("keydown", function(e){
     case "Home": e.preventDefault(); goTo(0); break;
     case "End": e.preventDefault(); goTo(SCENES.length - 1); break;
     case "o": case "O": toggleOverview(); break;
+    case "l": case "L": toggleLaser(); break;
     case "n": case "N": notesEl.hidden = !notesEl.hidden; break;
     case "r": case "R": step = 0; s06Rendered = -1; applySteps(); break;
   }
